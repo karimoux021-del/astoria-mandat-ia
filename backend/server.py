@@ -81,6 +81,10 @@ class ChatResponse(BaseModel):
     is_complete: bool = False
     lead_data: Optional[Dict[str, Any]] = None
 
+class OnboardingUpdate(BaseModel):
+    step: int
+    completed: bool = False
+
 class SubscriptionRequest(BaseModel):
     plan: str
     origin_url: str
