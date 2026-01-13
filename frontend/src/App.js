@@ -4,6 +4,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Integration from './pages/Integration';
 import { Toaster } from './components/ui/sonner';
 import './App.css';
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/integration" element={<Integration />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
