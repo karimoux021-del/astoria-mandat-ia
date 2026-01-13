@@ -48,6 +48,9 @@ class User(BaseModel):
     contact_name: str
     subscription_status: str = "none"
     subscription_plan: Optional[str] = None
+    integration_key: Optional[str] = None
+    onboarding_completed: bool = False
+    onboarding_step: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class Lead(BaseModel):
