@@ -122,6 +122,9 @@ async def get_current_user(authorization: str = Header(None)):
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token invalide")
 
+def generate_integration_key():
+    return f"astoria_{uuid.uuid4().hex[:24]}"
+
 @api_router.post("/auth/register")
 async def register(user_data: UserRegister):
     existing = await db.users.find_one({"email": user_data.email})
@@ -132,7 +135,10 @@ async def register(user_data: UserRegister):
     user = User(
         email=user_data.email,
         agency_name=user_data.agency_name,
-        contact_name=user_data.contact_name
+        contact_name=user_data.contact_name,
+        integration_key=generate_integration_key(),
+        onboarding_completed=False,
+        onboarding_step=0
     )
     user_dict = user.model_dump()
     user_dict['password'] = hashed_password
