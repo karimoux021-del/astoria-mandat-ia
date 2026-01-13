@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Copy, Check, RefreshCw, ExternalLink, FileText, Code, Globe } from 'lucide-react';
+import { Copy, Check, RefreshCw, ExternalLink, FileText, Code, Globe, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
 
