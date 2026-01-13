@@ -1,0 +1,184 @@
+{
+  "identity": {
+    "name": "Astoria Mandat IA",
+    "tone": "Premium, Trustworthy, Technological, Efficient",
+    "archetype": "Jewel & Luxury (Navy & Gold) meets Swiss High-Contrast",
+    "target_audience": "French Real Estate Agencies"
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Outfit, sans-serif",
+      "body": "DM Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "weights": {
+      "light": 300,
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "scale": {
+      "h1": "text-5xl md:text-6xl lg:text-7xl tracking-tight font-bold",
+      "h2": "text-4xl md:text-5xl tracking-tight font-semibold",
+      "h3": "text-2xl md:text-3xl font-semibold",
+      "body_lg": "text-lg md:text-xl leading-relaxed",
+      "body": "text-base leading-relaxed text-slate-600 dark:text-slate-300",
+      "caption": "text-sm text-slate-500 uppercase tracking-widest"
+    },
+    "imports": [
+      "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap"
+    ]
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#0F172A",
+        "foreground": "#F8FAFC",
+        "50": "#F8FAFC",
+        "100": "#F1F5F9",
+        "200": "#E2E8F0",
+        "300": "#CBD5E1",
+        "400": "#94A3B8",
+        "500": "#64748B",
+        "600": "#475569",
+        "700": "#334155",
+        "800": "#1E293B",
+        "900": "#0F172A",
+        "950": "#020617"
+      },
+      "accent": {
+        "DEFAULT": "#D4AF37",
+        "foreground": "#0F172A",
+        "light": "#F3E5AB",
+        "dark": "#B4941F",
+        "gradient_start": "#FCD34D",
+        "gradient_end": "#D97706"
+      },
+      "background": {
+        "light": "#FFFFFF",
+        "dark": "#020617",
+        "subtle": "#F8FAFC"
+      },
+      "status": {
+        "success": "#10B981",
+        "warning": "#F59E0B",
+        "error": "#EF4444",
+        "info": "#3B82F6"
+      }
+    },
+    "usage": {
+      "brand_primary": "bg-slate-900 text-white",
+      "brand_accent": "text-[#D4AF37] or bg-[#D4AF37]",
+      "gold_gradient": "bg-gradient-to-r from-amber-200 to-yellow-500",
+      "surface_card": "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800",
+      "text_primary": "text-slate-900 dark:text-white",
+      "text_secondary": "text-slate-600 dark:text-slate-400"
+    }
+  },
+  "layout": {
+    "spacing": {
+      "section_padding": "py-20 md:py-32",
+      "container_padding": "px-6 md:px-12 lg:px-24",
+      "element_gap": "gap-8 md:gap-12"
+    },
+    "grids": {
+      "marketing_features": "grid grid-cols-1 md:grid-cols-12 gap-8",
+      "dashboard_stats": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6",
+      "bento_grid": "grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[minmax(180px,auto)]"
+    },
+    "containers": {
+      "max_width": "max-w-7xl mx-auto"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8 py-3 font-medium transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5",
+      "secondary": "bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 rounded-full px-8 py-3 font-medium transition-all",
+      "accent": "bg-[#D4AF37] text-white hover:bg-[#B4941F] rounded-full px-8 py-3 font-medium shadow-md hover:shadow-lg transition-all",
+      "ghost": "text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full px-6 py-2 transition-all"
+    },
+    "cards": {
+      "feature": "bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all group",
+      "pricing": "bg-white p-8 rounded-3xl border border-slate-200 shadow-lg relative overflow-hidden",
+      "dashboard": "bg-white p-6 rounded-xl border border-slate-100 shadow-sm"
+    },
+    "inputs": {
+      "default": "h-12 rounded-lg border-slate-200 focus:border-slate-900 focus:ring-slate-900 transition-all bg-white"
+    },
+    "chatbot": {
+      "container": "fixed bottom-6 right-6 w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden z-50",
+      "bubble_ai": "bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none p-4 max-w-[85%]",
+      "bubble_user": "bg-slate-900 text-white rounded-2xl rounded-tr-none p-4 max-w-[85%] ml-auto",
+      "input_area": "p-4 border-t border-slate-100 bg-white"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-xl bg-white/80 border-b border-white/20",
+    "gradients": {
+      "hero_overlay": "bg-gradient-to-b from-slate-900/80 to-slate-900/40",
+      "gold_text": "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#B4941F]"
+    },
+    "shadows": {
+      "soft": "shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+      "glow": "shadow-[0_0_20px_rgba(212,175,55,0.3)]"
+    },
+    "borders": {
+      "subtle": "border border-slate-200",
+      "gold": "border border-[#D4AF37]/30"
+    }
+  },
+  "media": {
+    "images": {
+      "hero_bg": {
+        "url": "https://images.unsplash.com/photo-1706808849827-7366c098b317?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBtb2Rlcm4lMjBob3VzZSUyMGV4dGVyaW9yfGVufDB8fHx8MTc2ODMwOTQ2M3ww&ixlib=rb-4.1.0&q=85",
+        "alt": "Luxury modern house exterior at dusk",
+        "usage": "Hero section background with dark overlay"
+      },
+      "office_interior": {
+        "url": "https://images.unsplash.com/photo-1559209537-dafe2fe2886b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjByZWFsJTIwZXN0YXRlJTIwYWdlbnQlMjBvZmZpY2V8ZW58MHx8fHwxNzY4MzA5NDYxfDA&ixlib=rb-4.1.0&q=85",
+        "alt": "Modern minimalist office workspace",
+        "usage": "About or Solution section"
+      },
+      "keys_hand": {
+        "url": "https://images.unsplash.com/photo-1687075430355-ed8df51c1670?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxNzV8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNvdXBsZSUyMHJlY2VpdmluZyUyMGhvdXNlJTIwa2V5c3xlbnwwfHx8fDE3NjgzMDk0NjV8MA&ixlib=rb-4.1.0&q=85",
+        "alt": "Hand holding house keys",
+        "usage": "Success/Conversion section"
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px, Slate-900 color"
+    }
+  },
+  "motion": {
+    "transitions": "transition-all duration-300 ease-out",
+    "hover_lift": "hover:-translate-y-1",
+    "fade_in": "animate-in fade-in duration-700 slide-in-from-bottom-4"
+  },
+  "accessibility": {
+    "contrast_check": "Ensure Gold text is only used on Dark backgrounds or is dark enough (#B4941F) on white.",
+    "focus_states": "focus:ring-2 focus:ring-slate-900 focus:ring-offset-2",
+    "aria_labels": "Required for all icon-only buttons"
+  },
+  "instructions_to_main_agent": [
+    "Use 'Outfit' font for all headings to give a premium modern feel.",
+    "Use 'DM Sans' for body text for high readability.",
+    "Implement the 'Gold' accent sparingly - mostly for borders, small icons, or text gradients. Do not make big gold buttons (use Navy for primary actions).",
+    "The Chatbot Demo on the landing page must be interactive. Use a 'fake' conversation flow if backend is not ready, or connect to the real API.",
+    "Dashboard should be clean and white. Use the Navy color for the Sidebar.",
+    "Use the provided Unsplash images for the respective sections.",
+    "Ensure the 'Scoring' visualization (Hot/Warm/Cold) uses intuitive colors: Fire/Red for Hot, Yellow for Warm, Blue/Ice for Cold.",
+    "For the 'Pricing' section, highlight the 'Premium' plan with a Gold border or shadow.",
+    "Use 'lucide-react' for icons.",
+    "Create a 'Layout' component that handles the Navbar and Footer.",
+    "Use 'framer-motion' for subtle entrance animations if possible, otherwise standard CSS transitions."
+  ],
+  "universal_guidelines": [
+    "Do not use gradients for dark colors.",
+    "Avoid generic centered layouts; use asymmetry where possible.",
+    "Use 2-3x more spacing than typical.",
+    "All interactive elements must have data-testid attributes.",
+    "Use sonner for toasts."
+  ]
+}
