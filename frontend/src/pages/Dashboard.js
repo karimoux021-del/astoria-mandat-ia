@@ -217,6 +217,54 @@ const Dashboard = () => {
       </header>
 
       <div className="container mx-auto px-6 py-8">
+        {/* Quick Actions */}
+        {user?.subscription_status === 'active' && (
+          <div className="bg-white rounded-2xl p-6 mb-8 border border-slate-200">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">🚀 Actions rapides</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link
+                to="/integration"
+                className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group"
+                data-testid="quick-action-integration"
+              >
+                <div className="w-12 h-12 bg-slate-100 group-hover:bg-[#D4AF37] rounded-lg flex items-center justify-center transition-colors">
+                  <Code className="text-slate-600 group-hover:text-white transition-colors" size={24} />
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900">Intégrer le chatbot</p>
+                  <p className="text-sm text-slate-600">Code et documentation</p>
+                </div>
+              </Link>
+              <button
+                onClick={exportLeads}
+                disabled={leads.length === 0}
+                className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+                data-testid="quick-action-export"
+              >
+                <div className="w-12 h-12 bg-slate-100 group-hover:bg-[#D4AF37] rounded-lg flex items-center justify-center transition-colors">
+                  <Download className="text-slate-600 group-hover:text-white transition-colors" size={24} />
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900">Exporter les leads</p>
+                  <p className="text-sm text-slate-600">Format CSV</p>
+                </div>
+              </button>
+              <a
+                href="mailto:support@astoria-mandat-ia.fr"
+                className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group"
+              >
+                <div className="w-12 h-12 bg-slate-100 group-hover:bg-[#D4AF37] rounded-lg flex items-center justify-center transition-colors">
+                  <Mail className="text-slate-600 group-hover:text-white transition-colors" size={24} />
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900">Support</p>
+                  <p className="text-sm text-slate-600">Contactez-nous</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* Subscription Status */}
         {user?.subscription_status !== 'active' && (
           <div className="bg-gradient-to-r from-[#D4AF37] to-[#B4941F] text-white rounded-2xl p-6 mb-8" data-testid="dashboard-subscription-banner">
