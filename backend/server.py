@@ -168,15 +168,14 @@ async def get_me(current_user: User = Depends(get_current_user)):
 
 @api_router.put("/user/onboarding")
 async def update_onboarding(
-    step: int,
-    completed: bool = False,
+    data: OnboardingUpdate,
     current_user: User = Depends(get_current_user)
 ):
     await db.users.update_one(
         {"id": current_user.id},
-        {"$set": {"onboarding_step": step, "onboarding_completed": completed}}
+        {"$set": {"onboarding_step": data.step, "onboarding_completed": data.completed}}
     )
-    return {"success": True, "step": step, "completed": completed}
+    return {"success": True, "step": data.step, "completed": data.completed}
 
 @api_router.post("/user/regenerate-key")
 async def regenerate_integration_key(current_user: User = Depends(get_current_user)):
