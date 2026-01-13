@@ -221,7 +221,7 @@ const Dashboard = () => {
         {user?.subscription_status === 'active' && (
           <div className="bg-white rounded-2xl p-6 mb-8 border border-slate-200">
             <h3 className="text-lg font-semibold text-slate-900 mb-4">🚀 Actions rapides</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               <Link
                 to="/integration"
                 className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group"
@@ -231,10 +231,41 @@ const Dashboard = () => {
                   <Code className="text-slate-600 group-hover:text-white transition-colors" size={24} />
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900">Intégrer le chatbot</p>
-                  <p className="text-sm text-slate-600">Code et documentation</p>
+                  <p className="font-semibold text-slate-900">Intégrer</p>
+                  <p className="text-sm text-slate-600">Code</p>
                 </div>
               </Link>
+              
+              <Link
+                to="/analytics"
+                className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group"
+                data-testid="quick-action-analytics"
+              >
+                <div className="w-12 h-12 bg-slate-100 group-hover:bg-[#D4AF37] rounded-lg flex items-center justify-center transition-colors">
+                  <BarChart3 className="text-slate-600 group-hover:text-white transition-colors" size={24} />
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900">Analytics</p>
+                  <p className="text-sm text-slate-600">Statistiques</p>
+                </div>
+              </Link>
+
+              {user?.subscription_plan === 'ultra' && (
+                <Link
+                  to="/customize"
+                  className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group"
+                  data-testid="quick-action-customize"
+                >
+                  <div className="w-12 h-12 bg-slate-100 group-hover:bg-[#D4AF37] rounded-lg flex items-center justify-center transition-colors">
+                    <Settings className="text-slate-600 group-hover:text-white transition-colors" size={24} />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">Personnaliser</p>
+                    <p className="text-sm text-slate-600">Chatbot</p>
+                  </div>
+                </Link>
+              )}
+              
               <button
                 onClick={exportLeads}
                 disabled={leads.length === 0}
@@ -245,8 +276,8 @@ const Dashboard = () => {
                   <Download className="text-slate-600 group-hover:text-white transition-colors" size={24} />
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900">Exporter les leads</p>
-                  <p className="text-sm text-slate-600">Format CSV</p>
+                  <p className="font-semibold text-slate-900">Exporter</p>
+                  <p className="text-sm text-slate-600">CSV</p>
                 </div>
               </button>
               <a
