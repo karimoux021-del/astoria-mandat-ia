@@ -162,6 +162,27 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+@api_router.put("/user/onboarding")
+async def update_onboarding(
+    step: int,
+    completed: bool = False,
+    current_user: User = Depends(get_current_user)
+):
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": {"onboarding_step": step, "onboarding_completed": completed}}
+    )
+    return {"success": True, "step": step, "completed": completed}
+
+@api_router.post("/user/regenerate-key")
+async def regenerate_integration_key(current_user: User = Depends(get_current_user)):
+    new_key = generate_integration_key()
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": {"integration_key": new_key}}
+    )
+    return {"integration_key": new_key}
+
 @api_router.post("/chat", response_model=ChatResponse)
 async def chat(msg: ChatMessage):
     session_id = msg.session_id
