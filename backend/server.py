@@ -431,6 +431,109 @@ async def stripe_webhook(request: Request):
         logging.error(f"Erreur webhook: {e}")
         raise HTTPException(status_code=400, detail="Webhook error")
 
+@api_router.get("/chatbot/questions")
+async def get_custom_questions(current_user: User = Depends(get_current_user)):
+    if current_user.subscription_plan != "ultra":
+        raise HTTPException(status_code=403, detail="Fonctionnalité réservée au plan Ultra-Premium")
+    
+    custom_questions = await db.custom_questions.find_one({"user_id": current_user.id}, {"_id": 0})
+    
+    if not custom_questions:
+        default_questions = [
+            {"key": "first_name", "question": "Bonjour ! Je suis l'assistant virtuel d'Astoria Mandat IA. Pour mieux vous accompagner, puis-je connaître votre prénom ?", "order": 0},
+            {"key": "last_name", "question": "Merci {first_name} ! Et votre nom de famille ?", "order": 1},
+            {"key": "project_type", "question": "Parfait ! Quel est votre projet immobilier ? (Achat, Vente, Terrain, Information)", "order": 2},
+            {"key": "property_type", "question": "Quel type de bien vous intéresse ? (Appartement, Maison, Terrain, Commercial, etc.)", "order": 3},
+            {"key": "city", "question": "Dans quelle ville ou secteur recherchez-vous ?", "order": 4},
+            {"key": "budget", "question": "Quel est votre budget approximatif ?", "order": 5},
+            {"key": "deadline", "question": "Dans quel délai souhaitez-vous concrétiser ce projet ?", "order": 6},
+            {"key": "email", "question": "Pour vous envoyer des propositions personnalisées, quelle est votre adresse email ?", "order": 7},
+            {"key": "phone", "question": "Et votre numéro de téléphone pour être contacté rapidement ?", "order": 8},
+            {"key": "message", "question": "Avez-vous des précisions ou des souhaits particuliers à nous communiquer ?", "order": 9}
+        ]
+        return {"questions": default_questions}
+    
+    return {"questions": custom_questions.get("questions", [])}
+
+@api_router.put("/chatbot/questions")
+async def update_custom_questions(
+    data: CustomQuestionsUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    if current_user.subscription_plan != "ultra":
+        raise HTTPException(status_code=403, detail="Fonctionnalité réservée au plan Ultra-Premium")
+    
+    questions_data = {
+        "user_id": current_user.id,
+        "questions": [q.model_dump() for q in data.questions],
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.custom_questions.update_one(
+        {"user_id": current_user.id},
+        {"$set": questions_data},
+        upsert=True
+    )
+    
+    return {"success": True, "questions": questions_data["questions"]}
+
+@api_router.get("/analytics")
+async def get_analytics(current_user: User = Depends(get_current_user)):
+    leads = await db.leads.find({"user_id": current_user.id}, {"_id": 0}).to_list(10000)
+    conversations = await db.conversations.find({"user_id": current_user.id}, {"_id": 0}).to_list(10000)
+    
+    total_conversations = len(conversations)
+    total_leads = len(leads)
+    completion_rate = (total_leads / total_conversations * 100) if total_conversations > 0 else 0
+    
+    hot_leads = len([l for l in leads if "Chaud" in l.get("score", "")])
+    warm_leads = len([l for l in leads if "Tiède" in l.get("score", "")])
+    cold_leads = len([l for l in leads if "Froid" in l.get("score", "")])
+    
+    project_types = {}
+    for lead in leads:
+        project_type = lead.get("project_type", "Non défini")
+        project_types[project_type] = project_types.get(project_type, 0) + 1
+    
+    hourly_distribution = [0] * 24
+    for conv in conversations:
+        created_at = conv.get("created_at")
+        if created_at:
+            try:
+                dt = datetime.fromisoformat(created_at)
+                hourly_distribution[dt.hour] += 1
+            except:
+                pass
+    
+    daily_leads = {}
+    for lead in leads:
+        created_at = lead.get("created_at")
+        if created_at:
+            try:
+                if isinstance(created_at, str):
+                    dt = datetime.fromisoformat(created_at)
+                else:
+                    dt = created_at
+                date_str = dt.strftime("%Y-%m-%d")
+                daily_leads[date_str] = daily_leads.get(date_str, 0) + 1
+            except:
+                pass
+    
+    sorted_daily = sorted(daily_leads.items())[-30:]
+    
+    return {
+        "total_conversations": total_conversations,
+        "total_leads": total_leads,
+        "completion_rate": round(completion_rate, 1),
+        "hot_leads": hot_leads,
+        "warm_leads": warm_leads,
+        "cold_leads": cold_leads,
+        "project_types": project_types,
+        "hourly_distribution": hourly_distribution,
+        "daily_leads": dict(sorted_daily),
+        "average_response_time": "< 1 seconde"
+    }
+
 app.include_router(api_router)
 
 app.add_middleware(
