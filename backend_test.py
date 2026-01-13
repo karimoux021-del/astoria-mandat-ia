@@ -337,7 +337,7 @@ def main():
     # Test sequence
     tests = [
         ("User Registration", tester.test_register),
-        ("User Profile", tester.test_user_profile),
+        ("User Profile", tester.test_get_user_profile),
         ("Chat Conversation", tester.test_chat_conversation),
         ("Get Leads", tester.test_get_leads),
         ("Subscription Checkout", tester.test_subscription_checkout),
