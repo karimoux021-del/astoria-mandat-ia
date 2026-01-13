@@ -85,6 +85,14 @@ class OnboardingUpdate(BaseModel):
     step: int
     completed: bool = False
 
+class CustomQuestion(BaseModel):
+    key: str
+    question: str
+    order: int
+
+class CustomQuestionsUpdate(BaseModel):
+    questions: List[CustomQuestion]
+
 class SubscriptionRequest(BaseModel):
     plan: str
     origin_url: str
