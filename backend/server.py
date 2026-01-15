@@ -96,6 +96,7 @@ class CustomQuestionsUpdate(BaseModel):
 class SubscriptionRequest(BaseModel):
     plan: str
     origin_url: str
+    promo_code: Optional[str] = None
 
 class PaymentTransaction(BaseModel):
     model_config = ConfigDict(extra="ignore")
