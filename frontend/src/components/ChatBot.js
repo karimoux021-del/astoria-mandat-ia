@@ -80,7 +80,7 @@ const ChatBot = ({ isDemo = false }) => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-16 h-16 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-slate-800 transition-all hover:scale-110 z-50"
+          className="fixed bottom-28 right-6 w-16 h-16 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-slate-800 transition-all hover:scale-110 z-50 ring-4 ring-[#D4AF37] ring-opacity-50"
           data-testid="chatbot-open-button"
         >
           <MessageCircle size={28} />
@@ -88,7 +88,7 @@ const ChatBot = ({ isDemo = false }) => {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden z-50" data-testid="chatbot-container">
+        <div className="fixed bottom-28 right-6 w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden z-50" data-testid="chatbot-container">
           <div className="bg-slate-900 text-white p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center">
