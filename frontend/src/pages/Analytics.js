@@ -227,7 +227,7 @@ const Analytics = () => {
             </div>
           </div>
         </div>
-      </div>
+      </DashboardLayout>
     </PlanGate>
   );
 };
