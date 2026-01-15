@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard';
 import Integration from './pages/Integration';
 import Analytics from './pages/Analytics';
 import Customize from './pages/Customize';
+import Support from './pages/Support';
+import Admin from './pages/Admin';
 import { Toaster } from './components/ui/sonner';
 import './App.css';
 
@@ -22,6 +24,8 @@ function App() {
           <Route path="/integration" element={<Integration />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/customize" element={<Customize />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
