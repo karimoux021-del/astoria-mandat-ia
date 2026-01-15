@@ -105,16 +105,24 @@ const Dashboard = () => {
       const originUrl = window.location.origin;
       
       const response = await axios.post(`${API}/subscriptions/create-checkout`, 
-        { plan, origin_url: originUrl },
+        { plan, origin_url: originUrl, promo_code: promoCode || null },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (response.data.url) {
+      // Si activation gratuite avec code promo
+      if (response.data.free_activation) {
+        toast.success(response.data.message);
+        await fetchUserData();
+        setSelectedPlan(null);
+        setPromoCode('');
+        setShowPromoInput(false);
+      } else if (response.data.url) {
         window.location.href = response.data.url;
       }
     } catch (error) {
       console.error('Erreur souscription:', error);
-      toast.error('Erreur lors de la création de l\'abonnement');
+      const errorMessage = error.response?.data?.detail || 'Erreur lors de la création de l\'abonnement';
+      toast.error(errorMessage);
     }
   };
 
