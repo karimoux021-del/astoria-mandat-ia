@@ -158,11 +158,18 @@ async def get_current_user(authorization: str = Header(None)):
         user_doc = await db.users.find_one({"id": user_id}, {"_id": 0})
         if not user_doc:
             raise HTTPException(status_code=401, detail="Utilisateur introuvable")
+        if user_doc.get("is_banned", False):
+            raise HTTPException(status_code=403, detail="Compte banni")
         return User(**user_doc)
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expiré")
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Token invalide")
+
+async def get_admin_user(current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Accès admin requis")
+    return current_user
 
 def generate_integration_key():
     return f"astoria_{uuid.uuid4().hex[:24]}"
