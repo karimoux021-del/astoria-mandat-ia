@@ -257,7 +257,7 @@ add_action('wp_footer', function() {
               <ExternalLink size={14} />
             </a>
             <Link
-              to="/support"
+              to="/dashboard/support"
               className="flex items-center space-x-2 bg-[#D4AF37] text-white px-6 py-3 rounded-full font-medium hover:bg-[#B4941F] transition-all"
             >
               <span>Contacter le support</span>
@@ -265,7 +265,7 @@ add_action('wp_footer', function() {
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
