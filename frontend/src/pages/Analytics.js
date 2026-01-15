@@ -47,9 +47,11 @@ const Analytics = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-slate-900" size={48} />
-      </div>
+      <DashboardLayout user={user}>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="animate-spin text-slate-900" size={48} />
+        </div>
+      </DashboardLayout>
     );
   }
 
@@ -78,26 +80,8 @@ const Analytics = () => {
 
   return (
     <PlanGate user={user} requiredPlan="premium">
-      <div className="min-h-screen bg-slate-50">
-        {/* Header */}
-        <header className="bg-white border-b border-slate-200">
-          <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center">
-                <span className="text-[#D4AF37] font-bold text-xl">A</span>
-              </div>
-              <h1 className="text-xl font-semibold text-slate-900">Analytics Avancées</h1>
-            </div>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="text-slate-600 hover:text-slate-900 font-medium"
-            >
-              ← Retour au dashboard
-            </button>
-          </div>
-        </header>
-
-        <div className="container mx-auto px-6 py-8">
+      <DashboardLayout user={user}>
+        <div className="max-w-7xl mx-auto">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div className="bg-white rounded-xl p-6 border border-slate-200">
