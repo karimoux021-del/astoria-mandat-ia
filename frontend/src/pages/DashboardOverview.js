@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Loader2, Users, TrendingUp, Clock, Crown, DollarSign, AlertCircle } from 'lucide-react';
+import { Loader2, Users, TrendingUp, Clock, Crown, DollarSign, AlertCircle, Code, MessageSquare, BarChart3 } from 'lucide-react';
 import axios from 'axios';
 import DashboardLayout from '../components/DashboardLayout';
 import OnboardingWizard from '../components/OnboardingWizard';
