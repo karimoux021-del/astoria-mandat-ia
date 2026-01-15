@@ -328,6 +328,36 @@ const Dashboard = () => {
         {selectedPlan && user?.subscription_status !== 'active' && (
           <div className="bg-white rounded-2xl p-6 mb-8 border border-slate-200" data-testid="dashboard-plan-selector">
             <h3 className="text-xl font-bold text-slate-900 mb-4">Choisissez votre plan</h3>
+            
+            {/* Code Promo */}
+            <div className="mb-6 bg-slate-50 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="font-medium text-slate-900">Code promo</label>
+                <button
+                  onClick={() => setShowPromoInput(!showPromoInput)}
+                  className="text-sm text-[#D4AF37] hover:text-[#B4941F] font-medium"
+                >
+                  {showPromoInput ? 'Masquer' : 'J\'ai un code'}
+                </button>
+              </div>
+              {showPromoInput && (
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                    placeholder="Entrez votre code (ex: TEST2025)"
+                    className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] uppercase"
+                  />
+                </div>
+              )}
+              {promoCode && (
+                <p className="text-sm text-green-600 mt-2">
+                  ✓ Code "{promoCode}" sera appliqué
+                </p>
+              )}
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { id: 'standard', name: 'Standard', price: '199€/mois' },
@@ -348,6 +378,12 @@ const Dashboard = () => {
                   <div className="text-2xl font-bold text-[#D4AF37] mt-2">{plan.price}</div>
                 </button>
               ))}
+            </div>
+            
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                💡 <strong>Code test :</strong> Utilisez <code className="bg-blue-100 px-2 py-1 rounded font-mono">TEST2025</code> pour activer gratuitement
+              </p>
             </div>
           </div>
         )}
