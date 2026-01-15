@@ -262,12 +262,13 @@ add_action('wp_footer', function() {
           <p className="text-slate-600 mb-6">Consultez notre guide complet ou contactez le support</p>
           <div className="flex items-center justify-center space-x-4">
             <a
-              href="/INTEGRATION_GUIDE.md"
+              href="https://docs.astoria-mandat-ia.fr"
               target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center space-x-2 bg-white text-slate-900 px-6 py-3 rounded-full font-medium hover:bg-slate-50 transition-all border border-slate-200"
             >
               <FileText size={18} />
-              <span>Guide complet</span>
+              <span>Documentation</span>
               <ExternalLink size={14} />
             </a>
             <a
