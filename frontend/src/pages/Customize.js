@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Plus, Trash2, GripVertical, Save, RotateCcw } from 'lucide-react';
+import { Loader2, Plus, Trash2, GripVertical, Save, RotateCcw, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import DashboardLayout from '../components/DashboardLayout';
 import PlanGate from '../components/PlanGate';
 
-import DashboardLayout from '../components/DashboardLayout';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const Customize = () => {
@@ -28,20 +28,20 @@ const Customize = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
-      
-      const [userRes, questionsRes] = await Promise.all([
-        axios.get(`${API}/auth/me`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/chatbot/questions`, { headers: { Authorization: `Bearer ${token}` } })
-      ]);
-
+      const userRes = await axios.get(`${API}/auth/me`, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
       setUser(userRes.data);
-      setQuestions(questionsRes.data.questions.sort((a, b) => a.order - b.order));
+
+      if (userRes.data.subscription_plan === 'ultra') {
+        const questionsRes = await axios.get(`${API}/chatbot/questions`, { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
+        setQuestions(questionsRes.data.questions.sort((a, b) => a.order - b.order));
+      }
     } catch (error) {
       console.error('Erreur:', error);
-      if (error.response?.status === 403) {
-        toast.error('Plan Ultra-Premium requis');
-        navigate('/dashboard');
-      } else if (error.response?.status === 401) {
+      if (error.response?.status === 401) {
         localStorage.removeItem('token');
         navigate('/login');
       }
@@ -98,7 +98,6 @@ const Customize = () => {
   };
 
   const handleSave = async () => {
-    // Validation
     const emptyQuestions = questions.filter(q => !q.question.trim());
     if (emptyQuestions.length > 0) {
       toast.error('Toutes les questions doivent être remplies');
@@ -141,19 +140,29 @@ const Customize = () => {
   }
 
   return (
-    <PlanGate user={user} requiredPlan="ultra">
-      <DashboardLayout user={user}>
-        <div className="max-w-4xl mx-auto">
+    <DashboardLayout user={user}>
+      <PlanGate user={user} requiredPlan="ultra">
+        <div className="max-w-4xl mx-auto" data-testid="customize-page">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-slate-900">Personnaliser le chatbot</h1>
+            <p className="text-slate-600 mt-1">Adaptez les questions du chatbot à votre activité</p>
+          </div>
+
           {/* Info Banner */}
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
-            <h3 className="font-semibold text-blue-900 mb-2">💡 Conseils pour personnaliser vos questions</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Utilisez un langage naturel et conversationnel</li>
-              <li>• Posez une seule question à la fois</li>
-              <li>• Utilisez {'{'}first_name{'}'} pour personnaliser avec le prénom du prospect</li>
-              <li>• Les questions essentielles (nom, email, téléphone) doivent être conservées</li>
-              <li>• Glissez-déposez pour réorganiser l'ordre des questions</li>
-            </ul>
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+            <div className="flex items-start space-x-3">
+              <Info className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-2">Conseils de personnalisation</h3>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li>• Utilisez un langage naturel et conversationnel</li>
+                  <li>• Posez une seule question à la fois</li>
+                  <li>• Utilisez <code className="bg-blue-100 px-1 rounded">{'{first_name}'}</code> pour personnaliser avec le prénom</li>
+                  <li>• Glissez-déposez pour réorganiser l'ordre des questions</li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           {/* Questions List */}
@@ -170,10 +179,11 @@ const Customize = () => {
                     ? 'border-[#D4AF37] shadow-lg opacity-50'
                     : 'border-slate-200 hover:border-slate-300'
                 }`}
+                data-testid={`question-${index}`}
               >
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 cursor-move mt-2">
-                    <GripVertical className="text-slate-400" size={20} />
+                    <GripVertical className="text-slate-400 hover:text-slate-600" size={20} />
                   </div>
                   
                   <div className="flex-1 space-y-4">
@@ -184,9 +194,10 @@ const Customize = () => {
                       <textarea
                         value={question.question}
                         onChange={(e) => handleQuestionChange(index, 'question', e.target.value)}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent resize-none"
+                        className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent resize-none"
                         rows={3}
                         placeholder="Entrez votre question ici..."
+                        data-testid={`question-input-${index}`}
                       />
                     </div>
                     
@@ -198,6 +209,7 @@ const Customize = () => {
                         <button
                           onClick={() => handleDeleteQuestion(index)}
                           className="text-red-600 hover:text-red-700 flex items-center space-x-1 text-sm"
+                          data-testid={`delete-question-${index}`}
                         >
                           <Trash2 size={16} />
                           <span>Supprimer</span>
@@ -214,6 +226,7 @@ const Customize = () => {
           <button
             onClick={handleAddQuestion}
             className="w-full bg-slate-100 text-slate-700 py-4 rounded-xl border-2 border-dashed border-slate-300 hover:bg-slate-200 hover:border-slate-400 transition-all flex items-center justify-center space-x-2 font-medium"
+            data-testid="add-question-btn"
           >
             <Plus size={20} />
             <span>Ajouter une question</span>
@@ -224,6 +237,7 @@ const Customize = () => {
             <button
               onClick={handleReset}
               className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 transition-colors"
+              data-testid="reset-questions-btn"
             >
               <RotateCcw size={18} />
               <span>Réinitialiser</span>
@@ -233,6 +247,7 @@ const Customize = () => {
               onClick={handleSave}
               disabled={isSaving}
               className="bg-[#D4AF37] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#B4941F] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              data-testid="save-questions-btn"
             >
               {isSaving ? (
                 <>
@@ -242,21 +257,21 @@ const Customize = () => {
               ) : (
                 <>
                   <Save size={18} />
-                  <span>Sauvegarder les modifications</span>
+                  <span>Sauvegarder</span>
                 </>
               )}
             </button>
           </div>
 
           {/* Warning */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mt-6">
-            <p className="text-sm text-yellow-800">
-              ⚠️ Les modifications seront appliquées immédiatement à votre chatbot. Assurez-vous de tester le parcours complet avant de déployer en production.
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-6">
+            <p className="text-sm text-amber-800">
+              ⚠️ Les modifications seront appliquées immédiatement à votre chatbot. Testez le parcours complet avant de déployer en production.
             </p>
           </div>
         </div>
-      </div>
-    </PlanGate>
+      </PlanGate>
+    </DashboardLayout>
   );
 };
 
