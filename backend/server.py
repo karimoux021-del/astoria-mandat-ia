@@ -316,11 +316,64 @@ async def create_subscription_checkout(
         "ultra": {"amount": 499.0, "name": "Ultra-Premium"}
     }
     
+    PROMO_CODES = {
+        "TEST2025": {"discount": 100, "description": "Code test - Gratuit"},
+        "LAUNCH50": {"discount": 50, "description": "Lancement -50%"}
+    }
+    
     if request.plan not in PLANS:
         raise HTTPException(status_code=400, detail="Plan invalide")
     
     plan_info = PLANS[request.plan]
     amount = plan_info["amount"]
+    discount_applied = 0
+    promo_description = None
+    
+    # Vérifier le code promo
+    if request.promo_code:
+        promo_code_upper = request.promo_code.upper()
+        if promo_code_upper in PROMO_CODES:
+            promo = PROMO_CODES[promo_code_upper]
+            discount_applied = promo["discount"]
+            promo_description = promo["description"]
+            amount = amount * (1 - discount_applied / 100)
+        else:
+            raise HTTPException(status_code=400, detail="Code promo invalide")
+    
+    # Si montant = 0 (code TEST2025), activer directement l'abonnement
+    if amount == 0:
+        await db.users.update_one(
+            {"id": current_user.id},
+            {"$set": {"subscription_status": "active", "subscription_plan": request.plan}}
+        )
+        
+        # Créer une transaction gratuite
+        transaction = PaymentTransaction(
+            user_id=current_user.id,
+            session_id=f"free_{uuid.uuid4().hex[:16]}",
+            amount=0,
+            currency="eur",
+            plan=request.plan,
+            payment_status="paid",
+            status="complete",
+            metadata={
+                "user_id": current_user.id,
+                "plan": request.plan,
+                "agency_name": current_user.agency_name,
+                "promo_code": request.promo_code,
+                "discount": discount_applied
+            }
+        )
+        transaction_dict = transaction.model_dump()
+        transaction_dict['created_at'] = transaction_dict['created_at'].isoformat()
+        await db.payment_transactions.insert_one(transaction_dict)
+        
+        return {
+            "url": None,
+            "session_id": transaction.session_id,
+            "free_activation": True,
+            "message": f"Abonnement {plan_info['name']} activé gratuitement avec le code {request.promo_code}"
+        }
     
     success_url = f"{request.origin_url}/dashboard?session_id={{{{CHECKOUT_SESSION_ID}}}}"
     cancel_url = f"{request.origin_url}/dashboard"
@@ -337,7 +390,9 @@ async def create_subscription_checkout(
         metadata={
             "user_id": current_user.id,
             "plan": request.plan,
-            "agency_name": current_user.agency_name
+            "agency_name": current_user.agency_name,
+            "promo_code": request.promo_code or "",
+            "discount": discount_applied
         }
     )
     
