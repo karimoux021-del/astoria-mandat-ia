@@ -84,52 +84,36 @@ add_action('wp_footer', function() {
 });`;
 
   if (!user) {
-    return <div className="min-h-screen flex items-center justify-center">Chargement...</div>;
+    return (
+      <DashboardLayout user={user}>
+        <div className="flex items-center justify-center h-64">Chargement...</div>
+      </DashboardLayout>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center">
-              <span className="text-[#D4AF37] font-bold text-xl">A</span>
-            </div>
-            <h1 className="text-xl font-semibold text-slate-900">Intégration du Chatbot</h1>
+    <DashboardLayout user={user}>
+    <div className="max-w-5xl mx-auto">
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-8 mb-8">
+        <h2 className="text-3xl font-bold mb-4">Guide d'intégration rapide</h2>
+        <p className="text-slate-200 text-lg mb-4">
+          Intégrez le chatbot Astoria Mandat IA sur votre site en moins de 5 minutes
+        </p>
+        <div className="flex items-center space-x-6 text-sm">
+          <div className="flex items-center space-x-2">
+            <CheckCircle2 className="text-green-400" size={20} />
+            <span>Installation facile</span>
           </div>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="text-slate-600 hover:text-slate-900 font-medium"
-            data-testid="back-to-dashboard"
-          >
-            ← Retour au dashboard
-          </button>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-6 py-12 max-w-5xl">
-        {/* Introduction */}
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-8 mb-8">
-          <h2 className="text-3xl font-bold mb-4">Guide d'intégration rapide</h2>
-          <p className="text-slate-200 text-lg mb-4">
-            Intégrez le chatbot Astoria Mandat IA sur votre site en moins de 5 minutes
-          </p>
-          <div className="flex items-center space-x-6 text-sm">
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="text-green-400" size={20} />
-              <span>Installation facile</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="text-green-400" size={20} />
-              <span>Compatible tous sites</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <CheckCircle2 className="text-green-400" size={20} />
-              <span>Disponible 24/7</span>
-            </div>
+          <div className="flex items-center space-x-2">
+            <CheckCircle2 className="text-green-400" size={20} />
+            <span>Compatible tous sites</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <CheckCircle2 className="text-green-400" size={20} />
+            <span>Disponible 24/7</span>
           </div>
         </div>
+      </div>
 
         {/* Étape 1 : Clé d'intégration */}
         <div className="bg-white rounded-2xl border border-slate-200 p-8 mb-6" data-testid="integration-key-section">
