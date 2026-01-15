@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Copy, Check, RefreshCw, ExternalLink, FileText, Code, Globe, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import DashboardLayout from '../components/DashboardLayout';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
