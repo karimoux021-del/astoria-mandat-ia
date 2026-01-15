@@ -5,7 +5,7 @@ from datetime import datetime
 import uuid
 
 class AstoriaAPITester:
-    def __init__(self, base_url="https://leadgen-immo.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://agency-ai-2.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.user_id = None
@@ -308,7 +308,7 @@ class AstoriaAPITester:
             200,
             data={
                 "plan": "premium",
-                "origin_url": "https://leadgen-immo.preview.emergentagent.com"
+                "origin_url": "https://agency-ai-2.preview.emergentagent.com"
             }
         )
         if success and 'url' in response:
