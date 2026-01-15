@@ -51,6 +51,8 @@ class User(BaseModel):
     integration_key: Optional[str] = None
     onboarding_completed: bool = False
     onboarding_step: int = 0
+    role: str = "user"
+    is_banned: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class Lead(BaseModel):
