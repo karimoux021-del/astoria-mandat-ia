@@ -4,6 +4,7 @@ import { Loader2, TrendingUp, Users, Clock, Target, BarChart3, Calendar } from '
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 import PlanGate from '../components/PlanGate';
+import DashboardLayout from '../components/DashboardLayout';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
