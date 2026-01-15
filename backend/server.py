@@ -489,6 +489,124 @@ async def get_checkout_status(session_id: str, current_user: User = Depends(get_
         logging.error(f"Erreur lors de la vérification du statut: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la vérification du paiement")
 
+# ===== SUPPORT ROUTES =====
+@api_router.post("/support/ticket")
+async def create_support_ticket(
+    ticket_data: SupportTicketCreate,
+    current_user: User = Depends(get_current_user)
+):
+    ticket = SupportTicket(
+        user_id=current_user.id,
+        user_email=current_user.email,
+        agency_name=current_user.agency_name,
+        subject=ticket_data.subject,
+        message=ticket_data.message
+    )
+    ticket_dict = ticket.model_dump()
+    ticket_dict['created_at'] = ticket_dict['created_at'].isoformat()
+    ticket_dict['updated_at'] = ticket_dict['updated_at'].isoformat()
+    await db.support_tickets.insert_one(ticket_dict)
+    return {"success": True, "ticket_id": ticket.id, "message": "Ticket créé avec succès"}
+
+@api_router.get("/support/tickets")
+async def get_my_tickets(current_user: User = Depends(get_current_user)):
+    tickets = await db.support_tickets.find({"user_id": current_user.id}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return tickets
+
+# ===== ADMIN ROUTES =====
+@api_router.get("/admin/stats")
+async def get_admin_stats(admin: User = Depends(get_admin_user)):
+    users = await db.users.find({}, {"_id": 0}).to_list(10000)
+    leads = await db.leads.find({}, {"_id": 0}).to_list(10000)
+    transactions = await db.payment_transactions.find({}, {"_id": 0}).to_list(10000)
+    tickets = await db.support_tickets.find({}, {"_id": 0}).to_list(10000)
+    
+    total_users = len(users)
+    active_subscriptions = len([u for u in users if u.get("subscription_status") == "active"])
+    total_revenue = sum(t.get("amount", 0) for t in transactions if t.get("payment_status") == "paid")
+    total_leads = len(leads)
+    open_tickets = len([t for t in tickets if t.get("status") == "open"])
+    
+    plan_distribution = {}
+    for user in users:
+        plan = user.get("subscription_plan") or "none"
+        plan_distribution[plan] = plan_distribution.get(plan, 0) + 1
+    
+    return {
+        "total_users": total_users,
+        "active_subscriptions": active_subscriptions,
+        "total_revenue": round(total_revenue, 2),
+        "total_leads": total_leads,
+        "open_tickets": open_tickets,
+        "plan_distribution": plan_distribution,
+        "mrr": round(sum(
+            199 if u.get("subscription_plan") == "standard" else
+            349 if u.get("subscription_plan") == "premium" else
+            499 if u.get("subscription_plan") == "ultra" else 0
+            for u in users if u.get("subscription_status") == "active"
+        ), 2)
+    }
+
+@api_router.get("/admin/users")
+async def get_all_users(admin: User = Depends(get_admin_user)):
+    users = await db.users.find({}, {"_id": 0, "password": 0}).sort("created_at", -1).to_list(10000)
+    for user in users:
+        if isinstance(user.get('created_at'), str):
+            user['created_at'] = datetime.fromisoformat(user['created_at'])
+    return users
+
+@api_router.put("/admin/users/{user_id}")
+async def update_user(
+    user_id: str,
+    updates: AdminUserUpdate,
+    admin: User = Depends(get_admin_user)
+):
+    update_data = {}
+    if updates.subscription_status is not None:
+        update_data["subscription_status"] = updates.subscription_status
+    if updates.subscription_plan is not None:
+        update_data["subscription_plan"] = updates.subscription_plan
+    if updates.is_banned is not None:
+        update_data["is_banned"] = updates.is_banned
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Aucune modification fournie")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+    
+    return {"success": True, "message": "Utilisateur modifié"}
+
+@api_router.get("/admin/tickets")
+async def get_all_tickets(admin: User = Depends(get_admin_user)):
+    tickets = await db.support_tickets.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return tickets
+
+@api_router.put("/admin/tickets/{ticket_id}")
+async def respond_to_ticket(
+    ticket_id: str,
+    response_data: SupportTicketResponse,
+    admin: User = Depends(get_admin_user)
+):
+    result = await db.support_tickets.update_one(
+        {"id": ticket_id},
+        {"$set": {
+            "admin_response": response_data.response,
+            "status": response_data.status,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Ticket introuvable")
+    
+    return {"success": True, "message": "Réponse envoyée"}
+
 @api_router.post("/webhook/stripe")
 async def stripe_webhook(request: Request):
     body = await request.body()
