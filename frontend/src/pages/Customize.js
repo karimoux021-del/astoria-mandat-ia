@@ -132,39 +132,18 @@ const Customize = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-slate-900" size={48} />
-      </div>
+      <DashboardLayout user={user}>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="animate-spin text-slate-900" size={48} />
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
     <PlanGate user={user} requiredPlan="ultra">
-      <div className="min-h-screen bg-slate-50">
-        {/* Header */}
-        <header className="bg-white border-b border-slate-200">
-          <div className="container mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-700 rounded-lg flex items-center justify-center">
-                  <span className="text-[#D4AF37] font-bold text-xl">A</span>
-                </div>
-                <div>
-                  <h1 className="text-xl font-semibold text-slate-900">Personnaliser le chatbot</h1>
-                  <p className="text-sm text-slate-600">Modifiez les questions posées par votre assistant IA</p>
-                </div>
-              </div>
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="text-slate-600 hover:text-slate-900 font-medium"
-              >
-                ← Retour au dashboard
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <div className="container mx-auto px-6 py-8 max-w-4xl">
+      <DashboardLayout user={user}>
+        <div className="max-w-4xl mx-auto">
           {/* Info Banner */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
             <h3 className="font-semibold text-blue-900 mb-2">💡 Conseils pour personnaliser vos questions</h3>
