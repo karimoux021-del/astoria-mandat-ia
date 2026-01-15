@@ -290,6 +290,20 @@ const Dashboard = () => {
                   <p className="text-sm text-slate-600">CSV</p>
                 </div>
               </button>
+              
+              <Link
+                to="/support"
+                className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group"
+                data-testid="quick-action-support"
+              >
+                <div className="w-12 h-12 bg-slate-100 group-hover:bg-[#D4AF37] rounded-lg flex items-center justify-center transition-colors">
+                  <MessageSquare className="text-slate-600 group-hover:text-white transition-colors" size={24} />
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900">Support</p>
+                  <p className="text-sm text-slate-600">Aide</p>
+                </div>
+              </Link>
               <a
                 href="mailto:support@astoria-mandat-ia.fr"
                 className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl hover:border-[#D4AF37] hover:bg-slate-50 transition-all group"
