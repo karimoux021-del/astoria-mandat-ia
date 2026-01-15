@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import DashboardLayout from '../components/DashboardLayout';
 
 const Support = () => {
   const navigate = useNavigate();
