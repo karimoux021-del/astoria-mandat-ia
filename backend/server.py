@@ -95,6 +95,33 @@ class CustomQuestion(BaseModel):
 class CustomQuestionsUpdate(BaseModel):
     questions: List[CustomQuestion]
 
+class SupportTicket(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    user_email: str
+    agency_name: str
+    subject: str
+    message: str
+    status: str = "open"
+    priority: str = "normal"
+    admin_response: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SupportTicketCreate(BaseModel):
+    subject: str
+    message: str
+
+class SupportTicketResponse(BaseModel):
+    response: str
+    status: str = "closed"
+
+class AdminUserUpdate(BaseModel):
+    subscription_status: Optional[str] = None
+    subscription_plan: Optional[str] = None
+    is_banned: Optional[bool] = None
+
 class SubscriptionRequest(BaseModel):
     plan: str
     origin_url: str
