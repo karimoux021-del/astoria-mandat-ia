@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+import DashboardOverview from './pages/DashboardOverview';
+import DashboardLeads from './pages/DashboardLeads';
 import Integration from './pages/Integration';
 import Analytics from './pages/Analytics';
 import Customize from './pages/Customize';
@@ -20,12 +21,13 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/integration" element={<Integration />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/customize" element={<Customize />} />
-          <Route path="/support" element={<Support />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/dashboard" element={<DashboardOverview />} />
+          <Route path="/dashboard/leads" element={<DashboardLeads />} />
+          <Route path="/dashboard/integration" element={<Integration />} />
+          <Route path="/dashboard/analytics" element={<Analytics />} />
+          <Route path="/dashboard/customize" element={<Customize />} />
+          <Route path="/dashboard/support" element={<Support />} />
+          <Route path="/dashboard/admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
