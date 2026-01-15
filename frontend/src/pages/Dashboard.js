@@ -15,6 +15,8 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingPayment, setIsCheckingPayment] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [promoCode, setPromoCode] = useState('');
+  const [showPromoInput, setShowPromoInput] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
