@@ -1,6 +1,6 @@
 {
   "produit": "t900",
-  "nom": "Montre connectée 49 mm écran 1,99\"",
+  "nom": "Montre connectée 49 mm",
   "couleur": "#ff6a00",
   "slogan": "Ton temps. Ton style.",
   "photos": {
@@ -10,31 +10,31 @@
     "colis": "visuels/sources/t900/colis.jpg"
   },
   "accroche_kicker": "Montre connectée 49 mm",
-  "accroche": "Le look d'une grosse montre <em>au prix d'un menu</em>",
+  "accroche": "Le look XXL <em>au prix d'un menu</em>",
   "atouts": [
-    { "titre": "Grand écran HD", "texte": "1,99\" bien lisible, même en plein soleil" },
-    { "titre": "Tes cadrans", "texte": "Des dizaines de styles, et même ta photo" },
+    { "titre": "Grand écran HD", "texte": "Format 49 mm, l'heure d'un coup d'œil" },
+    { "titre": "Tes cadrans", "texte": "Plein de cadrans au choix, et même ta photo" },
     { "titre": "Notifications", "texte": "Appels et messages directement au poignet" },
     { "titre": "Sport & santé", "texte": "Pas, cardio, sommeil et modes sport" }
   ],
   "fonctions": [
     { "icone": "coeur", "titre": "Cardio" },
-    { "icone": "pas", "titre": "Pas & calories" },
+    { "icone": "pas", "titre": "Pas" },
     { "icone": "sommeil", "titre": "Sommeil" },
-    { "icone": "notif", "titre": "Notifications" },
+    { "icone": "notif", "titre": "Appels & messages" },
     { "icone": "sport", "titre": "Modes sport" },
     { "icone": "jeu", "titre": "Jeux intégrés" }
   ],
   "dimensions": { "largeur": "49 mm" },
   "caracteristiques": [
     { "nom": "Boîtier", "valeur": "49 mm" },
-    { "nom": "Écran", "valeur": "1,99\" HD" },
+    { "nom": "Écran", "valeur": "HD" },
     { "nom": "Connexion", "valeur": "Bluetooth" },
     { "nom": "Bracelet", "valeur": "Orange ou noir" }
   ],
-  "notifications": ["Appel entrant", "Nouveau message", "Objectif de pas atteint"],
+  "notifications": ["Appel entrant", "Nouveau message"],
   "compat_badges": ["iOS", "Android"],
-  "contenu_colis": ["La montre connectée", "Son bracelet", "Câble de charge"],
+  "contenu_colis": ["La montre connectée", "Son bracelet (orange ou noir)"],
   "engagements": ["Expédiée sous 3 jours ouvrés", "Suivi de colis"],
-  "_a_verifier": "Contenu exact du colis et taille d'écran (1,99\" ou 2,09\") : à confirmer sur le produit avant publication."
+  "_a_verifier": "Avant publication : 1) taille d'écran exacte (1,99\" ou 2,09\") et résolution, à lire sur la boîte ou dans les réglages de la montre, puis seulement l'ajouter (Écran, nom) ; 2) contenu exact du colis (câble de charge ? notice FR ?) à confirmer à l'ouverture ; 3) titres par défaut du modèle : image 5 « Compatible iPhone & Android » contient une marque (iPhone) et image 6 « Prête à porter dès l'ouverture » suppose une montre chargée : à remplacer côté gabarit par « Compatible iOS & Android » / « Tout est dans la boîte » ; 4) aucune étanchéité, autonomie, appel Bluetooth (micro/haut-parleur) ni calories affichées tant que non testées ; 5) photo au poignet uniquement si Karim fournit poignet.jpg."
 }
