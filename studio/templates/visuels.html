@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap">
+<style>
+  :root { --accent: #ff6a00; --ink: #15171c; --soft: #5d6370; --paper: #ffffff; --tint: #f4f5f7; --font: "Montserrat", "Helvetica Neue", Arial, sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; font-family: var(--font); color: var(--ink); }
+  .slide { position: relative; overflow: hidden; display: none; }
+  .slide.on { display: block; }
+  .s1080 { width: 1080px; height: 1080px; } .s1440 { width: 1080px; height: 1440px; }
+  .prod { position: absolute; object-fit: contain; filter: drop-shadow(0 30px 40px rgba(0,0,0,.18)); }
+  .brand { position: absolute; left: 56px; bottom: 44px; font-weight: 800; font-size: 22px; letter-spacing: .18em; color: var(--soft); }
+  .brand b { color: var(--accent); }
+  h1 { font-weight: 900; font-size: 64px; line-height: 1.04; letter-spacing: -.01em; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .kicker { font-weight: 800; font-size: 22px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .head { position: absolute; left: 64px; top: 64px; right: 64px; }
+  /* atouts */
+  .callout { position: absolute; width: 330px; background: var(--paper); border-radius: 22px; padding: 22px 24px; box-shadow: 0 10px 30px rgba(20,23,28,.10); }
+  .callout b { display: block; font-weight: 900; font-size: 30px; line-height: 1.1; margin-bottom: 6px; }
+  .callout span { display: block; font-weight: 600; font-size: 21px; line-height: 1.3; color: var(--soft); }
+  .callout i { display: block; width: 46px; height: 6px; border-radius: 3px; background: var(--accent); margin-bottom: 14px; }
+  /* fonctions */
+  .grid { position: absolute; left: 64px; right: 64px; bottom: 120px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .tile { background: var(--paper); border-radius: 24px; padding: 44px 22px; text-align: center; box-shadow: 0 8px 24px rgba(20,23,28,.08); }
+  .tile svg { width: 64px; height: 64px; margin-bottom: 12px; }
+  .tile b { display: block; font-weight: 800; font-size: 25px; line-height: 1.15; }
+  /* dimensions */
+  .dim { position: absolute; border-color: var(--ink); }
+  .dim.h { height: 0; border-top: 3px solid; } .dim.v { width: 0; border-left: 3px solid; }
+  .dim.h::before, .dim.h::after, .dim.v::before, .dim.v::after { content: ""; position: absolute; background: var(--ink); }
+  .dim.h::before, .dim.h::after { width: 3px; height: 26px; top: -14px; } .dim.h::before { left: -2px; } .dim.h::after { right: -2px; }
+  .dim.v::before, .dim.v::after { height: 3px; width: 26px; left: -14px; } .dim.v::before { top: -2px; } .dim.v::after { bottom: -2px; }
+  .dimlabel { position: absolute; font-weight: 900; font-size: 38px; background: var(--tint); padding: 4px 14px; border-radius: 10px; }
+  .specs { position: absolute; left: 64px; right: 64px; bottom: 110px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .spec { flex: 1 1 200px; background: var(--paper); border-radius: 18px; padding: 18px 20px; box-shadow: 0 8px 24px rgba(20,23,28,.08); }
+  .spec small { display: block; font-weight: 700; font-size: 18px; color: var(--soft); text-transform: uppercase; letter-spacing: .08em; }
+  .spec b { display: block; font-weight: 900; font-size: 30px; margin-top: 4px; }
+  /* listes */
+  .list { position: absolute; display: flex; flex-direction: column; gap: 18px; }
+  .item { display: flex; align-items: center; gap: 18px; background: var(--paper); border-radius: 18px; padding: 18px 22px; box-shadow: 0 8px 24px rgba(20,23,28,.08); font-weight: 800; font-size: 28px; line-height: 1.2; }
+  .item .dot { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 26px; font-weight: 900; }
+  .badges { position: absolute; display: flex; gap: 18px; }
+  .badge { background: var(--ink); color: #fff; border-radius: 16px; padding: 16px 24px; font-weight: 900; font-size: 30px; }
+  .bg-tint { position: absolute; inset: 0; background: var(--tint); }
+  .bg-accent { position: absolute; inset: 0; background: radial-gradient(circle at 70% 45%, color-mix(in srgb, var(--accent) 22%, #fff) 0, #fff 62%); }
+  .phone { position: absolute; width: 250px; height: 500px; border-radius: 44px; background: var(--ink); padding: 16px; box-shadow: 0 20px 40px rgba(0,0,0,.18); }
+  .phone .scr { width: 100%; height: 100%; border-radius: 32px; background: linear-gradient(160deg, #2b3140, #11131a); display: flex; flex-direction: column; gap: 12px; padding: 60px 16px 16px; }
+  .phone .notif { background: rgba(255,255,255,.12); border-radius: 14px; padding: 12px; color: #fff; font-weight: 700; font-size: 17px; line-height: 1.25; }
+  .life { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .life-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.65)); }
+  .life-text { position: absolute; left: 64px; right: 64px; bottom: 80px; color: #fff; }
+  .life-text h1 { color: #fff; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const ICONS = {
+  coeur: '<path d="M32 54s-20-12-20-27a11 11 0 0 1 20-6 11 11 0 0 1 20 6c0 15-20 27-20 27z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M14 33h10l4-7 6 14 4-7h12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+  pas: '<path d="M22 12c6 0 8 8 7 16s-4 12-9 12-7-6-6-14 2-14 8-14zM42 26c6 0 8 8 7 14s-4 10-9 10-7-5-6-12 2-12 8-12z" fill="currentColor"/><circle cx="20" cy="50" r="5" fill="currentColor"/><circle cx="40" cy="58" r="4" fill="currentColor"/>',
+  sommeil: '<path d="M40 10a22 22 0 1 0 14 34A18 18 0 0 1 40 10z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M44 16h8l-8 9h8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+  notif: '<path d="M32 10a14 14 0 0 1 14 14v12l5 8H13l5-8V24a14 14 0 0 1 14-14z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="M26 50a6 6 0 0 0 12 0" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+  sport: '<circle cx="38" cy="12" r="6" fill="currentColor"/><path d="M20 30l12-8 8 8 8 2M32 22l-4 16 10 8 2 12M28 38l-10 14" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>',
+  appel: '<path d="M18 10l10 2 4 12-6 4a30 30 0 0 0 14 14l4-6 12 4 2 10c0 4-4 6-8 6C26 56 8 38 8 18c0-4 2-8 6-8z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>',
+  cadran: '<rect x="14" y="10" width="36" height="44" rx="10" fill="none" stroke="currentColor" stroke-width="5"/><path d="M32 22v10l7 5" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+  batterie: '<rect x="8" y="20" width="42" height="24" rx="6" fill="none" stroke="currentColor" stroke-width="5"/><rect x="52" y="27" width="5" height="10" rx="2" fill="currentColor"/><rect x="14" y="26" width="22" height="12" rx="3" fill="currentColor"/>',
+  eau: '<path d="M32 8s16 18 16 30a16 16 0 0 1-32 0C16 26 32 8 32 8z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>',
+  jeu: '<rect x="8" y="20" width="48" height="26" rx="13" fill="none" stroke="currentColor" stroke-width="5"/><path d="M20 28v10M15 33h10" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><circle cx="42" cy="30" r="3.5" fill="currentColor"/><circle cx="48" cy="36" r="3.5" fill="currentColor"/>',
+  bluetooth: '<path d="M22 22l20 20-10 10V12l10 10-20 20" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>',
+  photo: '<rect x="8" y="16" width="48" height="36" rx="8" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="32" cy="34" r="9" fill="none" stroke="currentColor" stroke-width="5"/><path d="M22 16l4-6h12l4 6" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>',
+};
+const icon = (n, color) => `<svg viewBox="0 0 64 64" style="color:${color}">${ICONS[n] || ICONS.cadran}</svg>`;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const load = src => new Promise((ok, ko) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ko; i.src = src; });
+
+// Détourage : retire le fond uni relié aux bords (photos fournisseur sur fond blanc ou gris), puis recadre au plus près.
+async function detourer(src, crop, enabled) {
+  const img = await load(src);
+  const [cx, cy, cw, ch] = crop || [0, 0, img.naturalWidth, img.naturalHeight];
+  const c = document.createElement("canvas"); c.width = cw; c.height = ch;
+  const g = c.getContext("2d"); g.drawImage(img, cx, cy, cw, ch, 0, 0, cw, ch);
+  const d = g.getImageData(0, 0, cw, ch), p = d.data;
+  if (enabled) {
+    const samples = [];
+    for (let i = 0; i < cw; i += Math.max(1, cw >> 5)) samples.push(i, (ch - 1) * cw + i);
+    for (let j = 0; j < ch; j += Math.max(1, ch >> 5)) samples.push(j * cw, j * cw + cw - 1);
+    let r = 0, gg = 0, b = 0; for (const k of samples) { r += p[k * 4]; gg += p[k * 4 + 1]; b += p[k * 4 + 2]; }
+    r /= samples.length; gg /= samples.length; b /= samples.length;
+    const spread = samples.reduce((a, k) => a + Math.abs(p[k * 4] - r) + Math.abs(p[k * 4 + 1] - gg) + Math.abs(p[k * 4 + 2] - b), 0) / samples.length;
+    if (spread < 40) { // fond uni : on détoure
+      const tol = 46, seen = new Uint8Array(cw * ch), q = [];
+      const close = k => Math.abs(p[k * 4] - r) + Math.abs(p[k * 4 + 1] - gg) + Math.abs(p[k * 4 + 2] - b) < tol;
+      for (const k of samples) if (!seen[k] && close(k)) { seen[k] = 1; q.push(k); }
+      for (let x = 0; x < cw; x++) for (const y of [0, ch - 1]) { const k = y * cw + x; if (!seen[k] && close(k)) { seen[k] = 1; q.push(k); } }
+      for (let y = 0; y < ch; y++) for (const x of [0, cw - 1]) { const k = y * cw + x; if (!seen[k] && close(k)) { seen[k] = 1; q.push(k); } }
+      while (q.length) {
+        const k = q.pop(), x = k % cw, y = (k / cw) | 0;
+        p[k * 4 + 3] = 0;
+        for (const n of [x > 0 ? k - 1 : -1, x < cw - 1 ? k + 1 : -1, y > 0 ? k - cw : -1, y < ch - 1 ? k + cw : -1])
+          if (n >= 0 && !seen[n] && close(n)) { seen[n] = 1; q.push(n); }
+      }
+      // adoucit le contour
+      for (let y = 1; y < ch - 1; y++) for (let x = 1; x < cw - 1; x++) {
+        const k = y * cw + x; if (!p[k * 4 + 3]) continue;
+        const z = !p[(k - 1) * 4 + 3] + !p[(k + 1) * 4 + 3] + !p[(k - cw) * 4 + 3] + !p[(k + cw) * 4 + 3];
+        if (z) p[k * 4 + 3] = 255 - z * 45;
+      }
+      g.putImageData(d, 0, 0);
+    }
+  }
+  let x0 = cw, y0 = ch, x1 = 0, y1 = 0;
+  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) if (p[(y * cw + x) * 4 + 3] > 20) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  if (x1 <= x0 || y1 <= y0) return { src, w: img.naturalWidth, h: img.naturalHeight };
+  const o = document.createElement("canvas"); o.width = x1 - x0 + 1; o.height = y1 - y0 + 1;
+  o.getContext("2d").drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
+  return { src: o.toDataURL("image/png"), w: o.width, h: o.height };
+}
+
+// Place le produit dans une boîte en gardant ses proportions
+function fit(p, box) {
+  const s = Math.min(box.w / p.w, box.h / p.h), w = p.w * s, h = p.h * s;
+  return `left:${box.x + (box.w - w) / 2}px;top:${box.y + (box.h - h) / 2}px;width:${w}px;height:${h}px`;
+}
+
+window.preparer = async (brief, photos) => {
+  const accent = brief.couleur || "#ff6a00";
+  document.documentElement.style.setProperty("--accent", accent);
+  const P = {};
+  for (const [k, v] of Object.entries(photos)) P[k] = await detourer(v.src, v.crop, v.detourer && k !== "poignet" && k !== "ambiance");
+  const main = P.principale, alt = P.profil || P.principale, brand = `<div class="brand">ASTORIA <b>MODS</b></div>`;
+  const slides = [];
+  const add = (ordre, id, size, html) => { slides.push({ ordre, id, w: 1080, h: size === "s1440" ? 1440 : 1080 }); document.getElementById("root").insertAdjacentHTML("beforeend", `<section class="slide ${size}" id="${id}">${html}</section>`); };
+
+  // 1. Principale : le produit seul, fond blanc, sans texte (règle TikTok Shop)
+  add("1", "principale", "s1080", `<img class="prod" src="${main.src}" style="${fit(main, { x: 110, y: 110, w: 860, h: 860 })}">`);
+  add("1", "principale-3x4", "s1440", `<img class="prod" src="${main.src}" style="${fit(main, { x: 110, y: 150, w: 860, h: 1140 })}">`);
+
+  // 2. Atouts : 4 arguments autour du produit
+  const at = (brief.atouts || []).slice(0, 4), pos = [[56, 250], [694, 250], [56, 640], [694, 640]];
+  add("2", "atouts", "s1080", `<div class="bg-accent"></div><div class="head"><div class="kicker">${esc(brief.accroche_kicker || "Pourquoi elle plaît")}</div><h1>${brief.accroche || esc(brief.nom)}</h1></div>
+    <img class="prod" src="${main.src}" style="${fit(main, { x: 330, y: 300, w: 420, h: 620 })}">
+    ${at.map((a, i) => `<div class="callout" style="left:${pos[i][0]}px;top:${pos[i][1]}px"><i></i><b>${esc(a.titre)}</b><span>${esc(a.texte)}</span></div>`).join("")}${brand}`);
+
+  // 3. Fonctions : grille de 6
+  const fn = (brief.fonctions || []).slice(0, 6);
+  add("3", "fonctions", "s1080", `<div class="bg-tint"></div><div class="head" style="right:440px"><div class="kicker">${esc(brief.fonctions_kicker || "Tout au poignet")}</div><h1>${brief.fonctions_titre || "Toutes les fonctions <em>du quotidien</em>"}</h1></div>
+    <img class="prod" src="${alt.src}" style="${fit(alt, { x: 660, y: 40, w: 380, h: 360 })}">
+    <div class="grid" style="top:440px;bottom:auto">${fn.map(f => `<div class="tile">${icon(f.icone, accent)}<b>${esc(f.titre)}</b></div>`).join("")}</div>${brand}`);
+
+  // 4. Dimensions et caractéristiques (seulement les valeurs fournies)
+  const dm = brief.dimensions || {}, sp = (brief.caracteristiques || []).slice(0, 4);
+  add("4", "dimensions", "s1080", `<div class="head"><div class="kicker">Caractéristiques</div><h1>${brief.dimensions_titre || "Grand écran, <em>format sport</em>"}</h1></div>
+    <img class="prod" src="${main.src}" style="${fit(main, { x: 300, y: 250, w: 480, h: 420 })}">
+    ${dm.largeur ? `<div class="dim h" style="left:330px;width:420px;top:700px"></div><div class="dimlabel" style="left:470px;top:722px">${esc(dm.largeur)}</div>` : ""}
+    ${dm.hauteur ? `<div class="dim v" style="left:820px;top:250px;height:420px"></div><div class="dimlabel" style="left:840px;top:440px">${esc(dm.hauteur)}</div>` : ""}
+    <div class="specs">${sp.map(s => `<div class="spec"><small>${esc(s.nom)}</small><b>${esc(s.valeur)}</b></div>`).join("")}</div>${brand}`);
+
+  // 5. Compatibilité smartphone
+  const nt = brief.notifications || ["Appel entrant", "Nouveau message", "Rappel : bouge un peu !"];
+  add("5", "compatibilite", "s1080", `<div class="bg-tint"></div><div class="head"><div class="kicker">Connexion Bluetooth</div><h1>${brief.compat_titre || "Compatible <em>iPhone & Android</em>"}</h1></div>
+    <div class="phone" style="left:120px;top:330px"><div class="scr">${nt.map(n => `<div class="notif">${esc(n)}</div>`).join("")}</div></div>
+    <img class="prod" src="${main.src}" style="${fit(main, { x: 470, y: 330, w: 480, h: 500 })}">
+    <div class="badges" style="left:470px;top:860px">${(brief.compat_badges || ["iOS", "Android"]).map(b => `<div class="badge">${esc(b)}</div>`).join("")}</div>${brand}`);
+
+  // 6. Contenu du colis et engagements réels de la boutique
+  const colis = brief.contenu_colis || [], eng = brief.engagements || [];
+  const box = P.colis || main;
+  add("6", "colis", "s1080", `<div class="head"><div class="kicker">Dans la boîte</div><h1>${brief.colis_titre || "Prête à porter <em>dès l'ouverture</em>"}</h1></div>
+    <img class="prod" src="${box.src}" style="${fit(box, { x: 560, y: 270, w: 460, h: 560 })}">
+    <div class="list" style="left:64px;top:290px;width:470px">${colis.map(c => `<div class="item"><span class="dot">✓</span>${esc(c)}</div>`).join("")}</div>
+    <div class="list" style="left:64px;bottom:110px;width:952px;flex-direction:row;flex-wrap:wrap">${eng.map(e => `<div class="item" style="font-size:24px;padding:14px 18px"><span class="dot" style="width:36px;height:36px;font-size:20px">★</span>${esc(e)}</div>`).join("")}</div>${brand}`);
+
+  // 7. Au poignet (si une vraie photo portée est fournie)
+  if (P.poignet) add("7", "au-poignet", "s1080", `<img class="life" src="${P.poignet.src}"><div class="life-shade"></div><div class="life-text"><div class="kicker" style="color:#fff">${esc(brief.poignet_kicker || "Au quotidien")}</div><h1>${brief.poignet_titre || esc(brief.slogan || "Ton temps. Ton style.")}</h1></div>`);
+  await document.fonts.ready;
+  return slides;
+};
+window.afficher = id => { document.querySelectorAll(".slide").forEach(s => s.classList.toggle("on", s.id === id)); };
+</script>
+</body>
+</html>

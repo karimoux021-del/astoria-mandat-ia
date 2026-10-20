@@ -24,6 +24,11 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Victor (competitor-intel)** : veille des vendeurs de montres sur TikTok Shop France. — chaque semaine
 - [ ] **Yanis (prd-generator)** : cadrer le projet « relier TikTok Shop aux bureaux » (quelles données, API Partner TikTok Shop ou export manuel). — à faire
 
+## Studio visuels (pôle Marketing)
+- [ ] **Léna (product-visuals)** : veille des visuels des 5 meilleures fiches de montres connectées concurrentes, puis brief des 7 images de la T900 (`studio/briefs/t900.json` existe déjà, à améliorer). — à faire
+- [ ] **Théo (listing-designer)** : produire les visuels de la T900 avec `node studio/render.cjs studio/briefs/t900.json` dès que Karim a déposé ses photos dans `visuels/sources/t900/`. — bloqué (photos de Karim)
+- [ ] **Léna + Théo** : brief et visuels de la P86 (photos fournisseur seulement avec autorisation écrite ; vraies photos à la réception de l'échantillon). — à faire après la décision d'achat
+
 ## Idées de l'équipe (à proposer à Karim)
 - **Zoé** (20/10) : Live TikTok « dernières pièces » de 20 min un soir de semaine, 0 € de pub (vérifier l'accès au LIVE Shopping du compte).
 - **Noé** (20/10) : vidéo comparatif côte à côte « 15 € vs 29,99 € » pour vendre les deux gammes à la fois.
