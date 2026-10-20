@@ -3,18 +3,27 @@
 Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en cours / fait / bloqué) et le lien du livrable.
 
 ## Priorité 1 — Nouveau produit à plus forte marge
-- [ ] **Sami (product-scout)** : trouver 5 montres connectées plus haut de gamme (AMOLED, appels Bluetooth…) avec liens fournisseurs, prix d'achat livré en France, délais. — à faire
-- [ ] **Maëlle (margin-analyst)** : calculer la marge nette par vente de chaque modèle trouvé par Sami à 24,99 / 29,99 / 34,99 €. — à faire (après Sami)
-- [ ] **Noé (trend-scout)** : vérifier la demande sur TikTok Shop France pour ces modèles et les formats de vidéo qui marchent. — à faire
-- [ ] **Jade (launch-manager)** : plan de lancement sur 4 semaines du modèle retenu, commande test incluse. — à faire (après décision de Karim)
+- [x] **Sami (product-scout)** : trouver 5 montres connectées plus haut de gamme avec liens fournisseurs, prix d'achat, délais. — fait le 20/10 → `livrables/product-scout/2026-10-20-montres-premium.md` (piste n° 1 : réf. P86 AMOLED 1,93" ; prix indicatifs, AliExpress bloqué en accès direct)
+- [x] **Maëlle (margin-analyst)** : marge nette des modèles de Sami à 24,99 / 29,99 / 34,99 €. — fait le 20/10 → `livrables/margin-analyst/2026-10-20-marges-montres-premium.md` (P86 à 29,99 € : 11,73 €/vente si achat ≈ 15 €)
+- [x] **Noé (trend-scout)** : demande TikTok Shop France + formats vidéo. — fait le 20/10 → `livrables/trend-scout/2026-10-20-demande-montres-premium.md` (pic Black Friday 27/11 → Noël)
+- [ ] **Karim** : vérifier le prix réel de la P86 sur fr.aliexpress.com (≤ 16 € livré ?) et demander la déclaration CE au vendeur. — bloqué (accès AliExpress impossible pour l'équipe) → voir décision d1
+- [ ] **Sami (product-scout)** : trouver 2 fournisseurs alternatifs de la P86 / GTS 4 (Alibaba, CJ, grossiste EU) avec prix par 10 pièces et port France. — à faire
+- [ ] **Victor (competitor-intel)** : relever les vendeurs TikTok Shop France de montres AMOLED à appels (prix, vidéos, avis) pour valider 29,99 €. — à faire
+- [ ] **Jade (launch-manager)** : plan de lancement 4 semaines de la P86 (échantillon → 10 pièces → fiche → vidéos → Black Friday / Noël). — à faire (après décisions d1/d2)
 
 ## Priorité 2 — Écouler les ~15 montres restantes
-- [ ] **Inès (viral-hook-creator) + Jules (brand-copywriter)** : 3 scripts de vidéos de 15–20 s « dernières pièces » conformes aux règles TikTok Shop. — à faire
-- [ ] **Zoé (marketing-ideas)** : idée de concours ou de pack pour finir le stock sans baisser la marge. — à faire
+- [x] **Inès (viral-hook-creator) + Jules (brand-copywriter)** : 3 scripts « dernières pièces » à 15 €. — fait le 20/10 → `livrables/viral-hook-creator/2026-10-20-scripts-dernieres-pieces.md`
+- [x] **Zoé (marketing-ideas)** : finir le stock sans baisser la marge. — fait le 20/10 → `livrables/marketing-ideas/2026-10-20-finir-le-stock.md` (prix normal + vidéos ; pack duo 27,99 € en renfort au 01/11)
+- [ ] **Karim** : tourner les 3 scripts (≈ 30 min au total) et les publier sur 3 jours. — à faire
+- [ ] **Clara (sop-creator)** : SOP « publier une vidéo TikTok Shop conforme » (checklist prix boutique = prix vidéo, pas de marque, produit épinglé, son tendance). — à faire
 
 ## Priorité 3 — Préparer la suite
 - [ ] **Camille (strategic-planning)** : bilan hebdomadaire et 3 priorités de la semaine. — chaque lundi
 - [ ] **Victor (competitor-intel)** : veille des vendeurs de montres sur TikTok Shop France. — chaque semaine
+- [ ] **Yanis (prd-generator)** : cadrer le projet « relier TikTok Shop aux bureaux » (quelles données, API Partner TikTok Shop ou export manuel). — à faire
 
 ## Idées de l'équipe (à proposer à Karim)
-- (vide pour l'instant)
+- **Zoé** (20/10) : Live TikTok « dernières pièces » de 20 min un soir de semaine, 0 € de pub (vérifier l'accès au LIVE Shopping du compte).
+- **Noé** (20/10) : vidéo comparatif côte à côte « 15 € vs 29,99 € » pour vendre les deux gammes à la fois.
+- **Sami** (20/10) : le boîtier « ultra » 49 mm actuel ressemble au design d'une montre de marque ; ne pas en recommander après le déstockage, privilégier des formes génériques (risque propriété intellectuelle).
+- **Maëlle** (20/10) : garder la montre ronde GPS (Btalk 3) pour un futur palier 39,99–44,99 €.
