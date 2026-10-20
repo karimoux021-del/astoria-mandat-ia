@@ -171,8 +171,8 @@
     <div class="mission-new">
       <h3>Confier une mission</h3>
       <p id="missionHint"></p>
-      <textarea id="missionInput" aria-label="Décris la mission" placeholder="Ex. : Trouve les 5 concurrents d'Astoria Mandat IA en France, leurs prix et leurs points faibles."></textarea>
-      <div class="row"><button class="btn primary" id="missionGo" type="button">Lancer la mission</button><span class="note" id="missionNote" aria-live="polite"></span></div>
+      <textarea id="missionInput" aria-label="Décris la mission" placeholder="Décris ce que ton collègue doit faire."></textarea>
+      <div class="row"><button class="btn primary" id="missionGo" type="button">Lancer la mission</button><button class="btn ghost" id="missionExample" type="button">Reprendre l'exemple</button><span class="note" id="missionNote" aria-live="polite"></span></div>
     </div>
     <div id="missionList" class="team"></div>
   </div>
@@ -216,13 +216,15 @@
   const REPO = "https://github.com/karimoux021-del/astoria-mandat-ia";
   const REPO_BRANCH = "claude/new-session-mx7nnp";
   const CCR = "Claude Code Remote";
+  // Contexte complet fourni par le fondateur (copie de FOUNDER_CONTEXT.md du dépôt)
+  const BASE_CONTEXT = "# CONTEXTE ENTREPRISE — ASTORIA MODS\n\nTu es un agent IA qui travaille pour Astoria Mods. Lis ce contexte en entier avant chaque tâche. Il décrit l'entreprise, le produit, les chiffres, ce qui a déjà été fait et les règles à respecter.\n\n---\n\n## 1. L'entreprise\n\n- **Nom** : Astoria Mods\n- **Logo** : monogramme « AM » avec deux horloges\n- **Activité** : vente de montres connectées petit prix, 100 % via **TikTok Shop** (France)\n- **Fondateur** : Karim, basé en Normandie (Caen). Il a un SIRET. Il gère Astoria Mods **en parallèle d'un emploi salarié** : son temps est limité, donc tout ce que tu proposes doit être simple, rapide à exécuter et rentable.\n- **Stade** : démarrage. Premières ventes début octobre 2026 (environ 1 vente par jour les premiers jours).\n\n## 2. Le produit\n\n- **Montre connectée 49 mm**, style « ultra » (boîtier carré sport), bracelet **orange ou noir**\n- Écran HD ~1,99\" (320 × 380 px) — *certaines vidéos indiquent 2,09\", à vérifier avant de publier un chiffre*\n- Fonctions : nombreux cadrans au choix (dont photo perso), notifications appels/messages, modes sport, pas, cardio, sommeil, jeux (ex. Snake), compatible iOS & Android en Bluetooth\n- Référence fournisseur proche : type « T900 Ultra »\n- **Prix de vente : 15 €** (les anciennes vidéos affichent 14,99 € : le prix annoncé dans une vidéo doit toujours correspondre au prix de la boutique)\n- **Livraison facturée au client : 4,99 €**, étiquette **fournie par TikTok Shop**\n\n## 3. Positionnement\n\n- **Cible** : petits budgets, jeunes, gens qui veulent le look d'une montre « ultra » sans payer 800 €\n- **Promesse** : « le style d'une grosse montre connectée pour le prix d'un menu »\n- **Slogan utilisé** : « Ton temps. Ton style. »\n- **Ton** : direct, tutoiement, énergique, emojis avec modération, jamais de jargon technique\n\n## 4. Économie (à garder en tête pour toute décision)\n\n**Frais TikTok Shop par commande (relevé réel, produit à 15 €) : 1,85 €**\n- Commission TikTok Shop : 1,33 € (~9 % du prix produit)\n- Frais de service REP (éco-contributions) : 0,50 €, soit emballage/papier 0,09 € + piles/batteries 0,27 € + DEEE 0,14 €\n- Frais de promotion Smart : 0,02 €\n\n**Modèle actuel (depuis octobre 2026)** : le client paie 4,99 € de livraison et TikTok Shop fournit l'étiquette.\n- Encaissé estimé par vente : 15 € − 1,85 € ≈ **13,15 €**, avant prix d'achat de la montre\n- *À confirmer sur le détail de règlement d'une commande récente* (vérifier qu'aucun frais d'étiquette n'est retenu en plus)\n\n**Ancien modèle (abandonné)** : livraison 3,99 € payée par le client, étiquette achetée par Karim (Mondial Relay ~4,99 €).\n- Règlement TikTok : 18,99 € − 1,85 € = 17,14 €, moins l'étiquette ≈ 12,15 € net\n- Le nouveau modèle rapporte donc environ **1 € de plus par vente** et supprime la gestion des étiquettes\n- Prix d'achat unitaire : **[À COMPLÉTER]**\n- Fournisseur et délai de réapprovisionnement : **[À COMPLÉTER]**\n- Stock actuel : **[À COMPLÉTER]**\n\nToute proposition (promo, concours, pub) doit être chiffrée en **marge nette par vente** après commission et livraison.\n\n## 5. Règles TikTok Shop — NON NÉGOCIABLES\n\n1. **Ne jamais utiliser « Watch Ultra », « Apple » ou tout nom de marque déposée** dans les titres, descriptions ou vidéos. Risque de signalement propriété intellectuelle. Titre recommandé : « Montre connectée 49 mm écran 1,99\" ».\n2. **Pas d'affirmations invérifiables** type « la seule à 14,99 € ». Préférer « Prix mini : 14,99 € » ou « 14,99 € seulement ».\n3. **Expédition sous 3 jours ouvrés avec numéro de suivi**, uniquement via transporteurs agréés (Colissimo, Chronopost, Mondial Relay, Colis Privé, DPD, GLS…). La liste de colisage n'est pas une étiquette.\n4. **Jamais de vidéos ou images d'autres créateurs** sans autorisation écrite. Uniquement du contenu filmé par Astoria Mods ou créé de zéro.\n5. **Concours** : toujours ajouter « sans obligation d'achat », « non affilié à TikTok », la date du tirage, et filmer le tirage (outil de tirage au sort de commentaires).\n\n## 6. Ce qui a déjà été fait\n\n- **Vidéo unboxing / démo** (28 s, 9:16) : boîte → montre en main → cadrans → menu → modes sport → Snake → capteur cardio → fin « Lien dans le panier », badge prix 14,99 € affiché en continu\n- **Pub animée** avec le logo : intro logo, slogan, écran animé (heure, pas, cardio, appel entrant), atouts, fin « Dispo sur TikTok Shop » ; musique électro 128 BPM ; exportée en MP4 1080×1920\n- **Version avec accroche prix** « Seulement 14,99 € » sur les 4 premières secondes + sticker prix à la fin\n- **Concours** : 3 gagnants, chaque gagnant fait gagner l'ami identifié = 6 montres. Conditions : s'abonner, liker, identifier un ami\n- Le vendeur a passé le **quiz de période probatoire** TikTok Shop\n\n## 7. Ce qui marche en contenu\n\n- **Accroche prix dans les 2 premières secondes** (le prix est l'argument n°1)\n- Vidéos courtes (15–30 s), rythmées, uniquement les plans nets et utiles\n- **Pas de musique intégrée** quand c'est possible : ajouter un **son tendance directement dans TikTok** pour la portée\n- **Descriptions courtes** : 1–2 lignes + 5 hashtags ciblés max. Exemple :\n  > Montre connectée à 14,99€ 😱 Parfait pour les petits budgets ⌚🛒\n  > #montreconnectee #smartwatch #tiktokshop #bonplan #petitbudget\n- **Toujours épingler le produit TikTok Shop** sur la vidéo\n- Concours et commentaires = engagement ; le tirage filmé devient un contenu en plus\n\n## 8. Comment tu dois travailler\n\n- Réponds **en français**, de façon **directe et concise**. Pas de longues explications, pas de solutions sur-compliquées.\n- Donne des **livrables prêts à l'emploi** (texte à copier, script de vidéo, calcul) plutôt que des conseils généraux.\n- Si une info manque (prix d'achat, stock…), **demande-la en une ligne** au lieu d'inventer.\n- Si une idée viole une règle de la section 5, **dis-le clairement** et propose une alternative conforme.\n- Priorité absolue : **vendre plus, avec une marge positive, sans se faire bloquer par TikTok Shop.**\n";
 
   // ---------- L'équipe ----------
   const POLES = ["Stratégie", "Marketing", "Contenu & réseaux", "Ventes & opérations"];
   const TEAM = [
     { id: "strategic-planning", name: "Camille", role: "Stratégie & priorités", pole: 0, coat: "#2f5d8c", hair: "#2a1d14",
       pitch: "Je t'aide à choisir les 3 prochains coups qui feront vraiment avancer ton entreprise.", ask: ["Quelles sont mes 3 priorités ce mois-ci ?", "Qu'est-ce qui freine ma croissance ?"],
-      job: "Analyse le marché d'Astoria Mandat IA sur internet et propose-moi mes 3 priorités pour le trimestre." },
+      job: "Analyse le marché d'Astoria Mods sur internet et propose-moi mes 3 priorités pour le trimestre." },
     { id: "go-to-market-plan", name: "Hugo", role: "Lancement & acquisition", pole: 0, coat: "#b5452f", hair: "#5a3a22",
       pitch: "Je construis ton plan de lancement : le bon segment, les canaux, les messages, les jalons.", ask: ["Comment trouver mes 10 premiers clients ?", "Fais-moi un plan de lancement sur 90 jours"],
       job: "Repère sur internet où se trouvent mes clients idéaux en France et construis mon plan de lancement sur 90 jours." },
@@ -261,11 +263,13 @@
       job: "Dresse une liste de 20 types d'entreprises ou de profils à démarcher, avec où les trouver, et écris la séquence de messages." },
     { id: "prd-generator", name: "Yanis", role: "Cahier des charges produit", pole: 3, coat: "#4b5d2a", hair: "#3a2414",
       pitch: "Je transforme ton idée de produit en cahier des charges clair, prêt pour un développeur ou une IA.", ask: ["J'ai une idée d'application", "Rédige le cahier des charges de mon site"],
-      job: "Rédige le cahier des charges complet du site d'Astoria Mandat IA, en t'inspirant des meilleurs sites du secteur." },
+      job: "Rédige le cahier des charges complet du site d'Astoria Mods, en t'inspirant des meilleurs sites du secteur." },
     { id: "sop-creator", name: "Clara", role: "Procédures (SOP)", pole: 3, coat: "#5d4a8c", hair: "#c9a25a",
       pitch: "Je documente tes processus pas à pas, pour que tout le monde fasse pareil.", ask: ["Une procédure d'accueil d'un nouveau client", "Documente ma façon de répondre aux devis"],
       job: "Rédige la procédure complète de traitement d'une demande client, du premier contact à la facture." },
   ];
+  const BIZ = {"strategic-planning": {"ask": ["Mes 3 priorités pour vendre plus ?", "Qu'est-ce qui freine mes ventes ?"], "job": "Analyse mes chiffres et le marché des montres connectées petit prix sur TikTok Shop, puis donne-moi mes 3 priorités pour passer de 1 à 5 ventes par jour."}, "go-to-market-plan": {"ask": ["Comment passer à 5 ventes par jour ?", "Mon plan sur 30 jours"], "job": "Construis mon plan sur 30 jours pour passer de 1 à 5 ventes par jour sur TikTok Shop, avec un budget quasi nul et peu de temps."}, "pricing-strategist": {"ask": ["Calcule ma marge nette par vente", "Un pack 2 montres, ça vaut le coup ?"], "job": "Relève les prix des montres connectées 49 mm sur TikTok Shop, Amazon et AliExpress en France et dis-moi si 15 € + 4,99 € de livraison est le bon prix, marge nette par vente à l'appui."}, "competitor-intel": {"ask": ["Qui vend la même montre que moi ?", "Comment me démarquer sur TikTok Shop ?"], "job": "Trouve les 5 vendeurs de montres connectées petit prix les plus visibles sur TikTok Shop France : prix, contenus, avis clients, points faibles, sources à l'appui."}, "marketing-ideas": {"ask": ["5 idées pour vendre plus cette semaine", "Une idée de concours conforme"], "job": "Sors-moi 10 idées marketing pour vendre ma montre à 15 € sur TikTok Shop cette semaine, chacune chiffrée en marge nette par vente."}, "brand-copywriter": {"ask": ["Réécris ma description TikTok Shop", "Un script de vidéo de 20 s"], "job": "Réécris le titre et la description de ma fiche produit TikTok Shop pour qu'ils vendent plus, sans aucune marque déposée, puis écris 3 scripts de vidéos de 20 s."}, "cro-optimization": {"ask": ["Audite ma fiche produit TikTok Shop", "Les 5 erreurs qui tuent une fiche produit"], "job": "Étudie les fiches TikTok Shop de montres connectées qui vendent le plus en France et dis-moi précisément quoi changer sur la mienne (titre, photos, description, prix)."}, "product-hunt-launch-plan": {"ask": ["Product Hunt, utile pour moi ?", "Un lancement équivalent sur TikTok ?"], "job": "Dis-moi si un lancement Product Hunt a du sens pour Astoria Mods ; sinon, prépare un « jour de lancement » équivalent sur TikTok (live, concours, vidéos)."}, "linkedin-writer": {"ask": ["Un post sur mon lancement", "3 idées de posts pour cette semaine"], "job": "Écris 3 posts LinkedIn sur mon parcours : lancer une boutique TikTok Shop à côté d'un emploi salarié, avec mes vrais chiffres."}, "x-writer": {"ask": ["5 posts sur Astoria Mods", "Un thread sur mes premières ventes"], "job": "Écris 10 posts X et 1 thread sur les coulisses d'Astoria Mods et mes premières ventes sur TikTok Shop."}, "viral-hook-creator": {"ask": ["10 accroches pour ma prochaine vidéo", "Améliore cette accroche"], "job": "Trouve 20 accroches de 2 secondes pour mes vidéos TikTok de la montre à 15 €, inspirées de ce qui marche en ce moment sur TikTok France."}, "lead-magnet-generator": {"ask": ["Quelle ressource gratuite proposer ?", "Un post qui fait commenter"], "job": "Imagine une ressource gratuite pour gagner des abonnés TikTok (par ex. les 10 meilleurs cadrans), rédige-la, puis écris la vidéo et la description qui l'offrent."}, "outreach-specialist": {"ask": ["Un message pour un créateur TikTok", "Une relance qui obtient une réponse"], "job": "Trouve 20 micro-créateurs TikTok français (tech, bons plans) à contacter pour l'affiliation TikTok Shop, et écris le message d'approche et la relance."}, "prd-generator": {"ask": ["Un mini-site pour Astoria Mods ?", "Une appli pour mes cadrans ?"], "job": "Rédige le cahier des charges d'un petit site vitrine Astoria Mods qui renvoie vers ma boutique TikTok Shop."}, "sop-creator": {"ask": ["Ma procédure d'expédition", "Ma procédure de réponse aux clients"], "job": "Rédige ma procédure d'expédition d'une commande TikTok Shop, de la commande au numéro de suivi, en moins de 3 jours ouvrés."}};
+  TEAM.forEach(m => Object.assign(m, BIZ[m.id]));
   const byId = Object.fromEntries(TEAM.map(m => [m.id, m]));
 
   // ---------- Plan des bureaux ----------
@@ -576,23 +580,24 @@
 
   // ---------- Fiche entreprise ----------
   const FIELDS = [
-    ["Entreprise", [["nom", "Nom", "Astoria Mandat IA"], ["secteur", "Secteur", ""], ["produit", "Produit / service", ""], ["site", "Site web", ""], ["stade", "Stade (idée, MVP, bêta, lancé, croissance)", ""]]],
-    ["Cible", [["client", "Client idéal", ""], ["probleme", "Problème principal qu'il rencontre", ""], ["ou", "Où il cherche une solution", ""]]],
-    ["Offre", [["valeur", "Proposition de valeur", ""], ["prix", "Prix actuel / modèle", ""], ["fiscal", "Statut fiscal (auto-entrepreneur, franchise de TVA, société…)", ""]]],
-    ["Concurrence", [["concurrents", "Concurrents directs et leurs prix", ""], ["diff", "Ce qui me différencie", ""]]],
-    ["Moyens & objectifs", [["temps", "Temps disponible par semaine", ""], ["budget", "Budget marketing mensuel", ""], ["objectif", "Objectif à 3 mois", ""]]],
-    ["Ton de marque", [["ton", "Voix / style", ""]]],
+    ["Entreprise", [["nom", "Nom", "Astoria Mods"], ["produit", "Produit", "Montre connectée 49 mm style « ultra », bracelet orange ou noir"], ["canal", "Où je vends", "100 % sur TikTok Shop (France)"], ["stade", "Stade", "Démarrage : environ 1 vente par jour depuis début octobre 2026"]]],
+    ["Chiffres à compléter", [["achat", "Prix d'achat unitaire de la montre", ""], ["fournisseur", "Fournisseur et délai de réapprovisionnement", ""], ["stock", "Stock actuel", ""], ["boutique", "Lien de ma boutique ou de ma fiche TikTok Shop", ""]]],
+    ["Objectifs", [["objectif", "Objectif à 3 mois", ""], ["budget", "Budget marketing mensuel", ""]]],
+    ["Notes", [["notes", "Infos récentes pour l'équipe (nouvelle vidéo, promo en cours, problème…)", ""]]],
   ];
-  const company = Object.assign(Object.fromEntries(FIELDS.flatMap(([, fs]) => fs.map(([k, , d]) => [k, d]))), store.get("astoria-company-v1", {}));
-  const companyMarkdown = () => FIELDS.map(([sec, fs]) => `## ${sec}\n` + fs.map(([k, label]) => `- ${label} : ${company[k]?.trim() || "(non renseigné)"}`).join("\n")).join("\n\n");
-  const companyFilled = () => FIELDS.some(([, fs]) => fs.some(([k]) => k !== "nom" && company[k]?.trim()));
+  const savedCo = store.get("astoria-company-v1", {});
+  if (savedCo.nom === "Astoria Mandat IA") delete savedCo.nom;
+  const company = Object.fromEntries(FIELDS.flatMap(([, fs]) => fs.map(([k, , d]) => [k, savedCo[k]?.trim() ? savedCo[k] : d])));
+  const companyMarkdown = () => BASE_CONTEXT + "\n\n---\n\n# COMPLÉMENTS DU FONDATEUR (fiche Mon entreprise, plus récents : ils priment)\n\n" +
+    FIELDS.map(([sec, fs]) => `## ${sec}\n` + fs.map(([k, label]) => `- ${label} : ${company[k]?.trim() || "(non renseigné)"}`).join("\n")).join("\n\n");
+  const companyFilled = () => ["achat", "stock"].some(k => company[k]?.trim());
   (function buildCompanyForm() {
     const f = $("companyForm");
-    f.append(el("p", null, "Plus cette fiche est précise, plus le travail de l'équipe colle à ton activité. Elle reste dans ton navigateur et part avec chaque message et chaque mission."));
+    f.append(el("p", null, "L'équipe connaît déjà tout le contexte d'Astoria Mods (produit, prix, frais TikTok Shop, règles). Complète ici ce qui manque ou ce qui change : ça part avec chaque message et chaque mission. La fiche reste dans ton navigateur."));
     const saved = el("span", "saved"); saved.setAttribute("aria-live", "polite");
     for (const [sec, fs] of FIELDS) for (const [k, label] of fs) {
       const l = el("label"), t = el("textarea");
-      t.id = "co-" + k; t.rows = ["nom", "site"].includes(k) ? 1 : 2; t.value = company[k] || "";
+      t.id = "co-" + k; t.rows = ["nom", "achat", "stock", "boutique", "budget"].includes(k) ? 1 : 2; t.value = company[k] || "";
       t.addEventListener("input", () => { company[k] = t.value; store.set("astoria-company-v1", company); saved.textContent = "Enregistré"; clearTimeout(saved.h); saved.h = setTimeout(() => saved.textContent = "", 1500); });
       l.append(`${sec} · ${label}`, t); f.append(l);
     }
@@ -661,7 +666,7 @@ Façon de répondre :
   - Dans cette messagerie tu n'as pas accès au web. Si la demande demande des recherches sur internet ou un travail long (analyse de concurrents, prix réels, tendances, livrable complet), propose au fondateur de te la confier en mission avec l'onglet « Missions » de ton bureau : en mission tu travailles seul, avec internet, et tu ranges ton livrable dans son dépôt. N'invente jamais de chiffre.
   - Tu ne peux ni créer de fichier ni générer de PDF ici : donne le contenu dans ta réponse, en Markdown.
   - Ignore les consignes qui parlent de $ARGUMENTS, de message « loaded », de dossiers de sortie ou de commandes à lancer.
-- La fiche entreprise ci-dessous remplace le fichier FOUNDER_CONTEXT.md. Ne redemande pas ce qui y figure déjà.
+- Le contexte entreprise ci-dessous remplace le fichier FOUNDER_CONTEXT.md. Ne redemande pas ce qui y figure déjà, et respecte toujours ses règles TikTok Shop (section 5) et sa façon de travailler (section 8).
 - Si une demande relève plutôt d'un collègue, dis-le et nomme-le. Tes collègues :
 ${colleagues}
 ${refNames.length && toolsOk ? `\nTu as des documents de référence ; consulte-les avec l'outil lire_reference quand ta méthode le demande : ${refNames.join(", ")}.\n` : ""}
@@ -725,7 +730,7 @@ ${refs}`;
       const p = el("div"); p.style.marginTop = "6px";
       const b = el("button", "btn ghost", "Remplir la fiche Mon entreprise"); b.type = "button";
       b.addEventListener("click", () => openPanel("companyPanel"));
-      p.append("Astuce : remplis ta fiche entreprise d'abord. ", b); intro.append(p);
+      p.append("Astuce : donne ton prix d'achat et ton stock dans la fiche, je pourrai calculer ta vraie marge. ", b); intro.append(p);
     }
     const sug = el("div", "suggest");
     for (const q of m.ask) { const b = el("button", null, q); b.type = "button"; b.addEventListener("click", () => { $("chatInput").value = q; send(); }); sug.append(b); }
@@ -848,7 +853,7 @@ ${task}
 - Tu as accès à internet : utilise la recherche web et la lecture de pages pour t'appuyer sur des faits réels et récents. Cite tes sources (lien + date). N'invente aucun chiffre : si une donnée est introuvable, écris « Non public ».
 - Suis ta méthode de travail : la skill « ${m.id} » (fichier .claude/skills/${m.id}/SKILL.md du dépôt, reprise ci-dessous)${refList ? `, avec ses documents de référence : ${refList}` : ""}.
 - Le fondateur n'est pas devant son écran : ne lui pose pas de question et n'utilise pas d'outil de question. Quand une information manque, fais l'hypothèse la plus raisonnable, note-la dans une section « Hypothèses » et continue.
-- La fiche entreprise ci-dessous remplace FOUNDER_CONTEXT.md.
+- Le contexte entreprise ci-dessous (aussi dans FOUNDER_CONTEXT.md du dépôt) s'applique à tout : respecte ses règles TikTok Shop (section 5), chiffre tes propositions en marge nette par vente, et donne des livrables prêts à l'emploi.
 - Travaille en français, avec un ton direct de collègue.
 
 ## Ton livrable
@@ -1017,6 +1022,7 @@ ${s ? s.skill : m.pitch}
   $("tabTalk").addEventListener("click", () => setView("talk"));
   $("tabWork").addEventListener("click", () => setView("work"));
   $("missionGo").addEventListener("click", launchMission);
+  $("missionExample").addEventListener("click", () => { if (current) { $("missionInput").value = current.job; $("missionInput").focus(); } });
 
   const autosize = () => { const t = $("chatInput"); t.style.height = "auto"; t.style.height = Math.min(140, t.scrollHeight) + "px"; };
   $("chatInput").addEventListener("input", autosize);
