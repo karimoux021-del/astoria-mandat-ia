@@ -160,7 +160,7 @@ window.preparer = async (brief, photos) => {
 
   // 5. Compatibilité smartphone
   const nt = brief.notifications || ["Appel entrant", "Nouveau message", "Rappel : bouge un peu !"];
-  add("5", "compatibilite", "s1080", `<div class="bg-tint"></div><div class="head"><div class="kicker">Connexion Bluetooth</div><h1>${brief.compat_titre || "Compatible <em>iPhone & Android</em>"}</h1></div>
+  add("5", "compatibilite", "s1080", `<div class="bg-tint"></div><div class="head"><div class="kicker">Connexion Bluetooth</div><h1>${brief.compat_titre || "Compatible <em>iOS & Android</em>"}</h1></div>
     <div class="phone" style="left:120px;top:330px"><div class="scr">${nt.map(n => `<div class="notif">${esc(n)}</div>`).join("")}</div></div>
     <img class="prod" src="${main.src}" style="${fit(main, { x: 470, y: 330, w: 480, h: 500 })}">
     <div class="badges" style="left:470px;top:860px">${(brief.compat_badges || ["iOS", "Android"]).map(b => `<div class="badge">${esc(b)}</div>`).join("")}</div>${brand}`);
@@ -168,7 +168,7 @@ window.preparer = async (brief, photos) => {
   // 6. Contenu du colis et engagements réels de la boutique
   const colis = brief.contenu_colis || [], eng = brief.engagements || [];
   const box = P.colis || main;
-  add("6", "colis", "s1080", `<div class="head"><div class="kicker">Dans la boîte</div><h1>${brief.colis_titre || "Prête à porter <em>dès l'ouverture</em>"}</h1></div>
+  add("6", "colis", "s1080", `<div class="head"><div class="kicker">Dans la boîte</div><h1>${brief.colis_titre || "Tout est <em>dans la boîte</em>"}</h1></div>
     <img class="prod" src="${box.src}" style="${fit(box, { x: 560, y: 270, w: 460, h: 560 })}">
     <div class="list" style="left:64px;top:290px;width:470px">${colis.map(c => `<div class="item"><span class="dot">✓</span>${esc(c)}</div>`).join("")}</div>
     <div class="list" style="left:64px;bottom:110px;width:952px;flex-direction:row;flex-wrap:wrap">${eng.map(e => `<div class="item" style="font-size:24px;padding:14px 18px"><span class="dot" style="width:36px;height:36px;font-size:20px">★</span>${esc(e)}</div>`).join("")}</div>${brand}`);

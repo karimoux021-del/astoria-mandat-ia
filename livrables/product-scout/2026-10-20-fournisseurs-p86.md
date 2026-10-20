@@ -1,4 +1,5 @@
 # Fournisseurs alternatifs : réf. P86 (AMOLED 1,93") et plan B réf. GTS 4 (AMOLED 1,94") — 20/10/2026
+> Contrôle : Validé avec réserves par Sofia, cheffe du pôle Projets & Nouveautés, le 20/10/2026 — aucune page fournisseur ouverte (proxy) : prix indicatifs ; nom du fabricant traité comme une marque, jamais dans nos titres.
 *Sami, product scout Astoria Mods*
 
 ## ⚠️ Limites de la recherche (à lire avant les chiffres)

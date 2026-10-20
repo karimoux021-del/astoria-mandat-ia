@@ -1,4 +1,5 @@
 # Direction artistique — fiche TikTok Shop montre connectée 49 mm (t900)
+> Contrôle : Validé par Antoine, chef du pôle Marketing, le 20/10/2026 — conforme (aucune marque, rien d'invérifiable) ; veille faite sur extraits de recherche seulement ; défauts du gabarit corrigés par Théo le jour même.
 
 **Auteur** : Léna (product-visuals), Studio visuels, pôle Marketing — **Date** : 20/10/2026
 **Produit** : montre connectée 49 mm, bracelet orange ou noir, 15 €, déstockage (~15 pièces). **Relais** : Théo (listing-designer), dès que les photos de Karim sont dans `visuels/sources/t900/`.
