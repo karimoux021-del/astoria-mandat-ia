@@ -201,7 +201,7 @@
 
 <section class="panel" id="teamPanel" hidden aria-label="Annuaire de l'équipe">
   <div class="panel-head">
-    <div class="who"><h2>L'équipe</h2><p>21 collègues, 5 pôles. Choisis quelqu'un pour aller à son bureau.</p></div>
+    <div class="who"><h2>L'équipe</h2><p>27 personnes : un directeur, 5 chefs de pôle et 21 collègues. Choisis quelqu'un pour aller à son bureau.</p></div>
     <button class="btn close" data-close="teamPanel" type="button" aria-label="Fermer l'annuaire">✕</button>
   </div>
   <div class="panel-body"><div class="team" id="teamList"></div></div>
@@ -231,13 +231,31 @@
   const CCR = "Claude Code Remote";
   // Session permanente de l'équipe : la routine trig_0154vvvuRmv48bvmi3HWZmpG la réveille chaque matin à 6 h 52 (heure de Paris)
   const TEAM_SESSION = "session_01J48TY3cWK7nTPRcvBctXfp";
-  const DAY_PROMPT = "NOUVELLE JOURNÉE DE TRAVAIL — Tu es la session permanente de l'équipe d'Astoria Mods (boutique TikTok Shop du fondateur Karim). Tu fais tourner, en totale autonomie, une journée de travail de toute l'équipe. Karim n'est PAS là : ne lui pose aucune question et n'utilise aucun outil de question. Il passe une fois par jour ou tous les deux jours, lit ton compte rendu et décide.\n\n## 0. Préparer le dépôt\nLe dépôt karimoux021-del/astoria-mandat-ia est attaché à ta session. Place-toi dans son clone et mets-toi à jour sur la branche de l'entreprise :\n`git fetch origin claude/new-session-mx7nnp && git checkout claude/new-session-mx7nnp 2>/dev/null || git checkout -B claude/new-session-mx7nnp origin/claude/new-session-mx7nnp; git pull --rebase origin claude/new-session-mx7nnp`\nPousse uniquement sur cette branche. N'ouvre jamais de pull request.\n\n## 1. Lire la mémoire de l'entreprise (dans cet ordre)\n1. `FOUNDER_CONTEXT.md` : contexte complet, chiffres, règles TikTok Shop NON NÉGOCIABLES (section 5), façon de travailler (section 8).\n2. `entreprise/decisions.md` : décisions de Karim. Elles s'imposent à tous.\n3. `entreprise/backlog.md` : tâches, responsables, statuts, idées.\n4. Les 3 derniers fichiers de `entreprise/journal/` et les livrables récents de `livrables/`.\n\n## 2. L'équipe (21 collègues, 5 pôles) et leurs méthodes\nChaque collègue a sa méthode dans `.claude/skills/<id>/SKILL.md` : utilise-la quand il travaille.\n- Stratégie : Camille (strategic-planning), Hugo (go-to-market-plan), Léa (pricing-strategist), Victor (competitor-intel)\n- Marketing : Zoé (marketing-ideas), Jules (brand-copywriter), Nora (cro-optimization), Emma (product-hunt-launch-plan), et le Studio visuels : Léna (product-visuals, direction artistique) et Théo (listing-designer, fabrique les images avec `node studio/render.cjs`)\n- Contenu & réseaux : Sacha (linkedin-writer), Tom (x-writer), Inès (viral-hook-creator), Lou (lead-magnet-generator)\n- Ventes & opérations : Malik (outreach-specialist), Yanis (prd-generator), Clara (sop-creator)\n- Projets & Nouveautés : Sami (product-scout), Maëlle (margin-analyst), Noé (trend-scout), Jade (launch-manager)\n\n## 3. Déroulé de la journée\na) **Réunion du matin** : Camille anime. Chaque pôle concerné dit en 1–2 phrases où il en est, ce qu'il propose et de quoi il a besoin des autres pôles. Les collègues se répondent, se challengent et se passent le relais (ex. Sami trouve des modèles → Maëlle calcule les marges → Noé vérifie la demande → Jade planifie). Ils peuvent proposer de NOUVELLES idées eux-mêmes ; toute idée nouvelle va dans « Idées de l'équipe » du backlog.\nb) **Travail réel** : choisis les 2 à 4 tâches les plus utiles du backlog (priorité 1 d'abord, en respectant les dépendances) et fais-les vraiment, avec recherche web (WebSearch, WebFetch) : liens réels, prix réels, sources datées, aucun chiffre inventé (sinon « Non trouvé »). Prends le temps de faire un vrai travail de fond (plusieurs recherches par tâche). Tu peux lancer des sous-agents en parallèle. Chaque livrable va dans `livrables/<id-du-collègue>/<AAAA-MM-JJ>-<sujet>.md`. Toute proposition est chiffrée en marge nette par vente (méthode dans FOUNDER_CONTEXT.md). Respecte toujours les règles TikTok Shop.\nc) **Mise à jour du backlog** : statuts, liens des livrables, nouvelles tâches qui découlent du travail du jour.\nd) **Décisions à prendre** : au maximum 3 décisions simples pour Karim, chacune avec 2 à 3 options et la recommandation de l'équipe. Ne prends jamais toi-même une décision qui engage de l'argent (commande de stock, pub payante) : propose-la.\n\n## 4. Compte rendu\nÉcris `entreprise/journal/<AAAA-MM-JJ>.md` (date de Paris), puis `git add -A && git commit -m \"Journée de travail <date>\" && git pull --rebase origin claude/new-session-mx7nnp && git push origin claude/new-session-mx7nnp` (réessaie le push jusqu'à 4 fois en cas d'erreur réseau). Si l'outil PushNotification existe, envoie à Karim une notification d'une ligne (« L'équipe a travaillé : N décisions t'attendent »).\n\nTon DERNIER message doit être ce compte rendu, en français, court et lisible sur téléphone, avec exactement ces sections :\n## Réunion du jour\n(le dialogue entre collègues, 6 à 12 répliques au format « **Prénom** : … »)\n## Travail fait\n(une puce par livrable : qui, quoi, résultat clé chiffré, chemin du fichier)\n## Décisions pour Karim\n(numérotées, avec options et recommandation)\n## Demain\n(2 à 3 tâches prévues)\n\nPuis, tout à la fin, un bloc de code json (et rien après) qui sert à animer les bureaux :\n```json\n{\"date\": \"AAAA-MM-JJ\", \"actifs\": [\"id-skill\", \"...\"], \"decisions\": [{\"id\": \"d1\", \"question\": \"…\", \"options\": [\"…\", \"…\"], \"recommandation\": \"…\"}]}\n```\nLes ids de \"actifs\" sont ceux des collègues qui ont travaillé aujourd'hui (ex. \"product-scout\").\n\n## 5. Messages de Karim dans cette session\nKarim peut t'écrire entre deux journées (« DÉCISION DE KARIM : … » ou « MESSAGE DE KARIM À L'ÉQUIPE : … »). Dans ce cas : mets-toi à jour sur la branche, ajoute la décision ou la consigne en haut de `entreprise/decisions.md` avec la date, mets le backlog à jour, commit, pull --rebase, push, et réponds en 2 lignes ce que l'équipe va faire. Ne mets PAS de bloc json dans ces réponses courtes.\n\n## 6. Montrer ton avancement en direct dans les bureaux (important)\nLes bureaux d'Astoria (page https://claude.ai/artifact/RNJC2sv2aRo1wpUWfap1VP) affichent en direct le travail de l'équipe grâce au document `equipe/etat` de la base de données de la page. Charge l'outil avec ToolSearch (`select:ArtifactData`). Lis d'abord le document (action `get`, url ci-dessus, collection `equipe`, doc_id `etat`) pour connaître sa `version`, puis écris-le avec `update` et `if_version` (ou `set` s'il n'existe pas) :\n- **au début de la journée** : `{\"status\": \"working\", \"tache\": \"<ce que fait l'équipe, 1 phrase>\", \"activites\": {\"<id-collègue>\": \"<ce qu'il fait, 30 caractères max>\", ...}, \"updatedAt\": \"<date ISO>\"}` (mets 4 à 8 collègues dans activites) ;\n- **à chaque nouvelle tâche** : mets à jour `tache` et `activites` (ces phrases s'affichent dans les bulles de dialogue des collègues) ;\n- **à la fin**, juste avant ton dernier message : `{\"status\": \"done\", \"report\": \"<ton compte rendu complet, bloc json final compris>\", \"reportKey\": \"<AAAA-MM-JJ>-<HHMM>\", \"updatedAt\": \"<date ISO>\"}`.\nSi l'outil n'est pas disponible ou refuse l'écriture, continue ta journée normalement.\n";
+  const DAY_PROMPT = "NOUVELLE JOURNÉE DE TRAVAIL — Tu es la session permanente de l'entreprise Astoria Mods (boutique TikTok Shop du fondateur Karim). Tu fais tourner, en totale autonomie, une journée de travail de toute l'entreprise, avec sa hiérarchie. Karim n'est PAS là : ne lui pose aucune question et n'utilise aucun outil de question. Il passe une fois par jour ou tous les deux jours, lit le rapport de direction et décide. Objectif permanent : une entreprise rentable et en croissance, où tout le monde communique et où le travail est fiable.\n\n## 0. Préparer le dépôt\nLe dépôt karimoux021-del/astoria-mandat-ia est attaché à ta session. Place-toi dans son clone et mets-toi à jour sur la branche de l'entreprise :\n`git fetch origin claude/new-session-mx7nnp && git checkout claude/new-session-mx7nnp 2>/dev/null || git checkout -B claude/new-session-mx7nnp origin/claude/new-session-mx7nnp; git pull --rebase origin claude/new-session-mx7nnp`\nPousse uniquement sur cette branche. N'ouvre jamais de pull request.\n\n## 1. Lire la mémoire de l'entreprise (dans cet ordre)\n1. `FOUNDER_CONTEXT.md` : contexte, chiffres, règles TikTok Shop NON NÉGOCIABLES (section 5), façon de travailler (section 8).\n2. `entreprise/organisation.md` : la hiérarchie et le circuit du travail.\n3. `entreprise/decisions.md` : décisions de Karim. Elles s'imposent à tous.\n4. `entreprise/backlog.md` : tâches, responsables, statuts, idées.\n5. Le dernier journal de `entreprise/journal/`, les derniers rapports de `entreprise/rapports/` et les livrables récents de `livrables/`.\n\n## 2. L'entreprise (27 personnes) et leurs méthodes\nChaque personne a sa méthode dans `.claude/skills/<skill>/SKILL.md` : utilise-la quand elle travaille.\n- **Directeur général : Alexandre** (general-manager)\n- **Stratégie** — cheffe : Margaux (department-head) — Camille (strategic-planning), Hugo (go-to-market-plan), Léa (pricing-strategist), Victor (competitor-intel)\n- **Marketing** — chef : Antoine (department-head) — Zoé (marketing-ideas), Jules (brand-copywriter), Nora (cro-optimization), Emma (product-hunt-launch-plan), Léna (product-visuals) et Théo (listing-designer, studio : `node studio/render.cjs`)\n- **Contenu & réseaux** — cheffe : Chloé (department-head) — Sacha (linkedin-writer), Tom (x-writer), Inès (viral-hook-creator), Lou (lead-magnet-generator)\n- **Ventes & opérations** — chef : Bastien (department-head) — Malik (outreach-specialist), Yanis (prd-generator), Clara (sop-creator)\n- **Projets & Nouveautés** — cheffe : Sofia (department-head) — Sami (product-scout), Maëlle (margin-analyst), Noé (trend-scout), Jade (launch-manager)\n\n## 3. Déroulé de la journée (respecte la hiérarchie)\na) **Ouverture par Alexandre** : 1 à 3 objectifs chiffrés du jour (chiffre d'affaires, marge, stock, nouveau produit), tirés des décisions de Karim et du backlog.\nb) **Répartition par les chefs de pôle** : chaque chef concerné donne une tâche claire à ses collègues.\nc) **Réunion d'équipe** : les collègues de tous les pôles se parlent, se challengent et se passent le relais (ex. Sami trouve → Maëlle chiffre → Noé vérifie la demande → Jade planifie → Léna et Théo font les visuels → Inès et Jules écrivent les vidéos). Ils peuvent proposer leurs PROPRES idées pour gagner plus d'argent ; toute idée nouvelle va dans « Idées de l'équipe » du backlog, chiffrée.\nd) **Travail réel** : 2 à 4 tâches parmi les plus rentables du backlog, faites vraiment, avec recherche web (WebSearch, WebFetch) : liens réels, prix réels, sources datées, aucun chiffre inventé (sinon « Non trouvé »). Fais un vrai travail de fond. Tu peux lancer des sous-agents en parallèle. Chaque livrable va dans `livrables/<skill-de-l-auteur>/<AAAA-MM-JJ>-<sujet>.md`. Toute proposition est chiffrée en marge nette par vente. Respecte toujours les règles TikTok Shop.\ne) **Contrôle par les chefs de pôle** : chaque livrable est relu par le chef de son pôle avec la grille de `department-head` → « Validé » ou « À corriger ». Les corrections sont faites tout de suite, puis relues. Le verdict est noté en tête du livrable.\nf) **Rapports des chefs** : un fichier par pôle qui a travaillé : `entreprise/rapports/<AAAA-MM-JJ>-<pole>.md`.\ng) **Comité des chefs + rapport de direction** : Alexandre vérifie les rapports, arbitre, demande les dernières corrections, puis rédige le rapport de direction. Il propose au maximum 3 décisions à Karim, avec options chiffrées et recommandation. Personne n'engage d'argent (stock, pub payante) sans décision de Karim.\nh) **Backlog** : mets à jour statuts, liens des livrables, nouvelles tâches.\n\n## 4. Compte rendu\nÉcris `entreprise/journal/<AAAA-MM-JJ>.md` (date de Paris), puis `git add -A && git commit -m \"Journée de travail <date>\" && git pull --rebase origin claude/new-session-mx7nnp && git push origin claude/new-session-mx7nnp` (réessaie le push jusqu'à 4 fois en cas d'erreur réseau). Si l'outil PushNotification existe, envoie à Karim une notification d'une ligne.\n\nTon DERNIER message doit être ce compte rendu, en français, court et lisible sur téléphone, avec exactement ces sections :\n## Rapport du directeur\n(Alexandre : état de l'entreprise en 3 lignes — ventes, stock, marge, nouveau produit — et objectifs du jour atteints ou non)\n## Réunion du jour\n(le dialogue entre collègues et chefs, 6 à 12 répliques au format « **Prénom** : … »)\n## Travail fait et contrôlé\n(une puce par livrable : qui, quoi, résultat clé chiffré, verdict du chef, chemin du fichier)\n## Rapports des pôles\n(une ligne par chef de pôle : ce qui est validé, bloqué, besoin)\n## Décisions pour Karim\n(numérotées, avec options chiffrées et recommandation d'Alexandre)\n## Demain\n(2 à 3 tâches prévues)\n\nPuis, tout à la fin, un bloc de code json (et rien après) qui sert à animer les bureaux :\n```json\n{\"date\": \"AAAA-MM-JJ\", \"actifs\": [\"skill-ou-id\", \"...\"], \"decisions\": [{\"id\": \"d1\", \"question\": \"…\", \"options\": [\"…\", \"…\"], \"recommandation\": \"…\"}]}\n```\nDans \"actifs\", mets les skills de ceux qui ont travaillé ; pour les chefs, mets \"head-strategie\", \"head-marketing\", \"head-contenu\", \"head-ventes\", \"head-projets\" ; pour le directeur, \"general-manager\".\n\n## 5. Messages de Karim dans cette session\nKarim peut t'écrire entre deux journées (« DÉCISION DE KARIM : … » ou « MESSAGE DE KARIM À L'ÉQUIPE : … »). Dans ce cas : mets-toi à jour sur la branche, ajoute la décision ou la consigne en haut de `entreprise/decisions.md` avec la date, mets le backlog à jour, commit, pull --rebase, push, et réponds en 2 lignes (au nom d'Alexandre) ce que l'entreprise va faire. Ne mets PAS de bloc json dans ces réponses courtes.\n\n## 6. Montrer ton avancement en direct dans les bureaux (important)\nLes bureaux d'Astoria (page https://claude.ai/artifact/RNJC2sv2aRo1wpUWfap1VP) affichent en direct le travail de l'entreprise grâce au document `equipe/etat` de la base de données de la page. Charge l'outil avec ToolSearch (`select:ArtifactData`). Lis d'abord le document (action `get`, url ci-dessus, collection `equipe`, doc_id `etat`) pour connaître sa `version`, puis écris-le avec `update` et `if_version` (ou `set` s'il n'existe pas) :\n- **au début de la journée** : `{\"status\": \"working\", \"tache\": \"<objectif du jour, 1 phrase>\", \"activites\": {\"<id>\": \"<ce qu'il fait, 30 caractères max>\", ...}, \"updatedAt\": \"<date ISO>\"}` (4 à 10 personnes, ids = skills ou head-… ou general-manager) ;\n- **à chaque nouvelle étape** (répartition, travail, contrôle, comité) : mets à jour `tache` et `activites` (ces phrases s'affichent dans les bulles de dialogue) ;\n- **à la fin**, juste avant ton dernier message : `{\"status\": \"done\", \"report\": \"<ton compte rendu complet, bloc json final compris>\", \"reportKey\": \"<AAAA-MM-JJ>-<HHMM>\", \"updatedAt\": \"<date ISO>\"}`.\nSi l'outil n'est pas disponible ou refuse l'écriture, continue ta journée normalement.\n";
   // Contexte complet fourni par le fondateur (copie de FOUNDER_CONTEXT.md du dépôt)
   const BASE_CONTEXT = "# CONTEXTE ENTREPRISE — ASTORIA MODS\n\nTu es un agent IA qui travaille pour Astoria Mods. Lis ce contexte en entier avant chaque tâche. Il décrit l'entreprise, le produit, les chiffres, ce qui a déjà été fait et les règles à respecter.\n\n---\n\n## 0. Situation actuelle (octobre 2026) — À LIRE EN PREMIER\n\n- La montre connectée à 15 € est un **ancien business** : elle a déjà été rentabilisée. Il reste **environ 15 montres en stock** à **écouler** (déstockage).\n  - Comme ce stock est déjà payé et rentabilisé, le prix d'achat ne compte plus pour le déstockage : toute vente qui rapporte encore de l'argent après les frais TikTok Shop est bonne à prendre.\n  - La montre se vend vite et facilement : c'est un bon produit d'entrée de gamme.\n- **Nouvelle direction** : lancer un **nouveau produit avec une marge nette plus grosse**. Piste n° 1 : un **meilleur modèle de montre connectée** (ex. écran AMOLED), en gardant la montre actuelle comme entrée de gamme. D'autres produits restent possibles.\n- **Projet suivant** : relier TikTok Shop (centre vendeur, commandes, statistiques, vidéos) aux bureaux d'Astoria pour que toute l'équipe suive le compte.\n\n## 1. L'entreprise\n\n- **Nom** : Astoria Mods\n- **Logo** : monogramme « AM » avec deux horloges\n- **Activité** : vente de montres connectées petit prix, 100 % via **TikTok Shop** (France)\n- **Fondateur** : Karim, basé en Normandie (Caen). Il a un SIRET. Il gère Astoria Mods **en parallèle d'un emploi salarié** : son temps est limité, donc tout ce que tu proposes doit être simple, rapide à exécuter et rentable.\n- **Stade** : démarrage. Premières ventes début octobre 2026 (environ 1 vente par jour les premiers jours).\n\n## 2. Le produit\n\n- **Montre connectée 49 mm**, style « ultra » (boîtier carré sport), bracelet **orange ou noir**\n- Écran HD ~1,99\" (320 × 380 px) — *certaines vidéos indiquent 2,09\", à vérifier avant de publier un chiffre*\n- Fonctions : nombreux cadrans au choix (dont photo perso), notifications appels/messages, modes sport, pas, cardio, sommeil, jeux (ex. Snake), compatible iOS & Android en Bluetooth\n- Référence fournisseur proche : type « T900 Ultra »\n- **Prix de vente : 15 €** (les anciennes vidéos affichent 14,99 € : le prix annoncé dans une vidéo doit toujours correspondre au prix de la boutique)\n- **Livraison facturée au client : 4,99 €**, étiquette **fournie par TikTok Shop**\n\n## 3. Positionnement\n\n- **Cible** : petits budgets, jeunes, gens qui veulent le look d'une montre « ultra » sans payer 800 €\n- **Promesse** : « le style d'une grosse montre connectée pour le prix d'un menu »\n- **Slogan utilisé** : « Ton temps. Ton style. »\n- **Ton** : direct, tutoiement, énergique, emojis avec modération, jamais de jargon technique\n\n## 4. Économie (à garder en tête pour toute décision)\n\n**Frais TikTok Shop par commande (relevé réel, produit à 15 €) : 1,85 €**\n- Commission TikTok Shop : 1,33 € (~9 % du prix produit)\n- Frais de service REP (éco-contributions) : 0,50 €, soit emballage/papier 0,09 € + piles/batteries 0,27 € + DEEE 0,14 €\n- Frais de promotion Smart : 0,02 €\n\n**Modèle actuel (depuis octobre 2026)** : le client paie 4,99 € de livraison et TikTok Shop fournit l'étiquette.\n- Encaissé estimé par vente : 15 € − 1,85 € ≈ **13,15 €**, avant prix d'achat de la montre\n- *À confirmer sur le détail de règlement d'une commande récente* (vérifier qu'aucun frais d'étiquette n'est retenu en plus)\n\n**Ancien modèle (abandonné)** : livraison 3,99 € payée par le client, étiquette achetée par Karim (Mondial Relay ~4,99 €).\n- Règlement TikTok : 18,99 € − 1,85 € = 17,14 €, moins l'étiquette ≈ 12,15 € net\n- Le nouveau modèle rapporte donc environ **1 € de plus par vente** et supprime la gestion des étiquettes\n- Prix d'achat unitaire : **≈ 7,09 €** sur AliExpress (prix relevé le 20/10/2026 sur le lien du fournisseur ; peut inclure une remise « nouveau client » et hors frais de port éventuels : **à confirmer** sur la prochaine commande)\n- Fournisseur : AliExpress, https://fr.aliexpress.com/item/1005012967340775.html — délai de réapprovisionnement : **[À COMPLÉTER]**\n- **Marge nette estimée par vente : 13,15 € − 7,09 € ≈ 6,06 €** (avant frais de port fournisseur et coûts de pub)\n- Stock actuel : **≈ 15 montres**, à écouler (déjà rentabilisées)\n\nToute proposition (promo, concours, pub) doit être chiffrée en **marge nette par vente** après commission et livraison.\n\n## 5. Règles TikTok Shop — NON NÉGOCIABLES\n\n1. **Ne jamais utiliser « Watch Ultra », « Apple » ou tout nom de marque déposée** dans les titres, descriptions ou vidéos. Risque de signalement propriété intellectuelle. Titre recommandé : « Montre connectée 49 mm écran 1,99\" ».\n2. **Pas d'affirmations invérifiables** type « la seule à 14,99 € ». Préférer « Prix mini : 14,99 € » ou « 14,99 € seulement ».\n3. **Expédition sous 3 jours ouvrés avec numéro de suivi**, uniquement via transporteurs agréés (Colissimo, Chronopost, Mondial Relay, Colis Privé, DPD, GLS…). La liste de colisage n'est pas une étiquette.\n4. **Jamais de vidéos ou images d'autres créateurs** sans autorisation écrite. Uniquement du contenu filmé par Astoria Mods ou créé de zéro.\n5. **Concours** : toujours ajouter « sans obligation d'achat », « non affilié à TikTok », la date du tirage, et filmer le tirage (outil de tirage au sort de commentaires).\n\n## 6. Ce qui a déjà été fait\n\n- **Vidéo unboxing / démo** (28 s, 9:16) : boîte → montre en main → cadrans → menu → modes sport → Snake → capteur cardio → fin « Lien dans le panier », badge prix 14,99 € affiché en continu\n- **Pub animée** avec le logo : intro logo, slogan, écran animé (heure, pas, cardio, appel entrant), atouts, fin « Dispo sur TikTok Shop » ; musique électro 128 BPM ; exportée en MP4 1080×1920\n- **Version avec accroche prix** « Seulement 14,99 € » sur les 4 premières secondes + sticker prix à la fin\n- **Concours** : 3 gagnants, chaque gagnant fait gagner l'ami identifié = 6 montres. Conditions : s'abonner, liker, identifier un ami\n- Le vendeur a passé le **quiz de période probatoire** TikTok Shop\n\n## 7. Ce qui marche en contenu\n\n- **Accroche prix dans les 2 premières secondes** (le prix est l'argument n°1)\n- Vidéos courtes (15–30 s), rythmées, uniquement les plans nets et utiles\n- **Pas de musique intégrée** quand c'est possible : ajouter un **son tendance directement dans TikTok** pour la portée\n- **Descriptions courtes** : 1–2 lignes + 5 hashtags ciblés max. Exemple :\n  > Montre connectée à 14,99€ 😱 Parfait pour les petits budgets ⌚🛒\n  > #montreconnectee #smartwatch #tiktokshop #bonplan #petitbudget\n- **Toujours épingler le produit TikTok Shop** sur la vidéo\n- Concours et commentaires = engagement ; le tirage filmé devient un contenu en plus\n\n## 8. Comment tu dois travailler\n\n- Réponds **en français**, de façon **directe et concise**. Pas de longues explications, pas de solutions sur-compliquées.\n- Donne des **livrables prêts à l'emploi** (texte à copier, script de vidéo, calcul) plutôt que des conseils généraux.\n- Si une info manque (prix d'achat, stock…), **demande-la en une ligne** au lieu d'inventer.\n- Si une idée viole une règle de la section 5, **dis-le clairement** et propose une alternative conforme.\n- Priorité absolue : **vendre plus, avec une marge positive, sans se faire bloquer par TikTok Shop.**\n";
 
   // ---------- L'équipe ----------
-  const POLES = ["Stratégie", "Marketing", "Contenu & réseaux", "Ventes & opérations", "Projets & Nouveautés"];
+  const POLES = ["Stratégie", "Marketing", "Contenu & réseaux", "Ventes & opérations", "Projets & Nouveautés", "Direction"];
   const TEAM = [
+    { id: "general-manager", name: "Alexandre", role: "Directeur général", pole: 5, ceo: true, coat: "#1d2433", hair: "#3a2414",
+      pitch: "Je dirige l'entreprise : je fixe les objectifs chiffrés, je pilote les 5 chefs de pôle, je vérifie leurs rapports et je te propose les décisions.", ask: ["Où en est l'entreprise ?", "Quelles sont tes priorités cette semaine ?"],
+      job: "Fais le point complet de l'entreprise (ventes, stock, marge, nouveau produit), fixe les 3 objectifs chiffrés de la semaine et répartis-les entre les chefs de pôle." },
+    { id: "head-strategie", skill: "department-head", name: "Margaux", role: "Cheffe du pôle Stratégie", pole: 0, head: true, coat: "#22406a", hair: "#7a2e1a",
+      pitch: "Je dirige le pôle Stratégie : je répartis le travail de Camille, Hugo, Léa et Victor, je contrôle chaque livrable et je fais le rapport au directeur.", ask: ["Qu'a validé ton pôle aujourd'hui ?", "Qu'est-ce qui bloque ?"],
+      job: "Relis et contrôle tous les livrables récents du pôle Stratégie avec ta grille, fais corriger ce qui doit l'être et écris le rapport du pôle." },
+    { id: "head-marketing", skill: "department-head", name: "Antoine", role: "Chef du pôle Marketing", pole: 1, head: true, coat: "#8c2f1e", hair: "#2a1d14",
+      pitch: "Je dirige le Marketing et le Studio visuels : je répartis le travail, je contrôle chaque livrable et je fais le rapport au directeur.", ask: ["Qu'a validé ton pôle aujourd'hui ?", "Les visuels sont prêts ?"],
+      job: "Relis et contrôle tous les livrables récents du pôle Marketing (idées, textes, visuels), fais corriger ce qui doit l'être et écris le rapport du pôle." },
+    { id: "head-contenu", skill: "department-head", name: "Chloé", role: "Cheffe du pôle Contenu & réseaux", pole: 2, head: true, coat: "#2f6b44", hair: "#c9a25a",
+      pitch: "Je dirige le pôle Contenu : je contrôle chaque script, accroche et post avant publication, et je fais le rapport au directeur.", ask: ["Quelles vidéos publier cette semaine ?", "Qu'a validé ton pôle ?"],
+      job: "Relis et contrôle tous les scripts, accroches et posts récents du pôle Contenu (règles TikTok Shop, prix exact), fais corriger et écris le rapport du pôle." },
+    { id: "head-ventes", skill: "department-head", name: "Bastien", role: "Chef du pôle Ventes & opérations", pole: 3, head: true, coat: "#5a3d22", hair: "#1c1c1c",
+      pitch: "Je dirige les Ventes et les opérations : prospection, procédures, expéditions. Je contrôle et je fais le rapport au directeur.", ask: ["Où en sont les expéditions ?", "Qu'a validé ton pôle ?"],
+      job: "Relis et contrôle les livrables récents du pôle Ventes & opérations, vérifie que les procédures d'expédition respectent les 3 jours ouvrés, et écris le rapport du pôle." },
+    { id: "head-projets", skill: "department-head", name: "Sofia", role: "Cheffe du pôle Projets & Nouveautés", pole: 4, head: true, coat: "#6b5a12", hair: "#2a1d14",
+      pitch: "Je dirige les Projets : nouveau produit, marges, tendances, lancement. Je contrôle chaque analyse et je fais le rapport au directeur.", ask: ["Où en est la P86 ?", "Qu'a validé ton pôle ?"],
+      job: "Relis et contrôle les analyses récentes du pôle Projets (fournisseurs, marges, tendances, plan de lancement), vérifie la cohérence des chiffres et écris le rapport du pôle." },
     { id: "strategic-planning", name: "Camille", role: "Stratégie & priorités", pole: 0, coat: "#2f5d8c", hair: "#2a1d14",
       pitch: "Je t'aide à choisir les 3 prochains coups qui feront vraiment avancer ton entreprise.", ask: ["Quelles sont mes 3 priorités ce mois-ci ?", "Qu'est-ce qui freine ma croissance ?"],
       job: "Analyse le marché d'Astoria Mods sur internet et propose-moi mes 3 priorités pour le trimestre." },
@@ -312,7 +330,7 @@
   const tile = new Uint8Array(W * H), block = new Uint8Array(W * H);
   const set = (x, y, t) => { if (x >= 0 && y >= 0 && x < W && y < H) tile[y * W + x] = t; };
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) set(x, y, (x === 0 || y === 0 || x === W - 1 || y === H - 1) ? 1 : 0);
-  const ROOMS = [[1, 1, 16, 10], [23, 1, 16, 10], [1, 17, 16, 10], [23, 17, 16, 10], [1, 28, 38, 9]];
+  const ROOMS = [[1, 1, 16, 10], [23, 1, 16, 10], [1, 17, 16, 10], [23, 17, 16, 10], [1, 28, 38, 9], [18, 1, 4, 3]];
   ROOMS.forEach(([ox, oy, w, h], p) => { for (let y = oy; y < oy + h; y++) for (let x = ox; x < ox + w; x++) set(x, y, 2 + p); });
   for (let x = 0; x < W; x++) if (x < 18 || x > 21) { set(x, 11, 1); set(x, 16, 1); }
   for (let y = 0; y < 27; y++) if (y < 12 || y > 15) { set(17, y, 1); set(22, y, 1); }
@@ -322,11 +340,13 @@
 
   const desks = [], props = [];
   ROOMS.forEach(([ox, oy, w, h], p) => {
-    (p === 4 ? [[4, 3], [12, 3], [23, 3], [31, 3]] : p === 1 ? [[2, 2], [9, 2], [2, 6], [9, 6], [13, 2], [13, 6]] : [[2, 2], [9, 2], [2, 6], [9, 6]]).forEach(([dx, dy], k) => {
-      const d = { x: ox + dx, y: oy + dy, pole: p, k };
+    (p === 5 ? [[0, 1]] : p === 4 ? [[4, 3], [12, 3], [23, 3], [31, 3]] : p === 1 ? [[2, 2], [9, 2], [2, 6], [9, 6], [13, 2], [13, 6]] : [[2, 2], [9, 2], [2, 6], [9, 6]]).forEach(([dx, dy], k) => {
+      const d = { x: ox + dx, y: oy + dy, pole: p, k, ceo: p === 5 };
       desks.push(d); for (let i = 0; i < 3; i++) block[d.y * W + d.x + i] = 1;
     });
-    props.push({ kind: "plant", x: ox + w - 1, y: oy }, { kind: "plant", x: ox, y: oy + h - 1 }, { kind: "shelf", x: ox + w - 2, y: oy + h - 1 });
+    if (p < 5) { const [hx, hy] = p === 4 ? [17, 6] : [12, 8], d = { x: ox + hx, y: oy + hy, pole: p, k: "head", head: true }; desks.push(d); for (let i = 0; i < 3; i++) block[d.y * W + d.x + i] = 1; }
+    if (p === 5) return;
+    props.push({ kind: "plant", x: ox + w - 1, y: oy }, { kind: "plant", x: ox, y: oy + h - 1 }, { kind: "shelf", x: ox + w - 3, y: oy });
   });
   props.push({ kind: "board", x: 18, y: 12 }, { kind: "coffee", x: 21, y: 12 }, { kind: "plant", x: 18, y: 15 }, { kind: "plant", x: 21, y: 15 });
   for (const p of props) { block[p.y * W + p.x] = 1; if (p.kind === "board") block[p.y * W + p.x + 1] = 1; }
@@ -341,7 +361,7 @@
 
   const slot = {};
   TEAM.forEach(m => {
-    const k = (slot[m.pole] = (slot[m.pole] ?? -1) + 1), d = desks.find(d => d.pole === m.pole && d.k === k);
+    const k = m.head ? "head" : (slot[m.pole] = (slot[m.pole] ?? -1) + 1), d = desks.find(d => d.pole === m.pole && d.k === k);
     m.desk = d; d.owner = m;
     Object.assign(m, { hx: d.x + 1.5, hy: d.y + 1.7, step: 0, face: 1, moving: false, wait: rnd() * 3, state: null });
     m.x = m.tx = m.hx; m.y = m.ty = m.hy;
@@ -366,7 +386,7 @@
     const n = parseInt(hex.slice(1), 16), m = v => Math.max(0, Math.min(255, Math.round(v * f)));
     return `rgb(${m(n >> 16)},${m((n >> 8) & 255)},${m(n & 255)})`;
   };
-  const FLOOR = ["#e6dfd0", null, "#c9d6e8", "#f0d6c6", "#d3e5c6", "#ddd3ea", "#f2e3b3"];
+  const FLOOR = ["#e6dfd0", null, "#c9d6e8", "#f0d6c6", "#d3e5c6", "#ddd3ea", "#f2e3b3", "#d9c7a6"];
   const ellipse = (x, y, rx, ry, c) => { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); };
   const circle = (x, y, r, c) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); };
   const rect = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
@@ -396,12 +416,12 @@
       }
     }
     // tableaux blancs des pôles
-    ROOMS.forEach(([ox, oy], i) => {
-      const X = sx(ox + 5), Y = sy(oy - 1) + ppt * 0.05, w = ppt * 6, h = ppt * 0.5;
+    ROOMS.forEach(([ox, oy, rw], i) => {
+      const cells = Math.min(6, rw), X = sx(i === 5 ? ox : ox + 5), Y = sy(oy - 1) + ppt * 0.05, w = ppt * cells, h = ppt * 0.5;
       if (X > vw || X + w < 0 || Y > vh || Y + h < 0) return;
       rect(X, Y, w, h, "#fbfbf6"); ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2; ctx.strokeRect(X, Y, w, h);
       ctx.font = `700 ${Math.round(ppt * 0.32)}px "Pixelify Sans", monospace`; ctx.fillStyle = "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.fillText(`Pôle ${POLES[i]}`, X + w / 2, Y + h / 2 + 1);
+      ctx.fillText(i === 5 ? "Direction" : `Pôle ${POLES[i]}`, X + w / 2, Y + h / 2 + 1);
     });
   }
 
@@ -413,7 +433,8 @@
     rect(X + u * 1.15, Y + u * 1.4, u * 0.7, u * 0.12, d === myDesk ? "#8c3422" : "#333844");
     // plateau
     rect(X + 2, Y + u * 0.2, u * 3 - 4, u * 0.85, "#5d4c40");
-    rect(X + 2, Y + u * 0.12, u * 3 - 4, u * 0.78, "#b98a5a");
+    rect(X + 2, Y + u * 0.12, u * 3 - 4, u * 0.78, d.head || d.ceo ? "#7a4e2e" : "#b98a5a");
+    if (d.head || d.ceo) { rect(X + u * 2.05, Y + u * 0.62, u * 0.8, u * 0.2, "#e2b84a"); ctx.fillStyle = "#3a2a1a"; ctx.font = `800 ${Math.round(u * 0.14)}px Nunito, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(d.ceo ? "DIRECTEUR" : "CHEF", X + u * 2.45, Y + u * 0.725); }
     rect(X + 2, Y + u * 0.12, u * 3 - 4, 3, "#d0a473");
     // écran
     const sxm = X + u * 0.95, sym = Y - u * 0.38, sw = u * 1.1, sh = u * 0.72;
@@ -535,9 +556,15 @@
     "margin-analyst": ["Envoie-moi le prix livré", "Je calcule les marges nettes"],
     "trend-scout": ["Les AMOLED montent sur TikTok", "Format unboxing = top"],
     "launch-manager": ["Commande test de 10 pièces ?", "Planning sur 4 semaines"],
+    "general-manager": ["Objectif : vider le stock d'ici le 01/11", "Où en est la P86 ?", "Chefs de pôle : rapport à 17 h", "On vise plus de marge"],
+    "head-strategie": ["Je relis vos analyses", "Rapport Stratégie prêt"], "head-marketing": ["Je contrôle les visuels", "Rapport Marketing prêt"],
+    "head-contenu": ["Je relis les scripts", "Prix exact dans les vidéos ?"], "head-ventes": ["Expéditions sous 3 jours ?", "Rapport Ventes prêt"],
+    "head-projets": ["Je vérifie les marges", "Rapport Projets prêt"],
     "product-visuals": ["Image 1 : fond blanc, sans texte", "J'ai analysé 5 fiches concurrentes"],
     "listing-designer": ["Détourage terminé", "Il me faut tes photos de face"],
   };
+  const REVIEW = ["Validé ✓", "À corriger : ajoute la source", "Chiffre la marge nette", "Validé, je le mets au rapport", "Refais le titre, plus court", "Parfait, on publie"];
+  const BOSS = ["Bien, continue", "Priorité : la marge", "Je valide, on avance", "Envoie-moi les chiffres", "Bon travail, merci"];
   const REPLIES = ["OK, je regarde ça", "Envoie-moi les chiffres", "Bonne idée !", "Je m'en occupe", "On en parle en réunion", "Je te fais un retour", "Ça marche, je note", "Top, on avance"];
   const RELAY = {
     "product-scout": ["margin-analyst", "trend-scout", "launch-manager"], "margin-analyst": ["product-scout", "pricing-strategist", "launch-manager"],
@@ -557,9 +584,12 @@
     const r = Math.random(), deskBias = dayRunning() ? 0.62 : 0.5;
     if (r < deskBias) { m.mode = "desk"; m.timer = 12 + Math.random() * 22; if (Math.random() < 0.35) say(m, lineFor(m), 4); return; }
     if (r < 0.9) {
-      const ids = RELAY[m.id] || TEAM.filter(x => x !== m && x.pole === m.pole).map(x => x.id);
+      const myHead = TEAM.find(x => x.head && x.pole === m.pole && x !== m), ceo = byId["general-manager"];
+      const ids = m.ceo ? TEAM.filter(x => x.head).map(x => x.id)
+        : m.head ? [ceo.id, ceo.id, ...TEAM.filter(x => x.pole === m.pole && !x.head).map(x => x.id), ...TEAM.filter(x => x.head && x !== m).map(x => x.id)]
+        : Math.random() < 0.4 && myHead ? [myHead.id] : (RELAY[m.id] || TEAM.filter(x => x !== m && x.pole === m.pole).map(x => x.id));
       const who = byId[pick(ids.length ? ids : TEAM.filter(x => x !== m).map(x => x.id))];
-      if (who && who !== m && who.mode === "desk" && Math.hypot(who.x - who.hx, who.y - who.hy) < 0.2) { m.mode = "visit"; m.who = who; m.talk = 0; who.heldUntil = tNow + 60; return; }
+      if (who && who !== m && who.mode === "desk" && !(who.heldUntil > tNow) && Math.hypot(who.x - who.hx, who.y - who.hy) < 0.2) { m.mode = "visit"; m.who = who; m.talk = 0; who.heldUntil = tNow + 60; return; }
     }
     m.mode = "coffee"; m.talk = 0; m.cx = 19.6 + Math.random() * 1.2; m.cy = 13.3 + Math.random() * 0.8;
   }
@@ -573,7 +603,7 @@
     return false;
   }
   // Trajets par les portes : salle → porte → couloir → porte → salle
-  const DOORS = [[[8.5, 10.4], [8.5, 12.6]], [[30.5, 10.4], [30.5, 12.6]], [[8.5, 17.6], [8.5, 15.3]], [[30.5, 17.6], [30.5, 15.3]], [[19.5, 28.6], [19.5, 26.2]]];
+  const DOORS = [[[8.5, 10.4], [8.5, 12.6]], [[30.5, 10.4], [30.5, 12.6]], [[8.5, 17.6], [8.5, 15.3]], [[30.5, 17.6], [30.5, 15.3]], [[19.5, 28.6], [19.5, 26.2]], [[19.5, 4.3], [19.5, 6.5]]];
   const HUB = [19.5, 13.9];
   const roomOf = (x, y) => { const t = tile[Math.floor(y) * W + Math.floor(x)]; return t >= 2 ? t - 2 : -1; };
   function routeTo(m, tx, ty, dt) {
@@ -601,7 +631,11 @@
       const w = m.who;
       if (routeTo(m, w.hx + (m.desk.pole === w.desk.pole && m.hx < w.hx ? -0.75 : 0.75), w.hy + 0.05, dt)) {
         m.face = w.x > m.x ? 1 : -1; w.heldUntil = tNow + 3; w.face = m.x > w.x ? 1 : -1;
-        if (!m.talk) { m.talk = tNow; m.convo = [lineFor(m), pick(REPLIES), lineFor(m), pick(REPLIES)]; }
+        if (!m.talk) {
+          const answer = () => w.ceo ? pick(BOSS) : w.head && !m.head && !m.ceo ? pick(REVIEW) : pick(REPLIES);
+          const opener = !m.head && !m.ceo && w.head ? "Voici mon livrable" : m.head && w.ceo ? pick(["Rapport du pôle prêt", "Tout est contrôlé", lineFor(m)]) : lineFor(m);
+          m.talk = tNow; m.convo = [opener, answer(), lineFor(m), answer()];
+        }
         const k = Math.floor((tNow - m.talk) / 2.4);
         if (k < m.convo.length) { const speaker = k % 2 ? w : m; if (speaker.say !== m.convo[k]) say(speaker, m.convo[k], 2.3); }
         else { m.mode = "desk"; m.timer = 15 + Math.random() * 20; m.talk = 0; w.heldUntil = 0; }
@@ -731,9 +765,9 @@
   const avatar = (m, cls = "avatar") => { const a = el("span", cls, initials(m)); a.style.background = m.coat; return a; };
   function buildTeam() {
     const list = $("teamList"); list.replaceChildren();
-    POLES.forEach((pole, i) => {
-      const sec = el("div", "pole"), g = el("div", "pole-grid");
-      for (const m of TEAM.filter(m => m.pole === i)) {
+    [5, 0, 1, 2, 3, 4].forEach(i => {
+      const pole = POLES[i], sec = el("div", "pole"), g = el("div", "pole-grid");
+      for (const m of TEAM.filter(m => m.pole === i).sort((a, b) => (b.head ? 1 : 0) - (a.head ? 1 : 0))) {
         const b = el("button", "card"); b.type = "button";
         const t = el("span"); t.append(el("b", null, m.name), el("span", null, m.role));
         const st = { working: "En mission", starting: "En mission", waiting: "Attend ton accord", done: "Livrable prêt" }[m.state];
@@ -771,7 +805,7 @@
   let current = null, ctl = null, view = "talk";
 
   function instructions(m) {
-    const s = skills?.[m.id];
+    const s = skills?.[m.skill || m.id];
     const colleagues = TEAM.filter(x => x !== m).map(x => `- ${x.name} : ${x.role}`).join("\n");
     const refNames = s ? Object.keys(s.refs) : [];
     let refs = "";
@@ -789,6 +823,7 @@ Façon de répondre :
   - Tu ne peux ni créer de fichier ni générer de PDF ici : donne le contenu dans ta réponse, en Markdown.
   - Ignore les consignes qui parlent de $ARGUMENTS, de message « loaded », de dossiers de sortie ou de commandes à lancer.
 - Le contexte entreprise ci-dessous remplace le fichier FOUNDER_CONTEXT.md. Ne redemande pas ce qui y figure déjà, et respecte toujours ses règles TikTok Shop (section 5) et sa façon de travailler (section 8).
+- Hiérarchie : le directeur général est Alexandre ; ${m.ceo ? "tu diriges les 5 chefs de pôle" : m.head ? `tu diriges le pôle ${POLES[m.pole]} et tu contrôles le travail de ton équipe` : `ton chef de pôle est ${TEAM.find(x => x.head && x.pole === m.pole)?.name}`}. L'objectif commun : une entreprise rentable et en croissance.
 - Si une demande relève plutôt d'un collègue, dis-le et nomme-le. Tes collègues :
 ${colleagues}
 ${refNames.length && toolsOk ? `\nTu as des documents de référence ; consulte-les avec l'outil lire_reference quand ta méthode le demande : ${refNames.join(", ")}.\n` : ""}
@@ -878,7 +913,7 @@ ${refs}`;
     m.busy = true; setBusy(true);
     const mine = ctl = new AbortController();
     const turns = [{ role: "user", content: instructions(m) }, ...hist.slice(-20)];
-    const refs = skills?.[m.id]?.refs || {};
+    const refs = skills?.[m.skill || m.id]?.refs || {};
     const opts = { signal: mine.signal, onText: ({ text }) => { if (current !== m) return; out.classList.remove("thinking"); out.innerHTML = md(text); scrollDown(); } };
     if (toolsOk && Object.keys(refs).length) {
       opts.tools = [{
@@ -963,9 +998,9 @@ ${refs}`;
     return env.environment_id;
   }
   function missionPrompt(m, task) {
-    const s = skills?.[m.id], date = new Date().toISOString().slice(0, 10);
+    const s = skills?.[m.skill || m.id], date = new Date().toISOString().slice(0, 10);
     const slug = task.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "mission";
-    const refList = s ? Object.keys(s.refs).map(k => `.claude/skills/${m.id}/references/${k}.md`).join(", ") : "";
+    const sk = m.skill || m.id, refList = s ? Object.keys(s.refs).map(k => `.claude/skills/${sk}/references/${k}.md`).join(", ") : "";
     return `Tu es ${m.name}, ${m.role} dans l'équipe de ${company.nom || "l'entreprise"}. Le fondateur vient de te confier une mission depuis ton bureau. Tu travailles en autonomie complète.
 
 ## Ta mission
@@ -973,7 +1008,7 @@ ${task}
 
 ## Comment travailler
 - Tu as accès à internet : utilise la recherche web et la lecture de pages pour t'appuyer sur des faits réels et récents. Cite tes sources (lien + date). N'invente aucun chiffre : si une donnée est introuvable, écris « Non public ».
-- Suis ta méthode de travail : la skill « ${m.id} » (fichier .claude/skills/${m.id}/SKILL.md du dépôt, reprise ci-dessous)${refList ? `, avec ses documents de référence : ${refList}` : ""}.
+- Suis ta méthode de travail : la skill « ${sk} » (fichier .claude/skills/${sk}/SKILL.md du dépôt, reprise ci-dessous), et l'organisation décrite dans entreprise/organisation.md${refList ? `, avec ses documents de référence : ${refList}` : ""}.
 - Le fondateur n'est pas devant son écran : ne lui pose pas de question et n'utilise pas d'outil de question. Quand une information manque, fais l'hypothèse la plus raisonnable, note-la dans une section « Hypothèses » et continue.
 - Le contexte entreprise ci-dessous (aussi dans FOUNDER_CONTEXT.md du dépôt) s'applique à tout : respecte ses règles TikTok Shop (section 5), chiffre tes propositions en marge nette par vente, et donne des livrables prêts à l'emploi.
 - Travaille en français, avec un ton direct de collègue.
@@ -1346,7 +1381,7 @@ ${s ? s.skill : m.pitch}
     if (data && data.player) { player.x = data.player.x; player.y = data.player.y; clock = data.clock ?? clock; }
     try { window.claude?.hot?.snapshot?.(() => ({ player: { x: player.x, y: player.y }, clock })); } catch (_) {}
     refreshAgents();
-    if (!data?.player) showToast("Bienvenue dans tes bureaux", "21 collègues t'attendent dans leurs 5 pôles, dont le nouveau pôle Projets & Nouveautés. Parle-leur, ou confie-leur une mission : ils travaillent seuls, avec internet.", 5600);
+    if (!data?.player) showToast("Bienvenue dans tes bureaux", "Alexandre, tes 5 chefs de pôle et 21 collègues t'attendent. Parle-leur, ou confie-leur une mission : ils travaillent seuls, avec internet.", 5600);
     if (missions.some(ms => !FINAL.includes(ms.status) || !ms.report)) setTimeout(() => poll(true), 1500);
     setTimeout(() => pollJournal(true).then(() => { if (journalUnseen()) showToast("Ton équipe a travaillé", `${(journal.data?.decisions || []).length || "Des"} décision(s) t'attendent. Ouvre le Journal.`, 6000); }), 2500);
     let last = performance.now();
