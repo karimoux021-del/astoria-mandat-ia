@@ -1,11 +1,11 @@
-<title>Île d'Astoria</title>
+<title>Bureaux d'Astoria</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Nunito:wght@500;700;800&display=swap">
 <style>
-  /* Layout: le monde en plein écran ; HUD en pastilles parchemin ; discussion en panneau latéral (feuille du bas sur téléphone). Look unique, assumé, pour les deux thèmes. */
+  /* Layout: l'open space en plein écran ; HUD en pastilles ; panneau latéral (feuille du bas sur téléphone) pour discuter et suivre les missions. Look unique, assumé, pour les deux thèmes. */
   :root {
-    --sea: #1f5f8b;
+    --floor: #2d2a33;
     --parchment: #f6ecd2;
     --paper: #fffaf0;
     --ink: #3a2a1a;
@@ -13,13 +13,14 @@
     --gold: #f2b632;
     --leaf: #4f8f3c;
     --rust: #a8452a;
+    --sky: #2f6fa8;
     --display: "Pixelify Sans", "Courier New", monospace;
     --body: "Nunito", "Segoe UI", system-ui, sans-serif;
     color-scheme: light;
   }
   [hidden] { display: none !important; }
   html, body { height: 100%; }
-  body { background: var(--sea); color: var(--ink); font-family: var(--body); overflow: hidden; }
+  body { background: var(--floor); color: var(--ink); font-family: var(--body); overflow: hidden; }
   canvas { position: fixed; inset: 0; width: 100vw; height: 100%; display: block; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
 
   .hud { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); left: 0; right: 0;
@@ -30,29 +31,29 @@
     border-radius: 6px; box-shadow: 0 3px 0 var(--ink); padding: 6px 12px; font: 700 15px/1.2 var(--body); }
   .brand { font-family: var(--display); font-size: 20px; letter-spacing: 0.02em; }
   .clock { font-family: var(--display); font-weight: 500; font-variant-numeric: tabular-nums; }
-  .btn { cursor: pointer; }
+  .btn { cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
   .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 0 var(--ink); }
   .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
-  .btn:disabled { opacity: .55; cursor: default; transform: none; }
+  .btn:disabled { opacity: .55; cursor: default; transform: none; box-shadow: 0 3px 0 var(--ink); }
   .btn.primary { background: var(--leaf); color: var(--paper); }
   .btn.ghost { box-shadow: none; border-width: 1.5px; padding: 4px 10px; font-size: 13px; }
+  .count { background: var(--rust); color: var(--paper); border-radius: 999px; padding: 0 7px; font-size: 12px; line-height: 18px; font-variant-numeric: tabular-nums; }
   :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
   .help { position: fixed; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
     left: max(16px, env(safe-area-inset-left, 0px)); max-width: calc(100vw - 32px);
-    background: rgba(246, 236, 210, 0.92); border-radius: 6px; padding: 6px 10px; font-size: 13px; pointer-events: none; }
-  .toast { position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); width: min(520px, calc(100vw - 32px));
+    background: rgba(246, 236, 210, 0.94); border-radius: 6px; padding: 6px 10px; font-size: 13px; pointer-events: none; }
+  .toast { position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); width: min(540px, calc(100vw - 32px));
     text-align: center; background: var(--parchment); border: 3px solid var(--ink); border-radius: 8px; box-shadow: 0 5px 0 var(--ink);
-    padding: 14px 18px; pointer-events: none; }
+    padding: 14px 18px; pointer-events: none; z-index: 6; }
   .toast strong { display: block; font: 700 22px/1.2 var(--display); margin-bottom: 4px; text-wrap: balance; }
 
-  /* Panneaux */
   .panel { position: fixed; z-index: 5; background: var(--paper); border: 3px solid var(--ink); box-shadow: 0 6px 0 var(--ink);
     display: flex; flex-direction: column; top: calc(env(safe-area-inset-top, 0px) + 64px);
     right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-    width: min(440px, calc(100vw - 32px)); border-radius: 10px; overflow: hidden; }
+    width: min(460px, calc(100vw - 32px)); border-radius: 10px; overflow: hidden; }
   @media (max-width: 760px) {
-    .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 74%; border-radius: 14px 14px 0 0; border-bottom: 0; box-shadow: 0 -4px 0 var(--ink);
+    .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 76%; border-radius: 14px 14px 0 0; border-bottom: 0; box-shadow: 0 -4px 0 var(--ink);
       padding-bottom: env(safe-area-inset-bottom, 0px); }
   }
   .panel-head { display: flex; gap: 12px; align-items: center; padding: 12px 14px; background: var(--parchment); border-bottom: 2px solid var(--ink); }
@@ -61,7 +62,10 @@
   .who { min-width: 0; flex: 1; }
   .who h2 { margin: 0; font: 700 19px/1.15 var(--display); letter-spacing: 0.02em; }
   .who p { margin: 2px 0 0; font-size: 13px; color: var(--ink-soft); }
-  .close { flex: none; width: 36px; height: 36px; padding: 0; font-size: 18px; line-height: 1; }
+  .close { flex: none; width: 36px; height: 36px; padding: 0; font-size: 18px; line-height: 1; justify-content: center; }
+  .tabs { display: flex; border-bottom: 2px solid var(--ink); background: var(--parchment); }
+  .tabs button { flex: 1; border: 0; background: none; padding: 9px 8px; font: 800 14px/1.2 var(--body); color: var(--ink-soft); cursor: pointer; border-bottom: 3px solid transparent; }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--rust); background: var(--paper); }
   .panel-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
   .intro { background: var(--parchment); border-radius: 8px; padding: 10px 12px; font-size: 14px; line-height: 1.45; }
   .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
@@ -71,23 +75,41 @@
   .msg.me { align-self: flex-end; background: #2d4f7c; color: var(--paper); border-bottom-right-radius: 3px; white-space: pre-wrap; }
   .msg.them { align-self: flex-start; background: #f1e8d4; border-bottom-left-radius: 3px; }
   .msg.them.thinking { color: var(--ink-soft); font-style: italic; }
-  .msg.them > :first-child { margin-top: 0; } .msg.them > :last-child { margin-bottom: 0; }
-  .msg h1, .msg h2, .msg h3, .msg h4 { font-family: var(--display); font-size: 16px; margin: 12px 0 4px; letter-spacing: .02em; }
-  .msg ul, .msg ol { padding-left: 20px; margin: 6px 0; }
-  .msg p { margin: 6px 0; }
-  .msg code { background: rgba(58,42,26,.08); padding: 1px 4px; border-radius: 3px; font-size: 13px; }
-  .msg pre { background: rgba(58,42,26,.08); padding: 8px; border-radius: 6px; overflow-x: auto; }
-  .msg pre code { background: none; padding: 0; }
-  .msg table { border-collapse: collapse; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
-  .msg th, .msg td { border: 1px solid rgba(58,42,26,.25); padding: 4px 6px; text-align: left; vertical-align: top; }
-  .msg a { color: var(--rust); }
-  .msg-tools { display: flex; gap: 6px; margin-top: 6px; }
-  .note { font-size: 13px; color: var(--rust); align-self: flex-start; }
+  .md > :first-child { margin-top: 0; } .md > :last-child { margin-bottom: 0; }
+  .md h1, .md h2, .md h3, .md h4 { font-family: var(--display); font-size: 16px; margin: 12px 0 4px; letter-spacing: .02em; }
+  .md ul, .md ol { padding-left: 20px; margin: 6px 0; }
+  .md p { margin: 6px 0; }
+  .md code { background: rgba(58,42,26,.08); padding: 1px 4px; border-radius: 3px; font-size: 13px; }
+  .md pre { background: rgba(58,42,26,.08); padding: 8px; border-radius: 6px; overflow-x: auto; }
+  .md pre code { background: none; padding: 0; }
+  .md table { border-collapse: collapse; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
+  .md th, .md td { border: 1px solid rgba(58,42,26,.25); padding: 4px 6px; text-align: left; vertical-align: top; }
+  .md a { color: var(--rust); }
+  .msg-tools { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .note { font-size: 13px; color: var(--rust); align-self: flex-start; line-height: 1.4; }
   .composer { border-top: 2px solid var(--ink); padding: 10px; display: flex; gap: 8px; align-items: flex-end; background: var(--parchment); }
-  .composer textarea { flex: 1; min-width: 0; resize: none; border: 2px solid var(--ink); border-radius: 8px; padding: 8px 10px; font: 500 15px/1.4 var(--body);
-    background: var(--paper); color: var(--ink); max-height: 140px; }
+  textarea, input[type="text"] { border: 2px solid var(--ink); border-radius: 8px; padding: 8px 10px; font: 500 15px/1.4 var(--body); background: var(--paper); color: var(--ink); }
+  .composer textarea { flex: 1; min-width: 0; resize: none; max-height: 140px; }
   .foot { display: flex; justify-content: space-between; gap: 8px; padding: 0 12px 8px; background: var(--parchment); font-size: 12px; color: var(--ink-soft); flex-wrap: wrap; }
   .foot button { background: none; border: 0; color: var(--ink-soft); text-decoration: underline; cursor: pointer; font: inherit; padding: 0; }
+
+  .mission-new { background: var(--parchment); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .mission-new h3 { margin: 0; font: 700 16px/1.2 var(--display); }
+  .mission-new p { margin: 0; font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
+  .mission-new textarea { resize: vertical; min-height: 84px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .mission { border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; background: var(--paper); min-width: 0; }
+  .mission header { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
+  .mission h4 { margin: 0; font-size: 15px; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+  .mission .meta { font-size: 12px; color: var(--ink-soft); }
+  .pill { flex: none; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 9px; border: 1.5px solid currentColor; white-space: nowrap; }
+  .pill.working { color: #1f6fa8; } .pill.waiting { color: #b06a00; } .pill.done { color: #3f7d33; } .pill.failed { color: var(--rust); } .pill.starting { color: var(--ink-soft); }
+  .report { background: #f7f1e3; border-radius: 6px; padding: 10px; font-size: 14px; line-height: 1.5; max-height: 420px; overflow-y: auto; overflow-wrap: anywhere; }
+  .follow { display: flex; gap: 6px; }
+  .follow input { flex: 1; min-width: 0; font-size: 14px; padding: 6px 8px; }
+  .empty { font-size: 14px; color: var(--ink-soft); text-align: center; padding: 8px; }
+  .board-agent { display: flex; gap: 8px; align-items: center; font-weight: 800; font-size: 13px; }
+  .board-agent .avatar { width: 24px; height: 24px; font-size: 11px; }
 
   .team { display: flex; flex-direction: column; gap: 14px; }
   .pole h3 { margin: 0 0 6px; font: 700 15px/1.2 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
@@ -95,12 +117,12 @@
   .card { display: flex; gap: 10px; align-items: center; text-align: left; background: var(--parchment); border: 2px solid var(--ink); border-radius: 8px;
     padding: 8px; cursor: pointer; font: inherit; color: var(--ink); min-width: 0; }
   .card:hover { background: #fff1c7; }
-  .card .avatar { width: 32px; height: 32px; font-size: 14px; }
-  .card span.avatar { display: grid; color: var(--paper); font: 700 14px/1 var(--display); }
+  .card span.avatar { display: grid; width: 32px; height: 32px; color: var(--paper); font: 700 14px/1 var(--display); }
   .card b { display: block; font-size: 15px; } .card span { display: block; font-size: 12px; color: var(--ink-soft); line-height: 1.3; }
+  .card .state { color: #1f6fa8; font-weight: 800; }
   .form { display: flex; flex-direction: column; gap: 10px; }
   .form label { display: flex; flex-direction: column; gap: 4px; font-weight: 800; font-size: 13px; }
-  .form textarea, .form input { border: 2px solid var(--ink); border-radius: 6px; padding: 7px 9px; font: 500 14px/1.4 var(--body); background: var(--paper); color: var(--ink); resize: vertical; }
+  .form textarea { font-size: 14px; padding: 7px 9px; border-radius: 6px; resize: vertical; }
   .form p { margin: 0; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
   .saved { font-size: 13px; color: var(--leaf); font-weight: 800; }
   @media (prefers-reduced-motion: reduce) { .btn, .btn:hover, .btn:active { transform: none; } }
@@ -108,12 +130,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 
-<canvas id="world" aria-label="Le village d'Astoria : promène-toi et parle à tes collègues spécialisés"></canvas>
+<canvas id="world" aria-label="Les bureaux d'Astoria : promène-toi et parle à tes collègues, ou confie-leur des missions"></canvas>
 
 <div class="hud">
   <div class="group">
     <div class="chip brand">Astoria</div>
     <button class="btn" id="btnTeam" type="button">L'équipe</button>
+    <button class="btn" id="btnBoard" type="button">Missions <span class="count" id="activeCount" hidden>0</span></button>
     <button class="btn" id="btnCompany" type="button">Mon entreprise</button>
   </div>
   <div class="group">
@@ -122,27 +145,50 @@
   </div>
 </div>
 
-<div class="help" id="help">Flèches ou ZQSD, ou touche le sol pour marcher · Touche un collègue (ou E à côté de lui) pour lui parler</div>
+<div class="help" id="help">Flèches ou ZQSD, ou touche le sol pour marcher · Touche un collègue pour lui parler ou lui confier une mission</div>
 <div class="toast" id="toast" hidden></div>
 
-<section class="panel" id="chat" hidden aria-label="Discussion">
+<section class="panel" id="chat" hidden aria-label="Bureau du collègue">
   <div class="panel-head">
     <div class="avatar" id="chatAvatar"></div>
     <div class="who"><h2 id="chatName"></h2><p id="chatRole"></p></div>
-    <button class="btn close" id="chatClose" type="button" aria-label="Fermer la discussion">✕</button>
+    <button class="btn close" id="chatClose" type="button" aria-label="Fermer">✕</button>
   </div>
-  <div class="panel-body" id="chatBody"></div>
-  <form class="composer" id="composer">
-    <textarea id="chatInput" rows="2" placeholder="Écris ton message…" aria-label="Ton message"></textarea>
-    <button class="btn primary" id="chatSend" type="submit">Envoyer</button>
-    <button class="btn" id="chatStop" type="button" hidden>Stop</button>
-  </form>
-  <div class="foot"><span id="chatFoot">Entrée pour envoyer · Maj+Entrée pour aller à la ligne</span><button type="button" id="chatClear">Effacer la discussion</button></div>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" id="tabTalk" aria-selected="true">Discuter</button>
+    <button type="button" role="tab" id="tabWork" aria-selected="false">Missions</button>
+  </div>
+  <div id="talkView" class="panel-body" style="padding:0;gap:0">
+    <div class="panel-body" id="chatBody"></div>
+    <form class="composer" id="composer">
+      <textarea id="chatInput" rows="2" placeholder="Écris ton message…" aria-label="Ton message"></textarea>
+      <button class="btn primary" id="chatSend" type="submit">Envoyer</button>
+      <button class="btn" id="chatStop" type="button" hidden>Stop</button>
+    </form>
+    <div class="foot"><span>Entrée pour envoyer · Maj+Entrée pour aller à la ligne</span><button type="button" id="chatClear">Effacer la discussion</button></div>
+  </div>
+  <div id="workView" class="panel-body" hidden>
+    <div class="mission-new">
+      <h3>Confier une mission</h3>
+      <p id="missionHint"></p>
+      <textarea id="missionInput" aria-label="Décris la mission" placeholder="Ex. : Trouve les 5 concurrents d'Astoria Mandat IA en France, leurs prix et leurs points faibles."></textarea>
+      <div class="row"><button class="btn primary" id="missionGo" type="button">Lancer la mission</button><span class="note" id="missionNote" aria-live="polite"></span></div>
+    </div>
+    <div id="missionList" class="team"></div>
+  </div>
+</section>
+
+<section class="panel" id="boardPanel" hidden aria-label="Tableau des missions">
+  <div class="panel-head">
+    <div class="who"><h2>Tableau des missions</h2><p>Ce que ton équipe fait en ce moment, et ce qu'elle a livré.</p></div>
+    <button class="btn close" data-close="boardPanel" type="button" aria-label="Fermer le tableau">✕</button>
+  </div>
+  <div class="panel-body" id="boardList"></div>
 </section>
 
 <section class="panel" id="teamPanel" hidden aria-label="Annuaire de l'équipe">
   <div class="panel-head">
-    <div class="who"><h2>Annuaire de l'équipe</h2><p>15 collègues, 4 pôles. Choisis quelqu'un pour aller lui parler.</p></div>
+    <div class="who"><h2>L'équipe</h2><p>15 collègues, 4 pôles. Choisis quelqu'un pour aller à son bureau.</p></div>
     <button class="btn close" data-close="teamPanel" type="button" aria-label="Fermer l'annuaire">✕</button>
   </div>
   <div class="panel-body"><div class="team" id="teamList"></div></div>
@@ -150,7 +196,7 @@
 
 <section class="panel" id="companyPanel" hidden aria-label="Mon entreprise">
   <div class="panel-head">
-    <div class="who"><h2>Mon entreprise</h2><p>Tous tes collègues lisent cette fiche avant de te répondre.</p></div>
+    <div class="who"><h2>Mon entreprise</h2><p>Toute l'équipe lit cette fiche avant de travailler.</p></div>
     <button class="btn close" data-close="companyPanel" type="button" aria-label="Fermer la fiche entreprise">✕</button>
   </div>
   <div class="panel-body"><form class="form" id="companyForm"></form></div>
@@ -162,107 +208,110 @@
   const cv = document.getElementById("world"), ctx = cv.getContext("2d");
   const lc = document.createElement("canvas"), lctx = lc.getContext("2d");
   const $ = id => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (_) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} },
   };
+  const REPO = "https://github.com/karimoux021-del/astoria-mandat-ia";
+  const REPO_BRANCH = "claude/new-session-mx7nnp";
+  const CCR = "Claude Code Remote";
 
   // ---------- L'équipe ----------
   const POLES = ["Stratégie", "Marketing", "Contenu & réseaux", "Ventes & opérations"];
   const TEAM = [
     { id: "strategic-planning", name: "Camille", role: "Stratégie & priorités", pole: 0, coat: "#2f5d8c", hair: "#2a1d14",
-      pitch: "Je t'aide à choisir les 3 prochains coups qui feront vraiment avancer ton entreprise.", ask: ["Quelles sont mes 3 priorités ce mois-ci ?", "Qu'est-ce qui freine ma croissance ?"] },
+      pitch: "Je t'aide à choisir les 3 prochains coups qui feront vraiment avancer ton entreprise.", ask: ["Quelles sont mes 3 priorités ce mois-ci ?", "Qu'est-ce qui freine ma croissance ?"],
+      job: "Analyse le marché d'Astoria Mandat IA sur internet et propose-moi mes 3 priorités pour le trimestre." },
     { id: "go-to-market-plan", name: "Hugo", role: "Lancement & acquisition", pole: 0, coat: "#b5452f", hair: "#5a3a22",
-      pitch: "Je construis ton plan de lancement : le bon segment, les canaux, les messages, les jalons.", ask: ["Comment trouver mes 10 premiers clients ?", "Fais-moi un plan de lancement sur 90 jours"] },
+      pitch: "Je construis ton plan de lancement : le bon segment, les canaux, les messages, les jalons.", ask: ["Comment trouver mes 10 premiers clients ?", "Fais-moi un plan de lancement sur 90 jours"],
+      job: "Repère sur internet où se trouvent mes clients idéaux en France et construis mon plan de lancement sur 90 jours." },
     { id: "pricing-strategist", name: "Léa", role: "Prix & offres", pole: 0, coat: "#6b8e3a", hair: "#c9a25a",
-      pitch: "Je fixe tes prix et tes formules, adaptés au marché français (TVA, TTC, rétractation).", ask: ["Quel prix pour mon offre ?", "Propose-moi 3 formules"] },
+      pitch: "Je fixe tes prix et tes formules, adaptés au marché français (TVA, TTC, rétractation).", ask: ["Quel prix pour mon offre ?", "Propose-moi 3 formules"],
+      job: "Relève les prix réels de mes concurrents en ligne et propose-moi une grille de 3 formules." },
     { id: "competitor-intel", name: "Victor", role: "Veille concurrentielle", pole: 0, coat: "#4a4a5e", hair: "#1c1c1c",
-      pitch: "J'analyse tes concurrents : leurs forces, leurs faiblesses et leurs prochains mouvements.", ask: ["Analyse mon principal concurrent", "Comment me différencier ?"] },
+      pitch: "J'analyse tes concurrents : leurs forces, leurs faiblesses et leurs prochains mouvements, chiffres sourcés.", ask: ["Analyse mon principal concurrent", "Comment me différencier ?"],
+      job: "Trouve mes 5 principaux concurrents en France, avec leurs prix, leurs avis clients et leurs points faibles, sources à l'appui." },
     { id: "marketing-ideas", name: "Zoé", role: "Idées marketing", pole: 1, coat: "#d07a2c", hair: "#7a2e1a",
-      pitch: "Je pioche dans plus de 170 stratégies éprouvées celles qui collent à ton activité.", ask: ["5 idées marketing qui coûtent peu", "Une idée originale pour me faire connaître"] },
+      pitch: "Je pioche dans plus de 170 stratégies éprouvées celles qui collent à ton activité.", ask: ["5 idées marketing qui coûtent peu", "Une idée originale pour me faire connaître"],
+      job: "Regarde ce que font les entreprises de mon secteur qui marchent et sors-moi 10 idées marketing applicables cette semaine." },
     { id: "brand-copywriter", name: "Jules", role: "Copywriting", pole: 1, coat: "#8a4f8c", hair: "#3a2414",
-      pitch: "J'écris tes textes : publicités, pages de vente, e-mails, fiches produit.", ask: ["Écris le texte de ma page d'accueil", "Une pub Facebook pour mon offre"] },
+      pitch: "J'écris tes textes : publicités, pages de vente, e-mails, fiches produit.", ask: ["Écris le texte de ma page d'accueil", "Une pub Facebook pour mon offre"],
+      job: "Lis la page index.html du dépôt et réécris tous ses textes pour qu'ils donnent envie de me contacter." },
     { id: "cro-optimization", name: "Nora", role: "Conversion des pages", pole: 1, coat: "#2f7d8c", hair: "#2a1d14",
-      pitch: "J'audite ta landing page et je te dis quoi changer pour qu'elle convertisse mieux. Colle-moi son HTML ou décris-la.", ask: ["Les 5 erreurs qui tuent une landing page", "Je te colle le HTML de ma page"] },
+      pitch: "J'audite ta landing page et je te dis quoi changer pour qu'elle convertisse mieux.", ask: ["Les 5 erreurs qui tuent une landing page", "Je te colle le HTML de ma page"],
+      job: "Audite la page index.html du dépôt et propose une version améliorée prête à publier." },
     { id: "product-hunt-launch-plan", name: "Emma", role: "Lancement Product Hunt", pole: 1, coat: "#c2410c", hair: "#d9b26a",
-      pitch: "Je prépare ton lancement sur Product Hunt, de la préparation au jour J.", ask: ["Prépare mon lancement Product Hunt", "Product Hunt, c'est fait pour moi ?"] },
+      pitch: "Je prépare ton lancement sur Product Hunt, de la préparation au jour J.", ask: ["Prépare mon lancement Product Hunt", "Product Hunt, c'est fait pour moi ?"],
+      job: "Étudie les derniers lancements réussis de ma catégorie sur Product Hunt et prépare mon plan de lancement." },
     { id: "linkedin-writer", name: "Sacha", role: "Posts LinkedIn", pole: 2, coat: "#1f6fa8", hair: "#5a3a22",
-      pitch: "J'écris des posts LinkedIn qui se lisent jusqu'au bout, avec ta voix.", ask: ["Un post pour présenter mon entreprise", "3 idées de posts pour cette semaine"] },
+      pitch: "J'écris des posts LinkedIn qui se lisent jusqu'au bout, avec ta voix.", ask: ["Un post pour présenter mon entreprise", "3 idées de posts pour cette semaine"],
+      job: "Regarde les sujets qui marchent en ce moment sur LinkedIn dans mon secteur et écris-moi 5 posts prêts à publier." },
     { id: "x-writer", name: "Tom", role: "Posts X (Twitter)", pole: 2, coat: "#2b2b2b", hair: "#c9a25a",
-      pitch: "J'écris tes posts et tes threads pour X, courts et percutants.", ask: ["Un thread sur mon parcours de fondateur", "5 tweets sur mon produit"] },
+      pitch: "J'écris tes posts et tes threads pour X, courts et percutants.", ask: ["Un thread sur mon parcours de fondateur", "5 tweets sur mon produit"],
+      job: "Écris-moi 10 posts X et 1 thread pour la semaine, sur les tendances actuelles de mon secteur." },
     { id: "viral-hook-creator", name: "Inès", role: "Accroches", pole: 2, coat: "#b03a64", hair: "#2a1d14",
-      pitch: "Je trouve les premières lignes qui arrêtent le scroll.", ask: ["10 accroches pour une vidéo TikTok", "Améliore cette accroche"] },
+      pitch: "Je trouve les premières lignes qui arrêtent le scroll.", ask: ["10 accroches pour une vidéo TikTok", "Améliore cette accroche"],
+      job: "Trouve 20 accroches pour mes vidéos et posts, inspirées de ce qui marche en ce moment dans mon secteur." },
     { id: "lead-magnet-generator", name: "Lou", role: "Lead magnets", pole: 2, coat: "#3f8a5a", hair: "#7a2e1a",
-      pitch: "J'écris les posts qui offrent une ressource gratuite contre un commentaire ou un message.", ask: ["Un post pour offrir mon guide gratuit", "Quelle ressource gratuite proposer ?"] },
+      pitch: "J'écris les posts qui offrent une ressource gratuite contre un commentaire ou un message.", ask: ["Un post pour offrir mon guide gratuit", "Quelle ressource gratuite proposer ?"],
+      job: "Imagine la meilleure ressource gratuite pour attirer mes clients, rédige-la, puis écris le post qui l'offre." },
     { id: "outreach-specialist", name: "Malik", role: "Prospection", pole: 3, coat: "#7a5230", hair: "#1c1c1c",
-      pitch: "J'écris tes messages de prospection et tes relances : e-mail et LinkedIn.", ask: ["Une séquence de 3 e-mails de prospection", "Un message LinkedIn pour décrocher un appel"] },
+      pitch: "J'écris tes messages de prospection et tes relances : e-mail et LinkedIn.", ask: ["Une séquence de 3 e-mails de prospection", "Un message LinkedIn pour décrocher un appel"],
+      job: "Dresse une liste de 20 types d'entreprises ou de profils à démarcher, avec où les trouver, et écris la séquence de messages." },
     { id: "prd-generator", name: "Yanis", role: "Cahier des charges produit", pole: 3, coat: "#4b5d2a", hair: "#3a2414",
-      pitch: "Je transforme ton idée de produit en cahier des charges clair, prêt pour un développeur ou une IA.", ask: ["J'ai une idée d'application", "Rédige le cahier des charges de mon site"] },
+      pitch: "Je transforme ton idée de produit en cahier des charges clair, prêt pour un développeur ou une IA.", ask: ["J'ai une idée d'application", "Rédige le cahier des charges de mon site"],
+      job: "Rédige le cahier des charges complet du site d'Astoria Mandat IA, en t'inspirant des meilleurs sites du secteur." },
     { id: "sop-creator", name: "Clara", role: "Procédures (SOP)", pole: 3, coat: "#5d4a8c", hair: "#c9a25a",
-      pitch: "Je documente tes processus pas à pas, pour que tout le monde fasse pareil.", ask: ["Une procédure d'accueil d'un nouveau client", "Documente ma façon de répondre aux devis"] },
+      pitch: "Je documente tes processus pas à pas, pour que tout le monde fasse pareil.", ask: ["Une procédure d'accueil d'un nouveau client", "Documente ma façon de répondre aux devis"],
+      job: "Rédige la procédure complète de traitement d'une demande client, du premier contact à la facture." },
   ];
   const byId = Object.fromEntries(TEAM.map(m => [m.id, m]));
 
-  // ---------- Génération du monde (déterministe) ----------
-  const W = 72, H = 72, CX = 36, CY = 36;
+  // ---------- Plan des bureaux ----------
+  // 0 sol du couloir, 1 mur, 2..5 moquette des pôles
+  const W = 40, H = 28;
+  const tile = new Uint8Array(W * H), block = new Uint8Array(W * H);
+  const set = (x, y, t) => { if (x >= 0 && y >= 0 && x < W && y < H) tile[y * W + x] = t; };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) set(x, y, (x === 0 || y === 0 || x === W - 1 || y === H - 1) ? 1 : 0);
+  const ROOMS = [[1, 1], [23, 1], [1, 17], [23, 17]];
+  ROOMS.forEach(([ox, oy], p) => { for (let y = oy; y < oy + 10; y++) for (let x = ox; x < ox + 16; x++) set(x, y, 2 + p); });
+  for (let x = 0; x < W; x++) if (x < 18 || x > 21) { set(x, 11, 1); set(x, 16, 1); }
+  for (let y = 0; y < H; y++) if (y < 12 || y > 15) { set(17, y, 1); set(22, y, 1); }
+  [[8, 11], [9, 11], [30, 11], [31, 11], [8, 16], [9, 16], [30, 16], [31, 16], [17, 5], [17, 6], [22, 5], [22, 6], [17, 21], [17, 22], [22, 21], [22, 22]].forEach(([x, y]) => set(x, y, 0));
+  const isWall = (x, y) => x < 0 || y < 0 || x >= W || y >= H || tile[y * W + x] === 1;
+
+  const desks = [], props = [];
+  ROOMS.forEach(([ox, oy], p) => {
+    [[2, 2], [9, 2], [2, 6], [9, 6]].forEach(([dx, dy], k) => {
+      const d = { x: ox + dx, y: oy + dy, pole: p, k };
+      desks.push(d); for (let i = 0; i < 3; i++) block[d.y * W + d.x + i] = 1;
+    });
+    props.push({ kind: "plant", x: ox + 15, y: oy }, { kind: "plant", x: ox, y: oy + 9 }, { kind: "shelf", x: ox + 14, y: oy + 9 });
+  });
+  props.push({ kind: "board", x: 18, y: 12 }, { kind: "coffee", x: 21, y: 12 }, { kind: "plant", x: 18, y: 15 }, { kind: "plant", x: 21, y: 15 });
+  for (const p of props) { block[p.y * W + p.x] = 1; if (p.kind === "board") block[p.y * W + p.x + 1] = 1; }
+  const myDesk = desks.find(d => d.pole === 3 && d.k === 3);
+
+  const walkTile = (tx, ty) => tx >= 0 && ty >= 0 && tx < W && ty < H && tile[ty * W + tx] !== 1 && !block[ty * W + tx];
+  const walk = (x, y) => walkTile(Math.floor(x), Math.floor(y));
+
   let seed = 20261020;
   const rnd = () => (seed = (seed * 16807) % 2147483647, (seed - 1) / 2147483646);
   const hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
-  function noise(n) {
-    const g = Array.from({ length: (n + 1) * (n + 1) }, rnd), s = t => t * t * (3 - 2 * t);
-    return (x, y) => {
-      const xi = Math.min(n - 1, Math.floor(x)), yi = Math.min(n - 1, Math.floor(y)), u = s(x - xi), v = s(y - yi);
-      const a = g[yi * (n + 1) + xi], b = g[yi * (n + 1) + xi + 1], c = g[(yi + 1) * (n + 1) + xi], d = g[(yi + 1) * (n + 1) + xi + 1];
-      return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
-    };
-  }
-  const n1 = noise(6), n2 = noise(14);
-  // 0 eau profonde, 1 lagon, 2 sable, 3 herbe, 4 sous-bois, 5 pavés
-  const tile = new Uint8Array(W * H), block = new Uint8Array(W * H);
-  const trees = [], houses = [], lanterns = [], flowers = [];
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const dx = (x - CX) / CX, dy = (y - CY) / CY, d = Math.sqrt(dx * dx + dy * dy);
-    const h = 0.6 * n1(x / W * 6, y / H * 6) + 0.4 * n2(x / W * 14, y / H * 14) - d * 1.05 + 0.34;
-    const r = Math.hypot(x - CX, y - CY);
-    let t = h < 0.05 ? 0 : h < 0.15 ? 1 : h < 0.22 ? 2 : h < 0.52 ? 3 : 4;
-    if (r < 11) t = 3;
-    if (r < 2.6) t = 5;
-    tile[y * W + x] = t;
-  }
-  const HOUSE = [["#e9d7b9", "#3e6f8e"], ["#f2e6d0", "#b5452f"], ["#e4cfae", "#6b8e3a"], ["#efdcc4", "#8a4f8c"]];
-  [[-7, -7], [5, -7], [-7, 4], [5, 4]].forEach(([ox, oy], i) => {
-    const hx = CX + ox, hy = CY + oy;
-    houses.push({ x: hx, y: hy, wall: HOUSE[i][0], roof: HOUSE[i][1], pole: i });
-    for (let yy = 0; yy < 2; yy++) for (let xx = 0; xx < 2; xx++) block[(hy + yy) * W + hx + xx] = 1;
-    for (let yy = 2; yy < 4; yy++) for (let xx = -1; xx < 4; xx++) tile[(hy + yy) * W + hx + xx] = 5; // terrasse
-  });
-  block[CY * W + CX] = 1;
-  [[-2.4, -2.4], [2.4, -2.4], [-2.4, 2.4], [2.4, 2.4]].forEach(([ox, oy]) => lanterns.push({ x: CX + 0.5 + ox, y: CY + 0.5 + oy }));
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const t = tile[y * W + x], i = y * W + x;
-    if (block[i] || Math.hypot(x - CX, y - CY) < 11.5) { if (t === 3 && !block[i] && rnd() < 0.03) flowers.push({ x: x + rnd(), y: y + rnd(), c: rnd() < 0.5 ? "#fff6e0" : "#f6d14a" }); continue; }
-    if ((t === 4 && rnd() < 0.55) || (t === 3 && rnd() < 0.035)) {
-      block[i] = 1;
-      trees.push({ x: x + 0.5 + (rnd() - 0.5) * 0.3, y: y + 0.55, s: 0.8 + rnd() * 0.35, k: rnd() < 0.18 ? "pine" : "oak", p: rnd() * 6 });
-    } else if (t === 3 && rnd() < 0.06) flowers.push({ x: x + rnd(), y: y + rnd(), c: rnd() < 0.5 ? "#fff6e0" : "#f6d14a" });
-  }
-  const walkTile = (tx, ty) => tx >= 0 && ty >= 0 && tx < W && ty < H && tile[ty * W + tx] >= 2 && !block[ty * W + tx];
-  const walk = (x, y) => walkTile(Math.floor(x), Math.floor(y));
 
-  // Chaque collègue a sa place sur la terrasse de son pôle
   const slot = {};
   TEAM.forEach(m => {
-    const h = houses[m.pole], k = (slot[m.pole] = (slot[m.pole] ?? -1) + 1);
-    Object.assign(m, { hx: h.x - 0.6 + k * 1.25, hy: h.y + 3.0, step: 0, face: 1, moving: false, wait: rnd() * 3 });
+    const k = (slot[m.pole] = (slot[m.pole] ?? -1) + 1), d = desks.find(d => d.pole === m.pole && d.k === k);
+    m.desk = d; d.owner = m;
+    Object.assign(m, { hx: d.x + 1.5, hy: d.y + 1.7, step: 0, face: 1, moving: false, wait: rnd() * 3, state: null });
     m.x = m.tx = m.hx; m.y = m.ty = m.hy;
   });
 
-  // ---------- État ----------
-  const player = { x: CX + 0.5, y: CY + 2.2, tx: null, ty: null, moving: false, face: 1, step: 0 };
+  const player = { x: 20, y: 14, tx: null, ty: null, moving: false, face: 1, step: 0 };
   let clock = 0.08;
   const DAY = 240;
   const keys = new Set();
-  const fireflies = Array.from({ length: 36 }, () => ({ x: 0, y: 0, p: rnd() * 10, init: false }));
 
   // ---------- Affichage ----------
   let vw = 0, vh = 0, ppt = 40, camX = 0, camY = 0, dpr = 1;
@@ -278,121 +327,141 @@
     const n = parseInt(hex.slice(1), 16), m = v => Math.max(0, Math.min(255, Math.round(v * f)));
     return `rgb(${m(n >> 16)},${m((n >> 8) & 255)},${m(n & 255)})`;
   };
-  const BASE = ["#1f5f8b", "#3d93b8", "#ead69c", "#80c15c", "#5f9f49", "#cdbfa6"];
+  const FLOOR = ["#e6dfd0", null, "#c9d6e8", "#f0d6c6", "#d3e5c6", "#ddd3ea"];
   const ellipse = (x, y, rx, ry, c) => { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); };
   const circle = (x, y, r, c) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); };
+  const rect = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
 
-  function drawGround(now) {
+  function drawFloor(night) {
     const x0 = Math.max(0, Math.floor(camX)), y0 = Math.max(0, Math.floor(camY));
     const x1 = Math.min(W, Math.ceil(camX + vw / ppt) + 1), y1 = Math.min(H, Math.ceil(camY + vh / ppt) + 1), p = Math.ceil(ppt) + 1;
     for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
-      const t = tile[y * W + x], v = hash(x, y);
-      ctx.fillStyle = shade(BASE[t], 0.94 + v * 0.1);
-      ctx.fillRect(Math.floor(sx(x)), Math.floor(sy(y)), p, p);
-      if (t <= 1) {
-        const w = Math.sin(now * (reduceMotion ? 0.3 : 1.4) + x * 0.9 + y * 0.6);
-        if (w > 0.55) { ctx.fillStyle = "rgba(255,255,255,0.18)"; ctx.fillRect(sx(x) + ppt * 0.2, sy(y) + ppt * (0.35 + v * 0.3), ppt * 0.45, Math.max(2, ppt * 0.06)); }
-        if (t === 1 && y > 0 && tile[(y - 1) * W + x] === 2) { ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.fillRect(sx(x), sy(y), p, ppt * 0.1); }
-      } else if (t === 5) {
-        ctx.strokeStyle = "rgba(90,70,50,0.25)"; ctx.lineWidth = 1;
-        ctx.strokeRect(sx(x) + 0.5, sy(y) + 0.5, ppt - 1, ppt / 2); ctx.strokeRect(sx(x) + ppt * 0.25, sy(y) + ppt / 2, ppt / 2, ppt / 2);
-      } else if ((t === 3 || t === 4) && v > 0.7) {
-        ctx.fillStyle = "rgba(40,90,30,0.35)";
-        ctx.fillRect(sx(x) + ppt * v * 0.6, sy(y) + ppt * (1 - v) * 0.8, 2, ppt * 0.14);
-        ctx.fillRect(sx(x) + ppt * v * 0.6 + 4, sy(y) + ppt * (1 - v) * 0.8 + 2, 2, ppt * 0.1);
+      const t = tile[y * W + x], X = Math.floor(sx(x)), Y = Math.floor(sy(y));
+      if (t === 1) continue;
+      const v = hash(x, y);
+      rect(X, Y, p, p, shade(FLOOR[t], t === 0 ? 0.97 + v * 0.05 : 0.96 + v * 0.06));
+      if (t === 0) { ctx.strokeStyle = "rgba(90,70,50,0.12)"; ctx.lineWidth = 1; ctx.strokeRect(X + 0.5, Y + 0.5, ppt, ppt); }
+      else if ((x + y) % 2 === 0) rect(X + ppt * 0.45, Y + ppt * 0.45, 2, 2, "rgba(0,0,0,0.06)");
+    }
+    // murs : dessus clair, face avant plus sombre, fenêtres sur la façade nord
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+      if (tile[y * W + x] !== 1) continue;
+      const X = Math.floor(sx(x)), Y = Math.floor(sy(y)), front = !isWall(x, y + 1);
+      rect(X, Y, p, p, "#7d6a5c");
+      rect(X, Y, p, front ? ppt * 0.55 : p, "#9c8778");
+      if (front) rect(X, Y + ppt * 0.55, p, 3, "#5d4c40");
+      if (y === 0 && x % 3 === 1 && x > 0 && x < W - 1 && x !== 17 && x !== 22) {
+        rect(X + ppt * 0.15, Y + ppt * 0.6, ppt * 0.7, ppt * 0.32, night > 0.5 ? "#1d2a4a" : "#9fd0ef");
+        rect(X + ppt * 0.48, Y + ppt * 0.6, 2, ppt * 0.32, "#5d4c40");
+        if (night > 0.5 && hash(x, 7) > 0.5) circle(X + ppt * (0.3 + hash(x, 3) * 0.4), Y + ppt * 0.7, 1.2, "#fff6c8");
       }
     }
+    // tableaux blancs des pôles
+    ROOMS.forEach(([ox, oy], i) => {
+      const X = sx(ox + 5), Y = sy(oy - 1) + ppt * 0.05, w = ppt * 6, h = ppt * 0.5;
+      if (X > vw || X + w < 0 || Y > vh || Y + h < 0) return;
+      rect(X, Y, w, h, "#fbfbf6"); ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2; ctx.strokeRect(X, Y, w, h);
+      ctx.font = `700 ${Math.round(ppt * 0.32)}px "Pixelify Sans", monospace`; ctx.fillStyle = "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(`Pôle ${POLES[i]}`, X + w / 2, Y + h / 2 + 1);
+    });
   }
-  function drawTree(t, now) {
-    const x = sx(t.x), y = sy(t.y), s = ppt * t.s, sway = reduceMotion ? 0 : Math.sin(now * 1.2 + t.p) * s * 0.03;
-    ellipse(x, y + s * 0.05, s * 0.42, s * 0.15, "rgba(0,0,0,0.18)");
-    ctx.fillStyle = "#6b4a2e"; ctx.fillRect(x - s * 0.07, y - s * 0.45, s * 0.14, s * 0.47);
-    if (t.k === "pine") {
-      for (let i = 0; i < 3; i++) {
-        ctx.fillStyle = i % 2 ? "#2f6b3a" : "#3a7d44"; ctx.beginPath();
-        const top = y - s * (1.35 - i * 0.28), w = s * (0.3 + i * 0.12);
-        ctx.moveTo(x + sway, top); ctx.lineTo(x - w, top + s * 0.55); ctx.lineTo(x + w, top + s * 0.55); ctx.fill();
+
+  function drawDesk(d, now) {
+    const X = sx(d.x), Y = sy(d.y), u = ppt, m = d.owner, on = m && (m.state === "working" || m.state === "starting");
+    // chaise
+    ellipse(X + u * 1.5, Y + u * 1.55, u * 0.32, u * 0.12, "rgba(0,0,0,0.15)");
+    rect(X + u * 1.22, Y + u * 1.05, u * 0.56, u * 0.5, d === myDesk ? "#b5452f" : "#4a4f5c");
+    rect(X + u * 1.15, Y + u * 1.4, u * 0.7, u * 0.12, d === myDesk ? "#8c3422" : "#333844");
+    // plateau
+    rect(X + 2, Y + u * 0.2, u * 3 - 4, u * 0.85, "#5d4c40");
+    rect(X + 2, Y + u * 0.12, u * 3 - 4, u * 0.78, "#b98a5a");
+    rect(X + 2, Y + u * 0.12, u * 3 - 4, 3, "#d0a473");
+    // écran
+    const sxm = X + u * 0.95, sym = Y - u * 0.38, sw = u * 1.1, sh = u * 0.72;
+    rect(X + u * 1.43, Y + u * 0.2, u * 0.14, u * 0.2, "#2b2b2b");
+    rect(sxm, sym, sw, sh, "#2b2b2b");
+    const scr = on ? "#0f2f45" : m?.state === "done" ? "#16371f" : m?.state === "waiting" ? "#3d2a0a" : m?.state === "failed" ? "#3a1414" : "#1d2430";
+    rect(sxm + 3, sym + 3, sw - 6, sh - 6, scr);
+    if (on) {
+      const t = reduceMotion ? 0 : now * 3;
+      for (let i = 0; i < 5; i++) {
+        const w = (0.25 + hash(i, Math.floor(t + i)) * 0.6) * (sw - 14);
+        rect(sxm + 7, sym + 7 + i * (sh - 14) / 5, w, 2.5, i % 2 ? "#7fd6ff" : "#c6f07a");
       }
-    } else {
-      circle(x - s * 0.18 + sway, y - s * 0.62, s * 0.3, "#3f8a3e");
-      circle(x + s * 0.2 + sway, y - s * 0.66, s * 0.28, "#3f8a3e");
-      circle(x + sway, y - s * 0.88, s * 0.32, "#4f9c47");
-      circle(x - s * 0.08 + sway, y - s * 0.96, s * 0.13, "rgba(255,255,255,0.15)");
+    } else if (m?.state === "done") { ctx.fillStyle = "#7ee08a"; ctx.font = `800 ${Math.round(u * 0.4)}px Nunito, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("✓", sxm + sw / 2, sym + sh / 2); }
+    else if (m?.state === "waiting") { ctx.fillStyle = "#ffc24a"; ctx.font = `800 ${Math.round(u * 0.4)}px Nunito, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("?", sxm + sw / 2, sym + sh / 2); }
+    else rect(sxm + sw * 0.3, sym + sh * 0.45, sw * 0.4, 2, "rgba(140,170,210,0.35)");
+    // clavier, tasse, papiers
+    rect(X + u * 1.05, Y + u * 0.5, u * 0.9, u * 0.18, "#e9e4da");
+    circle(X + u * 2.5, Y + u * 0.45, u * 0.1, "#f3efe6"); circle(X + u * 2.5, Y + u * 0.45, u * 0.06, "#6b4a2e");
+    rect(X + u * 0.25, Y + u * 0.3, u * 0.5, u * 0.38, "#fffdf6"); rect(X + u * 0.3, Y + u * 0.36, u * 0.4, 2, "#c9c2b4"); rect(X + u * 0.3, Y + u * 0.46, u * 0.3, 2, "#c9c2b4");
+    if (d === myDesk) {
+      ctx.font = "800 11px Nunito, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+      ctx.lineWidth = 3; ctx.strokeStyle = "rgba(255,250,240,0.92)"; ctx.fillStyle = "#3a2a1a";
+      ctx.strokeText("Ton bureau", X + u * 1.5, Y + u * 1.62); ctx.fillText("Ton bureau", X + u * 1.5, Y + u * 1.62);
     }
   }
-  function drawHouse(h, night) {
-    const x = sx(h.x), y = sy(h.y), u = ppt;
-    ctx.fillStyle = "rgba(0,0,0,0.18)"; ctx.fillRect(x + u * 0.1, y + u * 1.85, u * 2, u * 0.25);
-    ctx.fillStyle = h.wall; ctx.fillRect(x + u * 0.1, y + u * 0.7, u * 1.8, u * 1.25);
-    ctx.fillStyle = h.roof; ctx.beginPath();
-    ctx.moveTo(x - u * 0.1, y + u * 0.8); ctx.lineTo(x + u, y - u * 0.25); ctx.lineTo(x + u * 2.1, y + u * 0.8); ctx.fill();
-    ctx.fillStyle = shade(h.roof, 0.75); ctx.fillRect(x - u * 0.1, y + u * 0.72, u * 2.2, u * 0.1);
-    ctx.fillStyle = "#6b4a2e"; ctx.fillRect(x + u * 0.78, y + u * 1.25, u * 0.44, u * 0.7);
-    circle(x + u * 1.12, y + u * 1.62, u * 0.03, "#f2b632");
-    ctx.fillStyle = night > 0.3 ? "#ffd56b" : "#a9d3e6";
-    ctx.fillRect(x + u * 0.28, y + u * 1.05, u * 0.34, u * 0.3); ctx.fillRect(x + u * 1.38, y + u * 1.05, u * 0.34, u * 0.3);
-    ctx.fillStyle = "#8c6a52"; ctx.fillRect(x + u * 1.4, y - u * 0.05, u * 0.2, u * 0.4);
-    // enseigne du pôle
-    const label = POLES[h.pole];
-    ctx.font = `700 ${Math.round(u * 0.32)}px "Pixelify Sans", monospace`;
-    const tw = ctx.measureText(label).width + u * 0.4, bx = x + u - tw / 2, by = y + u * 0.18;
-    ctx.fillStyle = "#8a5a32"; ctx.fillRect(bx, by, tw, u * 0.46);
-    ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2; ctx.strokeRect(bx, by, tw, u * 0.46);
-    ctx.fillStyle = "#fff4d6"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(label, x + u, by + u * 0.24);
-  }
-  function drawFountain(now) {
-    const x = sx(CX + 0.5), y = sy(CY + 0.55), u = ppt;
-    ellipse(x, y + u * 0.15, u * 0.55, u * 0.22, "rgba(0,0,0,0.18)");
-    ellipse(x, y, u * 0.5, u * 0.3, "#9d927f");
-    ellipse(x, y - u * 0.04, u * 0.4, u * 0.22, "#4ea3c9");
-    ctx.fillStyle = "#9d927f"; ctx.fillRect(x - u * 0.06, y - u * 0.5, u * 0.12, u * 0.45);
-    const k = reduceMotion ? 0.5 : (now * 2) % 1;
-    for (let i = 0; i < 4; i++) {
-      const a = i * Math.PI / 2 + 0.6, r = u * 0.28 * k;
-      circle(x + Math.cos(a) * r, y - u * 0.5 + u * 0.4 * k * k + Math.sin(a) * r * 0.3, u * 0.04, "rgba(220,240,255,0.85)");
+
+  function drawProp(p, now) {
+    const X = sx(p.x), Y = sy(p.y), u = ppt;
+    if (p.kind === "plant") {
+      ellipse(X + u * 0.5, Y + u * 0.92, u * 0.3, u * 0.1, "rgba(0,0,0,0.18)");
+      rect(X + u * 0.3, Y + u * 0.55, u * 0.4, u * 0.38, "#b8693d"); rect(X + u * 0.26, Y + u * 0.52, u * 0.48, u * 0.08, "#9a5530");
+      const sw = reduceMotion ? 0 : Math.sin(now * 1.3 + p.x) * u * 0.02;
+      circle(X + u * 0.36 + sw, Y + u * 0.36, u * 0.2, "#3f8a3e"); circle(X + u * 0.64 + sw, Y + u * 0.34, u * 0.19, "#3f8a3e"); circle(X + u * 0.5 + sw, Y + u * 0.16, u * 0.21, "#4f9c47");
+    } else if (p.kind === "shelf") {
+      rect(X + u * 0.05, Y - u * 0.4, u * 0.9, u * 1.3, "#7a5230");
+      for (let i = 0; i < 3; i++) { rect(X + u * 0.1, Y - u * 0.32 + i * u * 0.42, u * 0.8, u * 0.32, "#5d3f24");
+        for (let j = 0; j < 4; j++) rect(X + u * (0.14 + j * 0.19), Y - u * 0.3 + i * u * 0.42, u * 0.13, u * 0.28, ["#b5452f", "#2f5d8c", "#e0b040", "#4f8f3c"][(i + j) % 4]); }
+    } else if (p.kind === "coffee") {
+      ellipse(X + u * 0.5, Y + u * 0.92, u * 0.32, u * 0.1, "rgba(0,0,0,0.18)");
+      rect(X + u * 0.18, Y - u * 0.1, u * 0.64, u * 1.0, "#3b3f48"); rect(X + u * 0.26, Y + u * 0.0, u * 0.48, u * 0.3, "#16191f");
+      circle(X + u * 0.62, Y + u * 0.15, u * 0.04, "#7ee08a");
+      rect(X + u * 0.36, Y + u * 0.5, u * 0.28, u * 0.24, "#f3efe6");
+      if (!reduceMotion) for (let i = 0; i < 2; i++) { const k = (now * 0.8 + i * 0.5) % 1; circle(X + u * (0.46 + i * 0.08), Y + u * (0.45 - k * 0.5), u * 0.04 * (1 - k), `rgba(255,255,255,${0.6 * (1 - k)})`); }
+    } else if (p.kind === "board") {
+      ellipse(X + u, Y + u * 0.95, u * 0.9, u * 0.1, "rgba(0,0,0,0.18)");
+      rect(X + u * 0.2, Y + u * 0.5, u * 0.08, u * 0.45, "#3a2a1a"); rect(X + u * 1.72, Y + u * 0.5, u * 0.08, u * 0.45, "#3a2a1a");
+      rect(X + u * 0.05, Y - u * 0.55, u * 1.9, u * 1.1, "#f6ecd2"); ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2; ctx.strokeRect(X + u * 0.05, Y - u * 0.55, u * 1.9, u * 1.1);
+      ctx.font = `700 ${Math.round(u * 0.24)}px "Pixelify Sans", monospace`; ctx.fillStyle = "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+      ctx.fillText("Missions", X + u, Y - u * 0.5);
+      const list = missions.slice(0, 4);
+      list.forEach((ms, i) => rect(X + u * 0.18 + i * u * 0.43, Y - u * 0.15, u * 0.36, u * 0.5, { working: "#9fd0ef", starting: "#e2dccd", waiting: "#ffd27a", done: "#a9e2a0", failed: "#f2a08a" }[ms.status] || "#e2dccd"));
+      if (!list.length) { ctx.font = `700 ${Math.round(u * 0.18)}px Nunito, sans-serif`; ctx.fillStyle = "#7a6247"; ctx.fillText("aucune", X + u, Y); }
     }
   }
-  function drawLantern(l) {
-    const x = sx(l.x), y = sy(l.y), u = ppt;
-    ellipse(x, y, u * 0.12, u * 0.05, "rgba(0,0,0,0.2)");
-    ctx.fillStyle = "#3a2a1a"; ctx.fillRect(x - u * 0.03, y - u * 0.8, u * 0.06, u * 0.8);
-    ctx.fillStyle = "#ffd56b"; ctx.fillRect(x - u * 0.1, y - u * 0.98, u * 0.2, u * 0.2);
-    ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2; ctx.strokeRect(x - u * 0.1, y - u * 0.98, u * 0.2, u * 0.2);
-  }
-  function drawPerson(p, coat, hair, scarf) {
+
+  function drawPerson(p, coat, hair, scarf, seated) {
     const x = sx(p.x), y = sy(p.y), u = ppt, bob = p.moving ? Math.abs(Math.sin(p.step * 9)) * u * 0.06 : 0;
     ellipse(x, y, u * 0.22, u * 0.08, "rgba(0,0,0,0.22)");
-    const leg = p.moving ? Math.sin(p.step * 9) * u * 0.06 : 0;
-    ctx.fillStyle = "#3a2a1a"; ctx.fillRect(x - u * 0.1, y - u * 0.18 + leg, u * 0.07, u * 0.18 - leg); ctx.fillRect(x + u * 0.03, y - u * 0.18 - leg, u * 0.07, u * 0.18 + leg);
-    ctx.fillStyle = coat; ctx.beginPath(); ctx.roundRect(x - u * 0.17, y - u * 0.55 - bob, u * 0.34, u * 0.4, u * 0.08); ctx.fill();
-    if (scarf) { ctx.fillStyle = scarf; ctx.fillRect(x - u * 0.17, y - u * 0.55 - bob, u * 0.34, u * 0.08); ctx.fillRect(x - p.face * u * 0.2, y - u * 0.52 - bob, u * 0.08, u * 0.2); }
-    circle(x, y - u * 0.7 - bob, u * 0.17, "#f0c9a0");
-    ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(x, y - u * 0.74 - bob, u * 0.17, Math.PI, 0); ctx.fill();
-    circle(x + p.face * u * 0.07, y - u * 0.68 - bob, u * 0.025, "#3a2a1a");
+    if (!seated) {
+      const leg = p.moving ? Math.sin(p.step * 9) * u * 0.06 : 0;
+      rect(x - u * 0.1, y - u * 0.18 + leg, u * 0.07, u * 0.18 - leg, "#3a2a1a"); rect(x + u * 0.03, y - u * 0.18 - leg, u * 0.07, u * 0.18 + leg, "#3a2a1a");
+    }
+    const lift = seated ? -u * 0.08 : 0;
+    ctx.fillStyle = coat; ctx.beginPath(); ctx.roundRect(x - u * 0.17, y - u * 0.55 - bob - lift, u * 0.34, u * 0.4, u * 0.08); ctx.fill();
+    if (scarf) { rect(x - u * 0.17, y - u * 0.55 - bob, u * 0.34, u * 0.08, scarf); rect(x - p.face * u * 0.2, y - u * 0.52 - bob, u * 0.08, u * 0.2, scarf); }
+    circle(x, y - u * 0.7 - bob - lift, u * 0.17, "#f0c9a0");
+    ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(x, y - u * 0.74 - bob - lift, u * 0.17, seated ? 0 : Math.PI, seated ? Math.PI * 2 : 0); ctx.fill();
+    if (!seated) circle(x + p.face * u * 0.07, y - u * 0.68 - bob, u * 0.025, "#3a2a1a");
   }
-  function drawFlower(f) {
-    const x = sx(f.x), y = sy(f.y), r = ppt * 0.05;
-    for (let i = 0; i < 5; i++) { const a = i * Math.PI * 0.4; circle(x + Math.cos(a) * r, y + Math.sin(a) * r, r * 0.75, f.c); }
-    circle(x, y, r * 0.55, "#f6d14a");
-  }
-  function bubble(x, y, text, now, dots) {
+  function bubble(x, y, text, now, opts = {}) {
     ctx.font = "800 13px Nunito, sans-serif";
-    const w = dots ? 34 : Math.max(26, ctx.measureText(text).width + 14);
-    ctx.fillStyle = "#fffaf0"; ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2;
+    const w = opts.dots ? 34 : Math.max(26, ctx.measureText(text).width + 14);
+    ctx.fillStyle = opts.bg || "#fffaf0"; ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.roundRect(x - w / 2, y - 12, w, 22, 6); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    if (dots) for (let i = 0; i < 3; i++) circle(x - 9 + i * 9, y - 1 - (reduceMotion ? 0 : Math.max(0, Math.sin(now * 6 - i)) * 3), 2.4, "#3a2a1a");
+    ctx.fillStyle = opts.fg || "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    if (opts.dots) for (let i = 0; i < 3; i++) circle(x - 9 + i * 9, y - 1 - (reduceMotion ? 0 : Math.max(0, Math.sin(now * 6 - i)) * 3), 2.4, opts.fg || "#3a2a1a");
     else ctx.fillText(text, x, y);
   }
   function nameTag(m, withRole) {
     const x = sx(m.x), y = sy(m.y) + ppt * 0.12;
-    ctx.textAlign = "center"; ctx.textBaseline = "top";
-    ctx.lineWidth = 3; ctx.strokeStyle = "rgba(255,250,240,0.92)"; ctx.fillStyle = "#3a2a1a";
+    ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(255,250,240,0.92)"; ctx.fillStyle = "#3a2a1a";
     ctx.font = "800 12px Nunito, sans-serif"; ctx.strokeText(m.name, x, y); ctx.fillText(m.name, x, y);
     if (withRole) { ctx.font = "700 10px Nunito, sans-serif"; ctx.strokeText(m.role, x, y + 13); ctx.fillStyle = "#5c4630"; ctx.fillText(m.role, x, y + 13); }
   }
 
-  // ---------- Logique ----------
+  // ---------- Logique du monde ----------
   function moveBody(p, dx, dy, r) {
     const ok = (x, y) => walk(x - r, y - r * 0.6) && walk(x + r, y - r * 0.6) && walk(x - r, y + r * 0.4) && walk(x + r, y + r * 0.4);
     if (ok(p.x + dx, p.y)) p.x += dx;
@@ -400,10 +469,10 @@
   }
   const nearest = max => { let best = null, bd = max; for (const m of TEAM) { const d = Math.hypot(m.x - player.x, m.y - player.y); if (d < bd) { bd = d; best = m; } } return best; };
   function showToast(title, text, ms) {
-    const t = $("toast"); t.replaceChildren();
-    const s = document.createElement("strong"); s.textContent = title; t.append(s, document.createTextNode(text));
+    const t = $("toast"); t.replaceChildren(el("strong", null, title), document.createTextNode(text));
     t.hidden = false; clearTimeout(showToast.h); showToast.h = setTimeout(() => t.hidden = true, ms);
   }
+  const atDesk = m => m.state === "working" || m.state === "starting";
 
   function update(dt) {
     clock = (clock + dt / DAY) % 1;
@@ -418,99 +487,96 @@
     const len = Math.hypot(ix, iy);
     player.moving = len > 0;
     if (len) {
-      const sp = 3.6 * dt, bx = player.x, by = player.y;
+      const sp = 3.8 * dt, bx = player.x, by = player.y;
       moveBody(player, ix / len * sp, iy / len * sp, 0.24);
       if (ix) player.face = ix > 0 ? 1 : -1;
       player.step += dt;
       if (player.tx != null && Math.hypot(player.x - bx, player.y - by) < sp * 0.2) player.tx = null;
     }
     for (const m of TEAM) {
-      if (current === m) { m.moving = false; m.tx = m.x; m.ty = m.y; m.face = player.x > m.x ? 1 : -1; continue; }
+      if (atDesk(m) && current !== m) { m.tx = m.hx; m.ty = m.hy; }
+      if (current === m && !atDesk(m)) { m.moving = false; m.tx = m.x; m.ty = m.y; m.face = player.x > m.x ? 1 : -1; continue; }
       const dx = m.tx - m.x, dy = m.ty - m.y, d = Math.hypot(dx, dy);
       if (d < 0.05) {
         m.moving = false; m.wait -= dt;
-        if (m.wait <= 0) {
-          const tx = m.hx + (rnd() - 0.5) * 1.4, ty = m.hy + (rnd() - 0.5) * 1.0;
-          if (walk(tx, ty)) { m.tx = tx; m.ty = ty; }
-          m.wait = 3 + rnd() * 5;
+        if (m.wait <= 0 && !atDesk(m)) {
+          const tx = m.hx + (rnd() - 0.5) * 4, ty = m.hy + (rnd() - 0.3) * 2;
+          if (walk(tx, ty) && tile[Math.floor(ty) * W + Math.floor(tx)] === 2 + m.pole) { m.tx = tx; m.ty = ty; }
+          else { m.tx = m.hx; m.ty = m.hy; }
+          m.wait = 4 + rnd() * 6;
         }
       } else {
-        const sp = 0.8 * dt, bx = m.x, by = m.y;
+        const sp = 0.9 * dt, bx = m.x, by = m.y;
         moveBody(m, dx / d * Math.min(sp, d), dy / d * Math.min(sp, d), 0.2);
         m.moving = true; m.step += dt; if (Math.abs(dx) > 0.01) m.face = dx > 0 ? 1 : -1;
-        if (Math.hypot(m.x - bx, m.y - by) < sp * 0.1) { m.tx = m.x; m.ty = m.y; }
+        if (Math.hypot(m.x - bx, m.y - by) < sp * 0.1) { m.x = m.tx = m.hx; m.y = m.ty = m.hy; }
       }
     }
-    const off = !$("chat").hidden && vw > 760 ? 230 / ppt : 0; // garde le personnage visible à gauche du panneau
+    const off = !$("chat").hidden && vw > 760 ? 240 / ppt : 0;
     camX = Math.max(0, Math.min(W - vw / ppt, player.x - vw / ppt / 2 + off));
     camY = Math.max(0, Math.min(H - vh / ppt, player.y - vh / ppt / 2));
+    if (vw / ppt > W) camX = (W - vw / ppt) / 2;
+    if (vh / ppt > H) camY = (H - vh / ppt) / 2;
     const mins = Math.floor(((clock * 24 + 12) % 24) * 60);
     $("clock").textContent = `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(Math.floor(mins % 60 / 10) * 10).padStart(2, "0")}`;
   }
   const nightness = () => Math.max(0, Math.min(1, (0.25 - Math.cos(clock * Math.PI * 2)) / 0.6));
-  const dusk = () => Math.max(0, 1 - Math.abs(Math.cos(clock * Math.PI * 2) - 0.05) / 0.35);
 
   function render(now) {
     const night = nightness();
-    ctx.fillStyle = BASE[0]; ctx.fillRect(0, 0, vw, vh);
-    drawGround(now);
+    ctx.fillStyle = "#2d2a33"; ctx.fillRect(0, 0, vw, vh);
+    drawFloor(night);
     const vis = (x, y, m) => x > camX - m && x < camX + vw / ppt + m && y > camY - m && y < camY + vh / ppt + m;
-    for (const f of flowers) if (vis(f.x, f.y, 1)) drawFlower(f);
     const ents = [];
-    for (const t of trees) if (vis(t.x, t.y, 2)) ents.push([t.y, () => drawTree(t, now)]);
-    for (const h of houses) if (vis(h.x + 1, h.y + 1, 4)) ents.push([h.y + 2, () => drawHouse(h, night)]);
-    for (const l of lanterns) ents.push([l.y, () => drawLantern(l)]);
-    for (const m of TEAM) if (vis(m.x, m.y, 1)) ents.push([m.y, () => drawPerson(m, m.coat, m.hair)]);
-    ents.push([CY + 0.6, () => drawFountain(now)]);
+    for (const d of desks) if (vis(d.x + 1.5, d.y, 3)) ents.push([d.y + 0.9, () => drawDesk(d, now)]);
+    for (const p of props) if (vis(p.x, p.y, 3)) ents.push([p.y + 0.9, () => drawProp(p, now)]);
+    for (const m of TEAM) if (vis(m.x, m.y, 2)) {
+      const seated = atDesk(m) && Math.hypot(m.x - m.hx, m.y - m.hy) < 0.1;
+      ents.push([seated ? m.desk.y + 0.95 : m.y, () => drawPerson(m, m.coat, m.hair, null, seated)]);
+    }
     ents.push([player.y, () => drawPerson(player, "#2d4f7c", "#3a2414", "#d8442f")]);
     ents.sort((a, b) => a[0] - b[0]).forEach(e => e[1]());
 
-    // étiquettes et bulles
-    const near = nearest(1.7);
+    const near = nearest(1.8);
     for (const m of TEAM) {
-      if (!vis(m.x, m.y, 1)) continue;
-      const d = Math.hypot(m.x - player.x, m.y - player.y);
-      if (d < 3.4 || m === current) nameTag(m, m === near || m === current);
-      if (m.busy) bubble(sx(m.x), sy(m.y) - ppt * 1.15, "", now, true);
-      else if (m === near && m !== current) bubble(sx(m.x), sy(m.y) - ppt * 1.15, "E · Parler", now, false);
+      if (!vis(m.x, m.y, 2)) continue;
+      const d = Math.hypot(m.x - player.x, m.y - player.y), by = sy(m.y) - ppt * 1.2;
+      if (d < 3.6 || m === current) nameTag(m, m === near || m === current);
+      if (m.busy) bubble(sx(m.x), by, "", now, { dots: true });
+      else if (m.state === "working" || m.state === "starting") bubble(sx(m.x), by, "En mission", now, { bg: "#d8ecfa" });
+      else if (m.state === "waiting") bubble(sx(m.x), by, "Attend ton accord", now, { bg: "#ffe2a8" });
+      else if (m.state === "done" && m.unseen) bubble(sx(m.x), by, "Livrable prêt", now, { bg: "#c8eec0" });
+      else if (m.state === "failed" && m.unseen) bubble(sx(m.x), by, "Souci", now, { bg: "#f7c3b5" });
+      else if (m === near && m !== current) bubble(sx(m.x), by, "E · Parler", now);
     }
 
-    // nuit et lumières
-    const tint = dusk();
-    if (tint > 0) { ctx.fillStyle = `rgba(255,140,60,${0.16 * tint})`; ctx.fillRect(0, 0, vw, vh); }
-    for (const f of fireflies) {
-      if (!f.init || !vis(f.x, f.y, 2)) { f.x = camX + rnd() * vw / ppt; f.y = camY + rnd() * vh / ppt; f.init = true; }
-      if (!reduceMotion) { f.x += Math.sin(now * 0.7 + f.p) * 0.006; f.y += Math.cos(now * 0.9 + f.p * 1.3) * 0.006; }
-    }
     if (night > 0.01) {
-      const inForest = f => tile[Math.floor(f.y) * W + Math.floor(f.x)] === 4;
       lctx.globalCompositeOperation = "source-over"; lctx.clearRect(0, 0, vw, vh);
-      lctx.fillStyle = `rgba(10,18,48,${0.72 * night})`; lctx.fillRect(0, 0, vw, vh);
+      lctx.fillStyle = `rgba(12,16,40,${0.66 * night})`; lctx.fillRect(0, 0, vw, vh);
       lctx.globalCompositeOperation = "destination-out";
-      const lights = [];
-      for (const l of lanterns) lights.push([l.x, l.y - 0.9, 3.6]);
-      for (const h of houses) { lights.push([h.x + 1, h.y + 1.6, 3.2]); }
-      lights.push([player.x, player.y - 0.4, 2.6]);
-      for (const f of fireflies) if (inForest(f)) lights.push([f.x, f.y, 0.3 * (0.5 + 0.5 * Math.sin(now * 3 + f.p * 5)) + 0.1]);
+      const lights = [[player.x, player.y - 0.4, 2.4], [20, 13.5, 3.2]];
+      for (const d of desks) lights.push([d.x + 1.5, d.y + 0.2, d.owner && atDesk(d.owner) ? 2.6 : 1.4]);
+      for (let x = 3; x < W; x += 6) lights.push([x, 13.5, 1.8]);
       for (const [x, y, r] of lights) {
+        if (!vis(x, y, r + 1)) continue;
         const gx = sx(x), gy = sy(y), gr = r * ppt, g = lctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
         g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)");
         lctx.fillStyle = g; lctx.beginPath(); lctx.arc(gx, gy, gr, 0, Math.PI * 2); lctx.fill();
       }
       ctx.drawImage(lc, 0, 0, vw, vh);
       ctx.globalCompositeOperation = "lighter";
-      for (const l of lanterns) { const gx = sx(l.x), gy = sy(l.y - 0.9), g = ctx.createRadialGradient(gx, gy, 0, gx, gy, ppt * 2); g.addColorStop(0, `rgba(255,170,60,${0.35 * night})`); g.addColorStop(1, "rgba(255,170,60,0)"); ctx.fillStyle = g; ctx.fillRect(gx - ppt * 2, gy - ppt * 2, ppt * 4, ppt * 4); }
-      ctx.globalCompositeOperation = "source-over";
-      if (night > 0.4) for (const f of fireflies) if (inForest(f)) {
-        const tw = 0.5 + 0.5 * Math.sin(now * 3 + f.p * 5); circle(sx(f.x), sy(f.y), 1.5 + tw * 1.5, `rgba(230,255,140,${0.9 * night * tw})`);
+      for (const d of desks) if (d.owner && atDesk(d.owner) && vis(d.x, d.y, 3)) {
+        const gx = sx(d.x + 1.5), gy = sy(d.y - 0.1), g = ctx.createRadialGradient(gx, gy, 0, gx, gy, ppt * 1.6);
+        g.addColorStop(0, `rgba(90,170,255,${0.3 * night})`); g.addColorStop(1, "rgba(90,170,255,0)"); ctx.fillStyle = g; ctx.fillRect(gx - ppt * 1.6, gy - ppt * 1.6, ppt * 3.2, ppt * 3.2);
       }
+      ctx.globalCompositeOperation = "source-over";
     }
     $("btnTime").textContent = night > 0.5 ? "☀ Jour" : "☾ Nuit";
   }
 
-  // ---------- Fiche entreprise (lue par toute l'équipe) ----------
+  // ---------- Fiche entreprise ----------
   const FIELDS = [
-    ["Entreprise", [["nom", "Nom", "Astoria Mandat IA"], ["secteur", "Secteur", ""], ["produit", "Produit / service", ""], ["stade", "Stade (idée, MVP, bêta, lancé, croissance)", ""]]],
+    ["Entreprise", [["nom", "Nom", "Astoria Mandat IA"], ["secteur", "Secteur", ""], ["produit", "Produit / service", ""], ["site", "Site web", ""], ["stade", "Stade (idée, MVP, bêta, lancé, croissance)", ""]]],
     ["Cible", [["client", "Client idéal", ""], ["probleme", "Problème principal qu'il rencontre", ""], ["ou", "Où il cherche une solution", ""]]],
     ["Offre", [["valeur", "Proposition de valeur", ""], ["prix", "Prix actuel / modèle", ""], ["fiscal", "Statut fiscal (auto-entrepreneur, franchise de TVA, société…)", ""]]],
     ["Concurrence", [["concurrents", "Concurrents directs et leurs prix", ""], ["diff", "Ce qui me différencie", ""]]],
@@ -518,67 +584,64 @@
     ["Ton de marque", [["ton", "Voix / style", ""]]],
   ];
   const company = Object.assign(Object.fromEntries(FIELDS.flatMap(([, fs]) => fs.map(([k, , d]) => [k, d]))), store.get("astoria-company-v1", {}));
-  function companyMarkdown() {
-    return FIELDS.map(([sec, fs]) => `## ${sec}\n` + fs.map(([k, label]) => `- ${label} : ${company[k]?.trim() || "(non renseigné)"}`).join("\n")).join("\n\n");
-  }
-  function buildCompanyForm() {
-    const f = $("companyForm"); f.replaceChildren();
-    const p = document.createElement("p"); p.textContent = "Plus cette fiche est précise, plus les réponses de l'équipe collent à ton activité. Elle reste dans ton navigateur."; f.append(p);
+  const companyMarkdown = () => FIELDS.map(([sec, fs]) => `## ${sec}\n` + fs.map(([k, label]) => `- ${label} : ${company[k]?.trim() || "(non renseigné)"}`).join("\n")).join("\n\n");
+  const companyFilled = () => FIELDS.some(([, fs]) => fs.some(([k]) => k !== "nom" && company[k]?.trim()));
+  (function buildCompanyForm() {
+    const f = $("companyForm");
+    f.append(el("p", null, "Plus cette fiche est précise, plus le travail de l'équipe colle à ton activité. Elle reste dans ton navigateur et part avec chaque message et chaque mission."));
+    const saved = el("span", "saved"); saved.setAttribute("aria-live", "polite");
     for (const [sec, fs] of FIELDS) for (const [k, label] of fs) {
-      const l = document.createElement("label"), t = document.createElement("textarea");
-      t.id = "co-" + k; t.rows = k === "nom" ? 1 : 2; t.value = company[k] || "";
+      const l = el("label"), t = el("textarea");
+      t.id = "co-" + k; t.rows = ["nom", "site"].includes(k) ? 1 : 2; t.value = company[k] || "";
       t.addEventListener("input", () => { company[k] = t.value; store.set("astoria-company-v1", company); saved.textContent = "Enregistré"; clearTimeout(saved.h); saved.h = setTimeout(() => saved.textContent = "", 1500); });
       l.append(`${sec} · ${label}`, t); f.append(l);
     }
-    const saved = document.createElement("span"); saved.className = "saved"; saved.setAttribute("aria-live", "polite"); f.append(saved);
-  }
-  buildCompanyForm();
-  const companyFilled = () => FIELDS.some(([, fs]) => fs.some(([k]) => k !== "nom" && company[k]?.trim()));
+    f.append(saved);
+  })();
 
   // ---------- Annuaire ----------
   const initials = m => m.name.slice(0, 1);
+  const avatar = (m, cls = "avatar") => { const a = el("span", cls, initials(m)); a.style.background = m.coat; return a; };
   function buildTeam() {
     const list = $("teamList"); list.replaceChildren();
     POLES.forEach((pole, i) => {
-      const sec = document.createElement("div"); sec.className = "pole";
-      const h = document.createElement("h3"); h.textContent = pole;
-      const g = document.createElement("div"); g.className = "pole-grid";
+      const sec = el("div", "pole"), g = el("div", "pole-grid");
       for (const m of TEAM.filter(m => m.pole === i)) {
-        const b = document.createElement("button"); b.type = "button"; b.className = "card";
-        const a = document.createElement("span"); a.className = "avatar"; a.style.background = m.coat; a.textContent = initials(m);
-        const t = document.createElement("span"); const n = document.createElement("b"); n.textContent = m.name; const r = document.createElement("span"); r.textContent = m.role;
-        t.append(n, r); b.append(a, t);
-        b.addEventListener("click", () => { goTo(m); openChat(m); });
+        const b = el("button", "card"); b.type = "button";
+        const t = el("span"); t.append(el("b", null, m.name), el("span", null, m.role));
+        const st = { working: "En mission", starting: "En mission", waiting: "Attend ton accord", done: "Livrable prêt" }[m.state];
+        if (st) t.append(el("span", "state", st));
+        b.append(avatar(m), t);
+        b.addEventListener("click", () => { goTo(m); openDesk(m, m.state ? "work" : "talk"); });
         g.append(b);
       }
-      sec.append(h, g); list.append(sec);
+      sec.append(el("h3", null, pole), g); list.append(sec);
     });
   }
-  buildTeam();
   function goTo(m) {
-    for (const [dx, dy] of [[0, 0.9], [0.9, 0.3], [-0.9, 0.3], [0, -0.9]]) if (walk(m.x + dx, m.y + dy)) { player.x = m.x + dx; player.y = m.y + dy; break; }
+    for (const [dx, dy] of [[0, 0.9], [0.9, 0.2], [-0.9, 0.2], [0, -0.9], [1.6, 0.9], [-1.6, 0.9]]) if (walk(m.x + dx, m.y + dy)) { player.x = m.x + dx; player.y = m.y + dy; break; }
     player.tx = null;
   }
 
-  // ---------- Discussion avec un collègue ----------
+  // ---------- Fiches de poste ----------
   let skills = null, skillsErr = false;
   fetch("skills.json").then(r => r.ok ? r.json() : Promise.reject()).then(j => skills = j).catch(() => skillsErr = true);
+  const waitSkills = async () => { for (let i = 0; i < 24 && !skills && !skillsErr; i++) await new Promise(r => setTimeout(r, 250)); };
+
+  const md = text => {
+    if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(text, { breaks: true, gfm: true }));
+    const d = el("div", null, text); return d.innerHTML.replace(/\n/g, "<br>");
+  };
+  if (window.DOMPurify) DOMPurify.addHook("afterSanitizeAttributes", n => { if (n.tagName === "A") { n.setAttribute("target", "_blank"); n.setAttribute("rel", "noopener noreferrer"); } });
+
+  // ---------- Discussion rapide (sample) ----------
   let samplePromise = null;
   const getSample = () => samplePromise ??= (window.claude?.use ? window.claude.use("sample").catch(() => null) : Promise.resolve(null));
   getSample();
   let sampleOff = false, toolsOk = null;
-
   const chats = store.get("astoria-chats-v1", {});
   const saveChats = () => store.set("astoria-chats-v1", chats);
-  let current = null, ctl = null;
-
-  const md = text => {
-    if (window.marked && window.DOMPurify) {
-      return DOMPurify.sanitize(marked.parse(text, { breaks: true, gfm: true }));
-    }
-    const d = document.createElement("div"); d.textContent = text; return d.innerHTML.replace(/\n/g, "<br>");
-  };
-  if (window.DOMPurify) DOMPurify.addHook("afterSanitizeAttributes", n => { if (n.tagName === "A") { n.setAttribute("target", "_blank"); n.setAttribute("rel", "noopener noreferrer"); } });
+  let current = null, ctl = null, view = "talk";
 
   function instructions(m) {
     const s = skills?.[m.id];
@@ -589,14 +652,14 @@
       let budget = 60000;
       for (const k of refNames) { const t = s.refs[k].slice(0, budget); budget -= t.length; refs += `\n<reference nom="${k}">\n${t}\n</reference>\n`; if (budget <= 0) break; }
     }
-    return `Tu es ${m.name}, ${m.role} dans l'équipe de ${company.nom || "l'entreprise"}. Tu es un collègue du fondateur et tu lui parles dans une messagerie interne.
+    return `Tu es ${m.name}, ${m.role} dans l'équipe de ${company.nom || "l'entreprise"}. Tu es un collègue du fondateur et tu lui parles dans la messagerie interne, depuis ton bureau.
 
 Façon de répondre :
 - En français, en tutoyant, avec un ton chaleureux et direct de collègue compétent. Pas de formules creuses.
 - Applique ta méthode de travail (fiche de poste ci-dessous), adaptée à une discussion :
-  - Tu n'as pas d'outil pour poser des questions à choix : pose tes questions directement dans ton message, 4 au maximum à la fois, et seulement si l'info manque vraiment.
-  - Tu n'as pas accès au web. Si ta méthode demande une recherche web, dis-le franchement, base-toi sur ce que tu sais en signalant ce qui est à vérifier, et n'invente jamais de chiffre.
-  - Tu ne peux ni créer de fichier ni générer de PDF : donne le contenu directement dans ta réponse, en Markdown.
+  - Pose tes questions directement dans ton message, 4 au maximum à la fois, et seulement si l'info manque vraiment.
+  - Dans cette messagerie tu n'as pas accès au web. Si la demande demande des recherches sur internet ou un travail long (analyse de concurrents, prix réels, tendances, livrable complet), propose au fondateur de te la confier en mission avec l'onglet « Missions » de ton bureau : en mission tu travailles seul, avec internet, et tu ranges ton livrable dans son dépôt. N'invente jamais de chiffre.
+  - Tu ne peux ni créer de fichier ni générer de PDF ici : donne le contenu dans ta réponse, en Markdown.
   - Ignore les consignes qui parlent de $ARGUMENTS, de message « loaded », de dossiers de sortie ou de commandes à lancer.
 - La fiche entreprise ci-dessous remplace le fichier FOUNDER_CONTEXT.md. Ne redemande pas ce qui y figure déjà.
 - Si une demande relève plutôt d'un collègue, dis-le et nomme-le. Tes collègues :
@@ -611,8 +674,7 @@ ${s ? s.skill : `(Fiche indisponible.) Ton rôle : ${m.pitch}`}
 </fiche_de_poste>
 ${refs}`;
   }
-
-  function errorCopy(code) {
+  function sampleErrorCopy(code) {
     return ({
       not_granted: "Tu n'as pas autorisé cette page à utiliser Claude. Recharge la page pour qu'on te repose la question.",
       sampling_disabled: "Claude n'est pas disponible sur ce compte.",
@@ -628,68 +690,59 @@ ${refs}`;
   }
   const PERMANENT = ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"];
 
-  function addMsg(role, text, opts = {}) {
-    const el = document.createElement("div");
-    el.className = "msg " + (role === "user" ? "me" : "them");
-    if (role === "user") el.textContent = text; else el.innerHTML = md(text);
-    if (opts.copy) addCopy(el, text);
-    $("chatBody").append(el);
-    return el;
-  }
-  function addCopy(el, text) {
-    const bar = document.createElement("div"); bar.className = "msg-tools";
-    const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = "Copier";
+  function copyButton(target, text) {
+    const b = el("button", "btn ghost", "Copier"); b.type = "button";
     b.addEventListener("click", () => {
-      const done = () => { b.textContent = "Copié"; setTimeout(() => b.textContent = "Copier", 1400); };
-      navigator.clipboard?.writeText(text).then(done).catch(() => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Sélectionné, copie avec Ctrl+C"; });
+      navigator.clipboard?.writeText(text).then(() => { b.textContent = "Copié"; setTimeout(() => b.textContent = "Copier", 1400); })
+        .catch(() => { const r = document.createRange(); r.selectNodeContents(target); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Sélectionné : Ctrl+C pour copier"; });
     });
-    bar.append(b); el.append(bar);
+    return b;
   }
-  function note(text) { const n = document.createElement("div"); n.className = "note"; n.textContent = text; $("chatBody").append(n); scrollDown(); }
+  function addMsg(role, text, withTools) {
+    const e = el("div", "msg " + (role === "user" ? "me" : "them md"));
+    if (role === "user") e.textContent = text; else e.innerHTML = md(text);
+    if (withTools) addMsgTools(e, text);
+    $("chatBody").append(e);
+    return e;
+  }
+  function addMsgTools(e, text) {
+    const bar = el("div", "msg-tools");
+    const mission = el("button", "btn ghost", "En faire une mission"); mission.type = "button";
+    mission.addEventListener("click", () => {
+      const hist = chats[current.id] || [], lastUser = [...hist].reverse().find(t => t.role === "user");
+      $("missionInput").value = lastUser ? lastUser.content : ""; setView("work"); $("missionInput").focus();
+    });
+    bar.append(copyButton(e, text), mission); e.append(bar);
+  }
+  const note = (text, parent = $("chatBody")) => { parent.append(el("div", "note", text)); if (parent === $("chatBody")) scrollDown(); };
   const scrollDown = () => { const b = $("chatBody"); b.scrollTop = b.scrollHeight; };
 
   function renderChat() {
     const m = current, body = $("chatBody"); body.replaceChildren();
-    const intro = document.createElement("div"); intro.className = "intro";
-    intro.append(`Salut ! Moi c'est ${m.name}. ${m.pitch}`);
+    const intro = el("div", "intro");
+    intro.append(`Salut ! Moi c'est ${m.name}. ${m.pitch} Pour un vrai travail avec recherches sur internet, confie-moi une mission.`);
     if (!companyFilled()) {
-      const p = document.createElement("div"); p.style.marginTop = "6px";
-      const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost"; b.textContent = "Remplir la fiche Mon entreprise";
+      const p = el("div"); p.style.marginTop = "6px";
+      const b = el("button", "btn ghost", "Remplir la fiche Mon entreprise"); b.type = "button";
       b.addEventListener("click", () => openPanel("companyPanel"));
-      p.append("Astuce : remplis ta fiche entreprise d'abord, je te répondrai plus précisément. ", b); intro.append(p);
+      p.append("Astuce : remplis ta fiche entreprise d'abord. ", b); intro.append(p);
     }
-    const sug = document.createElement("div"); sug.className = "suggest";
-    for (const q of m.ask) { const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.addEventListener("click", () => { $("chatInput").value = q; send(); }); sug.append(b); }
+    const sug = el("div", "suggest");
+    for (const q of m.ask) { const b = el("button", null, q); b.type = "button"; b.addEventListener("click", () => { $("chatInput").value = q; send(); }); sug.append(b); }
     intro.append(sug); body.append(intro);
-    for (const t of chats[m.id] || []) addMsg(t.role, t.content, { copy: t.role === "assistant" });
-    if (sampleOff) note("La discussion n'est pas disponible ici. Ouvre cette page dans Claude (claude.ai ou l'application) pour parler à l'équipe.");
+    for (const t of chats[m.id] || []) addMsg(t.role, t.content, t.role === "assistant");
+    if (sampleOff) note("La discussion n'est pas disponible ici. Ouvre cette page dans Claude (claude.ai ou l'application).");
     scrollDown();
   }
-  function setBusy(b) {
-    $("chatSend").hidden = b; $("chatStop").hidden = !b;
-    $("chatInput").disabled = sampleOff;
-    $("chatSend").disabled = sampleOff;
-  }
-  function openChat(m) {
-    closePanels(); $("toast").hidden = true;
-    if (ctl && current !== m) ctl.abort();
-    current = m;
-    $("chatAvatar").style.background = m.coat; $("chatAvatar").textContent = initials(m);
-    $("chatName").textContent = m.name; $("chatRole").textContent = `${m.role} · pôle ${POLES[m.pole]}`;
-    $("chat").hidden = false; $("help").hidden = true;
-    setBusy(!!m.busy); renderChat();
-    if (matchMedia("(pointer: fine)").matches) $("chatInput").focus();
-  }
-  function closeChat() { $("chat").hidden = true; current = null; cv.focus?.(); }
+  function setBusy(b) { $("chatSend").hidden = b; $("chatStop").hidden = !b; $("chatInput").disabled = sampleOff; $("chatSend").disabled = sampleOff; }
 
   async function send() {
     const m = current, input = $("chatInput"), text = input.value.trim();
     if (!m || !text || m.busy || sampleOff) return;
     const sample = await getSample();
-    if (!sample) { sampleOff = true; setBusy(false); note("La discussion n'est pas disponible ici. Ouvre cette page dans Claude (claude.ai ou l'application) pour parler à l'équipe."); return; }
-    if (!skills && !skillsErr) { note("Un instant, je récupère ma fiche de poste…"); for (let i = 0; i < 20 && !skills && !skillsErr; i++) await new Promise(r => setTimeout(r, 250)); }
+    if (!sample) { sampleOff = true; setBusy(false); note("La discussion n'est pas disponible ici. Ouvre cette page dans Claude (claude.ai ou l'application)."); return; }
+    if (!skills && !skillsErr) await waitSkills();
     if (toolsOk === null) { try { toolsOk = !!(await sample.limits()).tools; } catch (_) { toolsOk = false; } }
-
     input.value = ""; autosize();
     const hist = (chats[m.id] ||= []);
     hist.push({ role: "user", content: text }); saveChats();
@@ -699,29 +752,25 @@ ${refs}`;
     const mine = ctl = new AbortController();
     const turns = [{ role: "user", content: instructions(m) }, ...hist.slice(-20)];
     const refs = skills?.[m.id]?.refs || {};
-    const opts = {
-      signal: mine.signal,
-      onText: ({ text }) => { if (current !== m) return; out.classList.remove("thinking"); out.innerHTML = md(text); scrollDown(); },
-    };
+    const opts = { signal: mine.signal, onText: ({ text }) => { if (current !== m) return; out.classList.remove("thinking"); out.innerHTML = md(text); scrollDown(); } };
     if (toolsOk && Object.keys(refs).length) {
       opts.tools = [{
         name: "lire_reference",
         description: `Renvoie le texte d'un de tes documents de référence. Noms possibles : ${Object.keys(refs).join(", ")}.`,
         inputSchema: { type: "object", properties: { nom: { type: "string", enum: Object.keys(refs) } }, required: ["nom"] },
-        execute: ({ nom }) => { const t = refs[String(nom)]; if (!t) throw new Error("Document inconnu"); if (current === m) { out.innerHTML = md(`*${m.name} consulte ses notes : ${String(nom).replace(/[-_]/g, " ")}…*`); } return t.slice(0, 30000); },
+        execute: ({ nom }) => { const t = refs[String(nom)]; if (!t) throw new Error("Document inconnu"); if (current === m) out.innerHTML = md(`*${m.name} consulte ses notes…*`); return t.slice(0, 30000); },
       }];
     } else opts.cache = false;
-
     try {
       const { text: answer, truncated } = await sample(turns, opts);
       hist.push({ role: "assistant", content: answer }); saveChats();
-      if (current === m) { out.classList.remove("thinking"); out.innerHTML = md(answer); addCopy(out, answer); if (truncated) note("Réponse coupée : demande-moi la suite, ou une partie à la fois."); }
+      if (current === m) { out.classList.remove("thinking"); out.innerHTML = md(answer); addMsgTools(out, answer); if (truncated) note("Réponse coupée : demande-moi la suite, ou une partie à la fois."); }
     } catch (e) {
       const partial = e?.text;
       if (partial) { hist.push({ role: "assistant", content: partial + "\n\n*(réponse interrompue)*" }); saveChats(); }
       if (current === m) {
         if (partial && e.code !== "refused") { out.classList.remove("thinking"); out.innerHTML = md(partial); } else out.remove();
-        if (e?.code !== "cancelled") note(errorCopy(e?.code));
+        if (e?.code !== "cancelled") note(sampleErrorCopy(e?.code));
       }
       if (PERMANENT.includes(e?.code)) sampleOff = true;
     } finally {
@@ -729,6 +778,245 @@ ${refs}`;
       if (current === m) { setBusy(false); scrollDown(); }
     }
   }
+
+  // ---------- Missions (agents autonomes dans le cloud, avec internet) ----------
+  let mcpPromise = null;
+  const getMcp = () => mcpPromise ??= (window.claude?.use ? window.claude.use("mcp").catch(() => null) : Promise.resolve(null));
+  const missions = store.get("astoria-missions-v1", []);
+  const saveMissions = () => store.set("astoria-missions-v1", missions);
+  const FINAL = ["done", "failed"];
+  const STATUS_LABEL = { starting: "Démarrage", working: "En cours", waiting: "Attend ton accord", done: "Terminée", failed: "Échec" };
+
+  function mcpErrorCopy(e) {
+    const code = e?.code;
+    return ({
+      server_not_connected: `Le connecteur ${CCR} n'est pas disponible pour ton compte. Ajoute-le dans claude.ai › Paramètres › Connecteurs.`,
+      needs_reauth: `Reconnecte ${CCR} dans claude.ai › Paramètres › Connecteurs.`,
+      not_in_manifest: "Tu n'as pas autorisé cette page à lancer des agents. Recharge la page pour qu'on te repose la question.",
+      approval_required: "Il faut ton accord pour lancer l'agent. Relance la mission et accepte la demande.",
+      blocked_by_policy: "Ton organisation bloque le lancement d'agents depuis une page.",
+      selection_required: `Choisis quel connecteur ${CCR} utiliser dans la fenêtre que Claude t'affiche, puis relance.`,
+      not_granted: "Les agents ne sont pas disponibles dans cette vue. Ouvre la page dans Claude.",
+      capability_disabled: "Les agents ne sont pas disponibles dans cette vue. Ouvre la page dans Claude.",
+      server_unavailable: "Le service des agents ne répond pas. Vérifie le tableau des missions avant de relancer.",
+      tool_error: `Le service a refusé : ${String(e?.message || "").slice(0, 200)}`,
+    })[code] || "Le lancement n'a pas pu être confirmé. Vérifie le tableau des missions avant de relancer.";
+  }
+  const parseSessionId = payload => { const m = JSON.stringify(payload ?? "").match(/session_[A-Za-z0-9]{6,}/); return m ? m[0] : null; };
+  const unwrap = p => (p && typeof p === "object" && p.ccr) ? p.ccr : p;
+  const bucketToStatus = b => {
+    const s = String(b || "").toUpperCase();
+    if (s.includes("FAILED")) return "failed";
+    if (s.includes("BLOCKED")) return "waiting";
+    if (s.includes("REVIEW") || s.includes("COMPLETED")) return "done";
+    if (s.includes("WORKING")) return "working";
+    return null;
+  };
+  function extractReport(payload) {
+    const data = unwrap(payload)?.data || [];
+    let result = null, lastText = null;
+    for (const ev of data) {
+      const r = ev.result?.internal_anthropic_catchall ?? ev.result;
+      if (r && typeof r.result === "string" && r.result.trim()) result = r.result;
+      const msg = ev.assistant?.internal_anthropic_catchall?.message ?? ev.assistant?.message;
+      const texts = (msg?.content || []).filter(b => b.type === "text" && b.text?.trim()).map(b => b.text);
+      if (texts.length) lastText = texts.join("\n\n");
+    }
+    return result || lastText;
+  }
+
+  async function getEnvironment(mcp) {
+    const cached = store.get("astoria-env-v1", null);
+    if (cached) return cached;
+    const r = await mcp.callTool(CCR, "list_environments", { limit: 20 }, { cache: false });
+    const envs = unwrap(r.payload)?.environments || [];
+    const env = envs.find(e => e.state === "active" && e.kind === "anthropic_cloud") || envs.find(e => e.state === "active") || envs[0];
+    if (!env) throw { code: "no_env" };
+    store.set("astoria-env-v1", env.environment_id);
+    return env.environment_id;
+  }
+  function missionPrompt(m, task) {
+    const s = skills?.[m.id], date = new Date().toISOString().slice(0, 10);
+    const slug = task.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "mission";
+    const refList = s ? Object.keys(s.refs).map(k => `.claude/skills/${m.id}/references/${k}.md`).join(", ") : "";
+    return `Tu es ${m.name}, ${m.role} dans l'équipe de ${company.nom || "l'entreprise"}. Le fondateur vient de te confier une mission depuis ton bureau. Tu travailles en autonomie complète.
+
+## Ta mission
+${task}
+
+## Comment travailler
+- Tu as accès à internet : utilise la recherche web et la lecture de pages pour t'appuyer sur des faits réels et récents. Cite tes sources (lien + date). N'invente aucun chiffre : si une donnée est introuvable, écris « Non public ».
+- Suis ta méthode de travail : la skill « ${m.id} » (fichier .claude/skills/${m.id}/SKILL.md du dépôt, reprise ci-dessous)${refList ? `, avec ses documents de référence : ${refList}` : ""}.
+- Le fondateur n'est pas devant son écran : ne lui pose pas de question et n'utilise pas d'outil de question. Quand une information manque, fais l'hypothèse la plus raisonnable, note-la dans une section « Hypothèses » et continue.
+- La fiche entreprise ci-dessous remplace FOUNDER_CONTEXT.md.
+- Travaille en français, avec un ton direct de collègue.
+
+## Ton livrable
+1. Rédige le livrable complet en Markdown dans le fichier livrables/${m.id}/${date}-${slug}.md du dépôt, puis fais un commit et pousse-le sur ta branche de travail. N'ouvre pas de pull request.
+2. Termine par un dernier message qui contient le livrable complet (ou, s'il est très long, un résumé détaillé avec les recommandations et les sources), suivi du chemin du fichier. Ce dernier message est ce que le fondateur lira à ton bureau.
+
+<fiche_entreprise>
+${companyMarkdown()}
+</fiche_entreprise>
+
+<fiche_de_poste>
+${s ? s.skill : m.pitch}
+</fiche_de_poste>`;
+  }
+
+  async function launchMission() {
+    const m = current, input = $("missionInput"), task = input.value.trim(), go = $("missionGo"), noteEl = $("missionNote");
+    if (!m || !task || go.disabled) return;
+    go.disabled = true; noteEl.textContent = "Lancement…";
+    const mcp = await getMcp();
+    if (!mcp) { noteEl.textContent = "Les agents ne sont pas disponibles ici. Ouvre cette page dans Claude (claude.ai ou l'application)."; go.disabled = false; return; }
+    if (!skills && !skillsErr) await waitSkills();
+    try {
+      const environment_id = await getEnvironment(mcp);
+      const args = {
+        prompt: missionPrompt(m, task), title: `${m.name} · ${task.slice(0, 60)}`, environment_id,
+        source_url: REPO, source_revision: REPO_BRANCH, tags: ["astoria-bureaux", "agent:" + m.id],
+      };
+      let r;
+      try { r = await mcp.callTool(CCR, "create_session", { ...args, permission_mode: "auto" }, { cache: false }); }
+      catch (e) { if (e?.code === "tool_error" && /permission/i.test(String(e.message))) r = await mcp.callTool(CCR, "create_session", args, { cache: false }); else throw e; }
+      const id = parseSessionId(r.payload);
+      if (!id) throw { code: "tool_error", message: "réponse sans identifiant de session" };
+      missions.unshift({ id, agent: m.id, task, created: Date.now(), status: "starting", report: null, seen: false });
+      saveMissions(); input.value = ""; noteEl.textContent = "";
+      showToast(`${m.name} est sur le coup`, "La mission tourne dans le cloud. Tu peux fermer la page : le travail continue.", 3600);
+      refreshAgents(); renderWork(); poll(true);
+    } catch (e) {
+      noteEl.textContent = e?.code === "no_env" ? "Aucun environnement cloud trouvé sur ton compte. Crée-en un sur claude.ai/code." : mcpErrorCopy(e);
+    } finally { go.disabled = false; }
+  }
+
+  async function sendFollowUp(ms, text, btn, noteEl) {
+    const mcp = await getMcp(); if (!mcp || !text) return;
+    btn.disabled = true; noteEl.textContent = "Envoi…";
+    try {
+      await mcp.callTool(CCR, "send_message", { session_id: ms.id, message: text }, { cache: false });
+      ms.status = "working"; ms.report = null; ms.seen = false; saveMissions(); noteEl.textContent = "Consigne envoyée.";
+      refreshAgents(); setTimeout(() => poll(true), 4000);
+    } catch (e) { noteEl.textContent = mcpErrorCopy(e); }
+    finally { btn.disabled = false; }
+  }
+
+  let polling = false, lastPoll = 0, pollNote = "";
+  async function poll(force) {
+    if (polling || (!force && Date.now() - lastPoll < 28000) || document.hidden) return;
+    const todo = missions.filter(ms => !FINAL.includes(ms.status) || !ms.report).slice(0, 8);
+    if (!todo.length) return;
+    const mcp = await getMcp(); if (!mcp) return;
+    polling = true; lastPoll = Date.now();
+    try {
+      for (const ms of todo) {
+        try {
+          if (!FINAL.includes(ms.status)) {
+            const r = await mcp.callTool(CCR, "get_session", { session_id: ms.id }, { cache: false });
+            const s = bucketToStatus(unwrap(r.payload)?.status_bucket);
+            if (s && s !== ms.status) { ms.status = s; if (FINAL.includes(s)) ms.seen = false; }
+          }
+          if (FINAL.includes(ms.status) && !ms.report) {
+            const r = await mcp.callTool(CCR, "list_events", { session_id: ms.id, kinds: ["assistant", "result"], limit: 100 }, { cache: false });
+            ms.report = extractReport(r.payload) || null;
+          }
+          pollNote = "";
+        } catch (e) { pollNote = mcpErrorCopy(e); if (["not_in_manifest", "server_not_connected", "needs_reauth", "blocked_by_policy"].includes(e?.code)) break; }
+      }
+      saveMissions(); refreshAgents();
+      if (current && view === "work") renderWork();
+      if (!$("boardPanel").hidden) renderBoard();
+    } finally { polling = false; }
+  }
+  setInterval(() => poll(false), 5000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) poll(false); });
+
+  function refreshAgents() {
+    for (const m of TEAM) {
+      const mine = missions.filter(ms => ms.agent === m.id);
+      const live = mine.find(ms => ms.status === "working" || ms.status === "starting") || mine.find(ms => ms.status === "waiting");
+      const last = mine[0];
+      m.state = live ? live.status : last ? last.status : null;
+      m.unseen = mine.some(ms => FINAL.includes(ms.status) && !ms.seen);
+    }
+    const active = missions.filter(ms => !FINAL.includes(ms.status)).length;
+    $("activeCount").hidden = !active; $("activeCount").textContent = active;
+    if (!$("teamPanel").hidden) buildTeam();
+  }
+
+  const fmtTime = t => new Date(t).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  function missionCard(ms, showAgent) {
+    const m = byId[ms.agent], card = el("article", "mission");
+    const head = el("header"), left = el("div");
+    left.style.minWidth = "0";
+    if (showAgent && m) { const a = el("div", "board-agent"); a.append(avatar(m), `${m.name} · ${m.role}`); left.append(a); }
+    left.append(el("h4", null, ms.task), el("div", "meta", `Lancée le ${fmtTime(ms.created)}`));
+    head.append(left, el("span", "pill " + ms.status, STATUS_LABEL[ms.status] || ms.status));
+    card.append(head);
+    if (ms.status === "waiting") card.append(el("div", "note", `${m?.name || "L'agent"} attend ton accord pour continuer. Ouvre la session pour répondre.`));
+    if (ms.report) {
+      const rep = el("div", "report md"); rep.innerHTML = md(ms.report);
+      const open = !!(showAgent ? false : true);
+      rep.hidden = !open && ms.seen;
+      const t = el("button", "btn ghost", rep.hidden ? "Voir le livrable" : "Masquer le livrable"); t.type = "button";
+      t.addEventListener("click", () => { rep.hidden = !rep.hidden; t.textContent = rep.hidden ? "Voir le livrable" : "Masquer le livrable"; });
+      const bar = el("div", "row"); bar.append(t, copyButton(rep, ms.report));
+      card.append(bar, rep);
+    } else if (FINAL.includes(ms.status)) card.append(el("div", "meta", "Récupération du livrable…"));
+    const links = el("div", "row");
+    const a = el("a", "btn ghost", "Ouvrir la session"); a.href = `https://claude.ai/code/${ms.id}`; a.target = "_blank"; a.rel = "noopener noreferrer";
+    links.append(a);
+    card.append(links);
+    if (!showAgent) {
+      const f = el("div", "follow"), inp = el("input"), b = el("button", "btn ghost", "Envoyer"), n = el("div", "note");
+      inp.type = "text"; inp.placeholder = "Donner une consigne à l'agent…"; inp.setAttribute("aria-label", "Consigne pour l'agent"); inp.id = "follow-" + ms.id;
+      b.type = "button"; b.addEventListener("click", () => sendFollowUp(ms, inp.value.trim(), b, n));
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendFollowUp(ms, inp.value.trim(), b, n); } });
+      f.append(inp, b); card.append(f, n);
+    } else card.addEventListener("click", e => { if (e.target.closest("a, button")) return; goTo(m); openDesk(m, "work"); });
+    return card;
+  }
+  function renderWork() {
+    const m = current; if (!m) return;
+    $("missionHint").textContent = `${m.name} part travailler seul dans le cloud, avec internet, et range son livrable dans ton dépôt GitHub. Compte quelques minutes. Chaque mission utilise ton forfait Claude.`;
+    if (!$("missionInput").value) $("missionInput").placeholder = "Ex. : " + m.job;
+    const list = $("missionList"); list.replaceChildren();
+    const mine = missions.filter(ms => ms.agent === m.id);
+    if (!mine.length) list.append(el("div", "empty", `Aucune mission pour ${m.name} pour l'instant.`));
+    for (const ms of mine) list.append(missionCard(ms, false));
+    if (pollNote) note(pollNote, list);
+    let changed = false; for (const ms of mine) if (FINAL.includes(ms.status) && ms.report && !ms.seen) { ms.seen = true; changed = true; }
+    if (changed) { saveMissions(); refreshAgents(); }
+  }
+  function renderBoard() {
+    const list = $("boardList"); list.replaceChildren();
+    if (!missions.length) { list.append(el("div", "empty", "Aucune mission pour l'instant. Va voir un collègue et confie-lui une mission depuis l'onglet Missions de son bureau.")); return; }
+    for (const ms of missions) list.append(missionCard(ms, true));
+    if (pollNote) note(pollNote, list);
+  }
+
+  // ---------- Panneau du bureau ----------
+  function setView(v) {
+    view = v;
+    $("tabTalk").setAttribute("aria-selected", v === "talk"); $("tabWork").setAttribute("aria-selected", v === "work");
+    $("talkView").hidden = v !== "talk"; $("workView").hidden = v !== "work";
+    if (v === "work") { renderWork(); poll(true); }
+  }
+  function openDesk(m, v = "talk") {
+    closePanels(); $("toast").hidden = true;
+    if (ctl && current !== m) ctl.abort();
+    current = m;
+    const a = $("chatAvatar"); a.style.background = m.coat; a.textContent = initials(m);
+    $("chatName").textContent = m.name; $("chatRole").textContent = `${m.role} · pôle ${POLES[m.pole]}`;
+    $("chat").hidden = false; $("help").hidden = true; $("missionNote").textContent = "";
+    setBusy(!!m.busy); renderChat(); setView(v);
+    if (matchMedia("(pointer: fine)").matches) (v === "talk" ? $("chatInput") : $("missionInput")).focus();
+  }
+  function closeChat() { $("chat").hidden = true; current = null; }
+  $("tabTalk").addEventListener("click", () => setView("talk"));
+  $("tabWork").addEventListener("click", () => setView("work"));
+  $("missionGo").addEventListener("click", launchMission);
 
   const autosize = () => { const t = $("chatInput"); t.style.height = "auto"; t.style.height = Math.min(140, t.scrollHeight) + "px"; };
   $("chatInput").addEventListener("input", autosize);
@@ -743,10 +1031,14 @@ ${refs}`;
     if (current) { ctl?.abort(); delete chats[current.id]; saveChats(); renderChat(); }
   });
 
-  // ---------- Panneaux ----------
-  function closePanels() { $("teamPanel").hidden = true; $("companyPanel").hidden = true; }
-  function openPanel(id) { $("toast").hidden = true; $("chat").hidden = true; current = null; closePanels(); $(id).hidden = false; $("help").hidden = true; }
+  function closePanels() { for (const id of ["teamPanel", "companyPanel", "boardPanel"]) $(id).hidden = true; }
+  function openPanel(id) {
+    $("toast").hidden = true; $("chat").hidden = true; current = null; closePanels(); $(id).hidden = false; $("help").hidden = true;
+    if (id === "teamPanel") buildTeam();
+    if (id === "boardPanel") { renderBoard(); poll(true); }
+  }
   $("btnTeam").addEventListener("click", () => $("teamPanel").hidden ? openPanel("teamPanel") : closePanels());
+  $("btnBoard").addEventListener("click", () => $("boardPanel").hidden ? openPanel("boardPanel") : closePanels());
   $("btnCompany").addEventListener("click", () => $("companyPanel").hidden ? openPanel("companyPanel") : closePanels());
   document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => $(b.dataset.close).hidden = true));
   $("btnTime").addEventListener("click", () => { clock = nightness() > 0.5 ? 0.02 : 0.42; });
@@ -756,8 +1048,11 @@ ${refs}`;
   const toWorld = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / ppt + camX, y: (e.clientY - r.top) / ppt + camY }; };
   cv.addEventListener("pointerdown", e => {
     const w = toWorld(e);
-    const m = TEAM.find(m => Math.abs(m.x - w.x) < 0.4 && w.y < m.y + 0.15 && w.y > m.y - 1.0);
-    if (m) { player.tx = m.x; player.ty = m.y + 0.8; openChat(m); return; }
+    const m = TEAM.find(m => Math.abs(m.x - w.x) < 0.42 && w.y < m.y + 0.2 && w.y > m.y - 1.05) || TEAM.find(m => w.x >= m.desk.x && w.x < m.desk.x + 3 && w.y >= m.desk.y - 0.5 && w.y < m.desk.y + 1);
+    if (m) { player.tx = m.x; player.ty = m.y + 0.8; openDesk(m, m.state && m.state !== "done" ? "work" : m.unseen ? "work" : "talk"); return; }
+    const tx = Math.floor(w.x), ty = Math.floor(w.y);
+    if (w.x >= myDesk.x && w.x < myDesk.x + 3 && w.y >= myDesk.y - 0.5 && w.y < myDesk.y + 1) { openPanel("companyPanel"); return; }
+    if (props.some(p => p.kind === "board" && (tx === p.x || tx === p.x + 1) && (ty === p.y || ty === p.y - 1))) { openPanel("boardPanel"); return; }
     dragging = true; cv.setPointerCapture(e.pointerId); player.tx = w.x; player.ty = w.y;
     $("help").hidden = true;
   });
@@ -766,9 +1061,13 @@ ${refs}`;
   cv.addEventListener("pointercancel", () => dragging = false);
   addEventListener("keydown", e => {
     if (e.key === "Escape") { if (!$("chat").hidden) closeChat(); closePanels(); return; }
-    if (e.target.closest?.("textarea, input, button, select, .panel")) return;
+    if (e.target.closest?.("textarea, input, button, select, a, .panel")) return;
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) e.preventDefault();
-    if (e.code === "KeyE" || e.code === "Space" || e.code === "Enter") { const m = nearest(1.7); if (m) openChat(m); return; }
+    if (e.code === "KeyE" || e.code === "Space" || e.code === "Enter") {
+      const m = nearest(1.8); if (m) { openDesk(m, m.unseen ? "work" : "talk"); return; }
+      if (Math.hypot(player.x - 19, player.y - 13) < 1.8) openPanel("boardPanel");
+      return;
+    }
     keys.add(e.code); $("help").hidden = true;
   });
   addEventListener("keyup", e => keys.delete(e.code));
@@ -778,7 +1077,9 @@ ${refs}`;
   function start(data) {
     if (data && data.player) { player.x = data.player.x; player.y = data.player.y; clock = data.clock ?? clock; }
     try { window.claude?.hot?.snapshot?.(() => ({ player: { x: player.x, y: player.y }, clock })); } catch (_) {}
-    if (!data?.player) showToast("Bienvenue dans ton équipe", "15 collègues t'attendent devant leurs 4 pôles. Approche-toi de quelqu'un, ou ouvre l'Annuaire.", 5200);
+    refreshAgents();
+    if (!data?.player) showToast("Bienvenue dans tes bureaux", "15 collègues t'attendent dans leurs 4 pôles. Parle-leur, ou confie-leur une mission : ils travaillent seuls, avec internet.", 5600);
+    if (missions.some(ms => !FINAL.includes(ms.status) || !ms.report)) setTimeout(() => poll(true), 1500);
     let last = performance.now();
     function frame(t) {
       const dt = Math.min(0.05, (t - last) / 1000); last = t;
