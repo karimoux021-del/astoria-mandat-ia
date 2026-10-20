@@ -42,8 +42,9 @@ Tu es un agent IA qui travaille pour Astoria Mods. Lis ce contexte en entier ava
 **Ancien modèle (abandonné)** : livraison 3,99 € payée par le client, étiquette achetée par Karim (Mondial Relay ~4,99 €).
 - Règlement TikTok : 18,99 € − 1,85 € = 17,14 €, moins l'étiquette ≈ 12,15 € net
 - Le nouveau modèle rapporte donc environ **1 € de plus par vente** et supprime la gestion des étiquettes
-- Prix d'achat unitaire : **[À COMPLÉTER]**
-- Fournisseur et délai de réapprovisionnement : **[À COMPLÉTER]**
+- Prix d'achat unitaire : **≈ 7,09 €** sur AliExpress (prix relevé le 20/10/2026 sur le lien du fournisseur ; peut inclure une remise « nouveau client » et hors frais de port éventuels : **à confirmer** sur la prochaine commande)
+- Fournisseur : AliExpress, https://fr.aliexpress.com/item/1005012967340775.html — délai de réapprovisionnement : **[À COMPLÉTER]**
+- **Marge nette estimée par vente : 13,15 € − 7,09 € ≈ 6,06 €** (avant frais de port fournisseur et coûts de pub)
 - Stock actuel : **[À COMPLÉTER]**
 
 Toute proposition (promo, concours, pub) doit être chiffrée en **marge nette par vente** après commission et livraison.
