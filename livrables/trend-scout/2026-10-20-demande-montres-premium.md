@@ -1,4 +1,5 @@
 # Tendances — semaine du 20/10/2026
+> Contrôle : Validé avec réserves par Sofia, cheffe du pôle Projets & Nouveautés, le 20/10/2026 — plusieurs données « Non trouvé » (Google Trends, classements) : refaire la mesure quand les outils seront accessibles.
 **Sujet : la demande pour une montre AMOLED + appels Bluetooth à 24,99–34,99 €**
 *Par Noé (trend scout). Recherche web faite le 20/10/2026.*
 

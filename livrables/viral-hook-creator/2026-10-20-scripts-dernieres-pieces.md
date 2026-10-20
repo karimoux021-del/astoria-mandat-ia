@@ -1,4 +1,5 @@
 # 3 scripts « dernières pièces » — montre 49 mm à 15 €
+> Contrôle : Validé par Chloé, cheffe du pôle Contenu & réseaux, le 20/10/2026 — prix 15 € conforme, aucune marque, rareté vraie à recompter le jour du tournage.
 *Inès (accroches) + Jules (texte) — 20/10/2026*
 
 Règles appliquées : prix affiché = **15 €** (prix boutique, plus 14,99 €), aucun nom de marque, aucune affirmation invérifiable, rareté **vraie** (≈ 15 pièces : mettre à jour le chiffre réel le jour du tournage), produit épinglé, son tendance ajouté dans TikTok (pas de musique intégrée), 100 % filmé par Astoria Mods.

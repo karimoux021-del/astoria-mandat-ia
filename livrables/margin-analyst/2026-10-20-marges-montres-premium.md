@@ -1,4 +1,5 @@
 # Rentabilité — montres AMOLED de Sami (20/10/2026)
+> Contrôle : Validé par Sofia, cheffe du pôle Projets & Nouveautés, le 20/10/2026 — calculs vérifiés au centime ; dépend des prix de Sami à confirmer.
 *Maëlle, analyste rentabilité*
 
 Données d'entrée : livrable de Sami `livrables/product-scout/2026-10-20-montres-premium.md` (prix d'achat **indicatifs**, tirés d'extraits de recherche AliExpress, à revérifier sur fr.aliexpress.com).

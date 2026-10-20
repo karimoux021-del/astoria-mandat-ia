@@ -1,4 +1,5 @@
 # Finir les ~15 montres sans baisser la marge — Zoé, 20/10/2026
+> Contrôle : Validé par Antoine, chef du pôle Marketing, le 20/10/2026 — calculs justes ; hypothèse REP par montre signalée.
 
 **Constat** : la montre se vend bien à 15 € (FOUNDER_CONTEXT §0). Une promo n'est pas nécessaire : chaque euro de remise est perdu. Le stock étant déjà rentabilisé, le plancher est simplement « encaisser > 0 après frais TikTok ».
 

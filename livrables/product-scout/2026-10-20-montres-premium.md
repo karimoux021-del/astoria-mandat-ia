@@ -1,4 +1,5 @@
 # Pistes produits : montres connectées premium (AMOLED + appels) — 20/10/2026
+> Contrôle : Validé avec réserves par Sofia, cheffe du pôle Projets & Nouveautés, le 20/10/2026 — prix indicatifs (extraits de recherche, AliExpress bloqué) ; « ColMi » est un nom de fabricant : ne jamais l'utiliser dans nos titres.
 *Sami, product scout Astoria Mods*
 
 ## ⚠️ Limites de la recherche (à lire avant les chiffres)
