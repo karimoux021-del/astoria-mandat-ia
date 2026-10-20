@@ -2,6 +2,10 @@
 
 Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en cours / fait / bloqué) et le lien du livrable.
 
+## Organisation
+- [x] **Alexandre (general-manager)** : hiérarchie en place (DG + 5 chefs de pôle, contrôle qualité, rapports dans `entreprise/rapports/`). — fait le 20/10 (validé par Karim)
+- [ ] **Chefs de pôle (department-head)** : contrôle rétroactif des livrables du 20/10 (Sofia : Sami, Maëlle, Noé ; Antoine : Zoé ; Chloé : Inès + Jules). — à faire (21/10)
+
 ## Priorité 1 — Nouveau produit à plus forte marge
 - [x] **Sami (product-scout)** : trouver 5 montres connectées plus haut de gamme avec liens fournisseurs, prix d'achat, délais. — fait le 20/10 → `livrables/product-scout/2026-10-20-montres-premium.md` (piste n° 1 : réf. P86 AMOLED 1,93" ; prix indicatifs, AliExpress bloqué en accès direct)
 - [x] **Maëlle (margin-analyst)** : marge nette des modèles de Sami à 24,99 / 29,99 / 34,99 €. — fait le 20/10 → `livrables/margin-analyst/2026-10-20-marges-montres-premium.md` (P86 à 29,99 € : 11,73 €/vente si achat ≈ 15 €)

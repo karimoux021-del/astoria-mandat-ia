@@ -2,6 +2,7 @@
 
 Les décisions du fondateur, de la plus récente à la plus ancienne. Elles s'imposent à toute l'équipe.
 
+- 2026-10-20 — Karim veut une organisation hiérarchique : un directeur général (Alexandre) et un chef par pôle qui contrôle tout le travail de son équipe et fait des rapports. Objectif : une entreprise lucrative, fluide, où tout le monde communique. La routine du matin suit désormais `entreprise/procedure-journee.md` et `entreprise/organisation.md`.
 - 2026-10-20 — Consigne : la routine du matin intègre le Studio visuels (Léna, product-visuals ; Théo, listing-designer ; équipe de 21) et l'affichage en direct de l'avancement dans les bureaux (document `equipe/etat`).
 - 2026-10-20 — Montre AMOLED P86 : commander **1 échantillon** cette semaine (seulement si ≤ 16 € livré sur fr.aliexpress et déclaration CE demandée au vendeur), puis 10 pièces après test. (d1 : A)
 - 2026-10-20 — Prix de vente du nouveau modèle : **29,99 €** (marge ≈ 11,73 €/vente si achat ≈ 15 €). (d2)
