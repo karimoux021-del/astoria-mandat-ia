@@ -109,6 +109,10 @@
   .follow input { flex: 1; min-width: 0; font-size: 14px; padding: 6px 8px; }
   .empty { font-size: 14px; color: var(--ink-soft); text-align: center; padding: 8px; }
   .board-agent { display: flex; gap: 8px; align-items: center; font-weight: 800; font-size: 13px; }
+  .decision { border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; background: var(--parchment); }
+  .decision h4 { margin: 0; font-size: 15px; line-height: 1.35; }
+  .decision .reco { font-size: 13px; color: var(--ink-soft); }
+  .decision .chosen { font-weight: 800; color: var(--leaf); font-size: 14px; }
   .board-agent .avatar { width: 24px; height: 24px; font-size: 11px; }
 
   .team { display: flex; flex-direction: column; gap: 14px; }
@@ -136,6 +140,7 @@
   <div class="group">
     <div class="chip brand">Astoria</div>
     <button class="btn" id="btnTeam" type="button">L'équipe</button>
+    <button class="btn" id="btnJournal" type="button">Journal <span class="count" id="journalCount" hidden>!</span></button>
     <button class="btn" id="btnBoard" type="button">Missions <span class="count" id="activeCount" hidden>0</span></button>
     <button class="btn" id="btnCompany" type="button">Mon entreprise</button>
   </div>
@@ -178,6 +183,14 @@
   </div>
 </section>
 
+<section class="panel" id="journalPanel" hidden aria-label="Journal de l'équipe">
+  <div class="panel-head">
+    <div class="who"><h2>Journal de l'équipe</h2><p>Chaque matin, l'équipe se réunit et travaille sans toi. Toi, tu décides.</p></div>
+    <button class="btn close" data-close="journalPanel" type="button" aria-label="Fermer le journal">✕</button>
+  </div>
+  <div class="panel-body" id="journalBody"></div>
+</section>
+
 <section class="panel" id="boardPanel" hidden aria-label="Tableau des missions">
   <div class="panel-head">
     <div class="who"><h2>Tableau des missions</h2><p>Ce que ton équipe fait en ce moment, et ce qu'elle a livré.</p></div>
@@ -216,6 +229,7 @@
   const REPO = "https://github.com/karimoux021-del/astoria-mandat-ia";
   const REPO_BRANCH = "claude/new-session-mx7nnp";
   const CCR = "Claude Code Remote";
+  const TRIGGER_ID = "trig_017vM8jC1RmpTa1aeWPNpznw"; // routine « journée de travail » (chaque matin 6 h 52, heure de Paris)
   // Contexte complet fourni par le fondateur (copie de FOUNDER_CONTEXT.md du dépôt)
   const BASE_CONTEXT = "# CONTEXTE ENTREPRISE — ASTORIA MODS\n\nTu es un agent IA qui travaille pour Astoria Mods. Lis ce contexte en entier avant chaque tâche. Il décrit l'entreprise, le produit, les chiffres, ce qui a déjà été fait et les règles à respecter.\n\n---\n\n## 0. Situation actuelle (octobre 2026) — À LIRE EN PREMIER\n\n- La montre connectée à 15 € est un **ancien business** : elle a déjà été rentabilisée. Il reste **environ 15 montres en stock** à **écouler** (déstockage).\n  - Comme ce stock est déjà payé et rentabilisé, le prix d'achat ne compte plus pour le déstockage : toute vente qui rapporte encore de l'argent après les frais TikTok Shop est bonne à prendre.\n  - La montre se vend vite et facilement : c'est un bon produit d'entrée de gamme.\n- **Nouvelle direction** : lancer un **nouveau produit avec une marge nette plus grosse**. Piste n° 1 : un **meilleur modèle de montre connectée** (ex. écran AMOLED), en gardant la montre actuelle comme entrée de gamme. D'autres produits restent possibles.\n- **Projet suivant** : relier TikTok Shop (centre vendeur, commandes, statistiques, vidéos) aux bureaux d'Astoria pour que toute l'équipe suive le compte.\n\n## 1. L'entreprise\n\n- **Nom** : Astoria Mods\n- **Logo** : monogramme « AM » avec deux horloges\n- **Activité** : vente de montres connectées petit prix, 100 % via **TikTok Shop** (France)\n- **Fondateur** : Karim, basé en Normandie (Caen). Il a un SIRET. Il gère Astoria Mods **en parallèle d'un emploi salarié** : son temps est limité, donc tout ce que tu proposes doit être simple, rapide à exécuter et rentable.\n- **Stade** : démarrage. Premières ventes début octobre 2026 (environ 1 vente par jour les premiers jours).\n\n## 2. Le produit\n\n- **Montre connectée 49 mm**, style « ultra » (boîtier carré sport), bracelet **orange ou noir**\n- Écran HD ~1,99\" (320 × 380 px) — *certaines vidéos indiquent 2,09\", à vérifier avant de publier un chiffre*\n- Fonctions : nombreux cadrans au choix (dont photo perso), notifications appels/messages, modes sport, pas, cardio, sommeil, jeux (ex. Snake), compatible iOS & Android en Bluetooth\n- Référence fournisseur proche : type « T900 Ultra »\n- **Prix de vente : 15 €** (les anciennes vidéos affichent 14,99 € : le prix annoncé dans une vidéo doit toujours correspondre au prix de la boutique)\n- **Livraison facturée au client : 4,99 €**, étiquette **fournie par TikTok Shop**\n\n## 3. Positionnement\n\n- **Cible** : petits budgets, jeunes, gens qui veulent le look d'une montre « ultra » sans payer 800 €\n- **Promesse** : « le style d'une grosse montre connectée pour le prix d'un menu »\n- **Slogan utilisé** : « Ton temps. Ton style. »\n- **Ton** : direct, tutoiement, énergique, emojis avec modération, jamais de jargon technique\n\n## 4. Économie (à garder en tête pour toute décision)\n\n**Frais TikTok Shop par commande (relevé réel, produit à 15 €) : 1,85 €**\n- Commission TikTok Shop : 1,33 € (~9 % du prix produit)\n- Frais de service REP (éco-contributions) : 0,50 €, soit emballage/papier 0,09 € + piles/batteries 0,27 € + DEEE 0,14 €\n- Frais de promotion Smart : 0,02 €\n\n**Modèle actuel (depuis octobre 2026)** : le client paie 4,99 € de livraison et TikTok Shop fournit l'étiquette.\n- Encaissé estimé par vente : 15 € − 1,85 € ≈ **13,15 €**, avant prix d'achat de la montre\n- *À confirmer sur le détail de règlement d'une commande récente* (vérifier qu'aucun frais d'étiquette n'est retenu en plus)\n\n**Ancien modèle (abandonné)** : livraison 3,99 € payée par le client, étiquette achetée par Karim (Mondial Relay ~4,99 €).\n- Règlement TikTok : 18,99 € − 1,85 € = 17,14 €, moins l'étiquette ≈ 12,15 € net\n- Le nouveau modèle rapporte donc environ **1 € de plus par vente** et supprime la gestion des étiquettes\n- Prix d'achat unitaire : **≈ 7,09 €** sur AliExpress (prix relevé le 20/10/2026 sur le lien du fournisseur ; peut inclure une remise « nouveau client » et hors frais de port éventuels : **à confirmer** sur la prochaine commande)\n- Fournisseur : AliExpress, https://fr.aliexpress.com/item/1005012967340775.html — délai de réapprovisionnement : **[À COMPLÉTER]**\n- **Marge nette estimée par vente : 13,15 € − 7,09 € ≈ 6,06 €** (avant frais de port fournisseur et coûts de pub)\n- Stock actuel : **≈ 15 montres**, à écouler (déjà rentabilisées)\n\nToute proposition (promo, concours, pub) doit être chiffrée en **marge nette par vente** après commission et livraison.\n\n## 5. Règles TikTok Shop — NON NÉGOCIABLES\n\n1. **Ne jamais utiliser « Watch Ultra », « Apple » ou tout nom de marque déposée** dans les titres, descriptions ou vidéos. Risque de signalement propriété intellectuelle. Titre recommandé : « Montre connectée 49 mm écran 1,99\" ».\n2. **Pas d'affirmations invérifiables** type « la seule à 14,99 € ». Préférer « Prix mini : 14,99 € » ou « 14,99 € seulement ».\n3. **Expédition sous 3 jours ouvrés avec numéro de suivi**, uniquement via transporteurs agréés (Colissimo, Chronopost, Mondial Relay, Colis Privé, DPD, GLS…). La liste de colisage n'est pas une étiquette.\n4. **Jamais de vidéos ou images d'autres créateurs** sans autorisation écrite. Uniquement du contenu filmé par Astoria Mods ou créé de zéro.\n5. **Concours** : toujours ajouter « sans obligation d'achat », « non affilié à TikTok », la date du tirage, et filmer le tirage (outil de tirage au sort de commentaires).\n\n## 6. Ce qui a déjà été fait\n\n- **Vidéo unboxing / démo** (28 s, 9:16) : boîte → montre en main → cadrans → menu → modes sport → Snake → capteur cardio → fin « Lien dans le panier », badge prix 14,99 € affiché en continu\n- **Pub animée** avec le logo : intro logo, slogan, écran animé (heure, pas, cardio, appel entrant), atouts, fin « Dispo sur TikTok Shop » ; musique électro 128 BPM ; exportée en MP4 1080×1920\n- **Version avec accroche prix** « Seulement 14,99 € » sur les 4 premières secondes + sticker prix à la fin\n- **Concours** : 3 gagnants, chaque gagnant fait gagner l'ami identifié = 6 montres. Conditions : s'abonner, liker, identifier un ami\n- Le vendeur a passé le **quiz de période probatoire** TikTok Shop\n\n## 7. Ce qui marche en contenu\n\n- **Accroche prix dans les 2 premières secondes** (le prix est l'argument n°1)\n- Vidéos courtes (15–30 s), rythmées, uniquement les plans nets et utiles\n- **Pas de musique intégrée** quand c'est possible : ajouter un **son tendance directement dans TikTok** pour la portée\n- **Descriptions courtes** : 1–2 lignes + 5 hashtags ciblés max. Exemple :\n  > Montre connectée à 14,99€ 😱 Parfait pour les petits budgets ⌚🛒\n  > #montreconnectee #smartwatch #tiktokshop #bonplan #petitbudget\n- **Toujours épingler le produit TikTok Shop** sur la vidéo\n- Concours et commentaires = engagement ; le tirage filmé devient un contenu en plus\n\n## 8. Comment tu dois travailler\n\n- Réponds **en français**, de façon **directe et concise**. Pas de longues explications, pas de solutions sur-compliquées.\n- Donne des **livrables prêts à l'emploi** (texte à copier, script de vidéo, calcul) plutôt que des conseils généraux.\n- Si une info manque (prix d'achat, stock…), **demande-la en une ligne** au lieu d'inventer.\n- Si une idée viole une règle de la section 5, **dis-le clairement** et propose une alternative conforme.\n- Priorité absolue : **vendre plus, avec une marge positive, sans se faire bloquer par TikTok Shop.**\n";
 
@@ -384,7 +398,7 @@
   }
 
   function drawDesk(d, now) {
-    const X = sx(d.x), Y = sy(d.y), u = ppt, m = d.owner, on = m && (m.state === "working" || m.state === "starting");
+    const X = sx(d.x), Y = sy(d.y), u = ppt, m = d.owner, on = m && atDesk(m);
     // chaise
     ellipse(X + u * 1.5, Y + u * 1.55, u * 0.32, u * 0.12, "rgba(0,0,0,0.15)");
     rect(X + u * 1.22, Y + u * 1.05, u * 0.56, u * 0.5, d === myDesk ? "#b5452f" : "#4a4f5c");
@@ -489,7 +503,7 @@
     const t = $("toast"); t.replaceChildren(el("strong", null, title), document.createTextNode(text));
     t.hidden = false; clearTimeout(showToast.h); showToast.h = setTimeout(() => t.hidden = true, ms);
   }
-  const atDesk = m => m.state === "working" || m.state === "starting";
+  const atDesk = m => m.state === "working" || m.state === "starting" || dayRunning();
 
   function update(dt) {
     clock = (clock + dt / DAY) % 1;
@@ -561,9 +575,11 @@
       if (d < 3.6 || m === current) nameTag(m, m === near || m === current);
       if (m.busy) bubble(sx(m.x), by, "", now, { dots: true });
       else if (m.state === "working" || m.state === "starting") bubble(sx(m.x), by, "En mission", now, { bg: "#d8ecfa" });
+      else if (dayRunning()) { if (m === near || d < 2.5) bubble(sx(m.x), by, "Journée de travail", now, { bg: "#d8ecfa" }); else bubble(sx(m.x), by, "", now, { dots: true, bg: "#d8ecfa" }); }
       else if (m.state === "waiting") bubble(sx(m.x), by, "Attend ton accord", now, { bg: "#ffe2a8" });
       else if (m.state === "done" && m.unseen) bubble(sx(m.x), by, "Livrable prêt", now, { bg: "#c8eec0" });
       else if (m.state === "failed" && m.unseen) bubble(sx(m.x), by, "Souci", now, { bg: "#f7c3b5" });
+      else if (journalUnseen() && journal.data?.actifs?.includes(m.id)) bubble(sx(m.x), by, "Du nouveau", now, { bg: "#c8eec0" });
       else if (m === near && m !== current) bubble(sx(m.x), by, "E · Parler", now);
     }
 
@@ -947,8 +963,116 @@ ${s ? s.skill : m.pitch}
       if (!$("boardPanel").hidden) renderBoard();
     } finally { polling = false; }
   }
-  setInterval(() => poll(false), 5000);
+  setInterval(() => { poll(false); if (!document.hidden) pollJournal(false); }, 5000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) poll(false); });
+
+  // ---------- Journal (routine quotidienne autonome) ----------
+  const journal = store.get("astoria-journal-v1", { sessionId: null, status: null, report: null, data: null, fired: null, seen: null, answers: {} });
+  const saveJournal = () => store.set("astoria-journal-v1", journal);
+  const dayRunning = () => journal.sessionId && (journal.status === "working" || journal.status === "starting");
+  const journalUnseen = () => !!(journal.report && journal.seen !== journal.sessionId);
+  let journalNote = "", lastJournalPoll = 0;
+  function splitReport(text) {
+    const m = String(text || "").match(/```json\s*([\s\S]*?)```\s*$/);
+    let data = null;
+    if (m) { try { data = JSON.parse(m[1]); } catch (_) {} }
+    return { body: m ? text.slice(0, m.index).trim() : text, data };
+  }
+  async function pollJournal(force) {
+    if (!force && Date.now() - lastJournalPoll < 55000) return;
+    const mcp = await getMcp(); if (!mcp) return;
+    lastJournalPoll = Date.now();
+    try {
+      const t = await mcp.callTool(CCR, "get_trigger", { trigger_id: TRIGGER_ID }, { cache: false });
+      const run = (unwrap(t.payload)?.trigger ?? unwrap(t.payload))?.last_run;
+      const sid = run?.session_id || null;
+      if (sid && sid !== journal.sessionId) Object.assign(journal, { sessionId: sid, status: "starting", report: null, data: null, fired: run.fired_at || null });
+      if (journal.sessionId && !journal.report) {
+        const r = await mcp.callTool(CCR, "get_session", { session_id: journal.sessionId }, { cache: false });
+        journal.status = bucketToStatus(unwrap(r.payload)?.status_bucket) || journal.status;
+        if (FINAL.includes(journal.status)) {
+          const ev = await mcp.callTool(CCR, "list_events", { session_id: journal.sessionId, kinds: ["assistant", "result"], limit: 100 }, { cache: false });
+          const rep = extractReport(ev.payload);
+          if (rep) { const { body, data } = splitReport(rep); journal.report = body; journal.data = data; }
+        }
+      }
+      journalNote = ""; saveJournal();
+    } catch (e) { journalNote = mcpErrorCopy(e); }
+    refreshAgents();
+    if (!$("journalPanel").hidden) renderJournal();
+  }
+  async function fireDay(btn, noteEl) {
+    if (btn.dataset.confirm !== "1") { btn.dataset.confirm = "1"; btn.textContent = "Confirmer : lancer la journée"; setTimeout(() => { btn.dataset.confirm = ""; btn.textContent = "Lancer une journée maintenant"; }, 4000); return; }
+    btn.dataset.confirm = ""; btn.disabled = true; noteEl.textContent = "Lancement…";
+    const mcp = await getMcp();
+    if (!mcp) { noteEl.textContent = "Les agents ne sont pas disponibles ici. Ouvre la page dans Claude."; btn.disabled = false; return; }
+    try {
+      await mcp.callTool(CCR, "fire_trigger", { trigger_id: TRIGGER_ID }, { cache: false });
+      noteEl.textContent = "C'est parti : l'équipe se réunit. Le compte rendu arrive d'ici 15 à 40 minutes.";
+      setTimeout(() => pollJournal(true), 8000);
+    } catch (e) { noteEl.textContent = mcpErrorCopy(e); }
+    finally { btn.disabled = false; btn.textContent = "Lancer une journée maintenant"; }
+  }
+  async function tellTeam(text, noteEl, btns) {
+    const mcp = await getMcp(); if (!mcp || !journal.sessionId || !text) return false;
+    btns.forEach(b => b.disabled = true); noteEl.textContent = "Envoi à l'équipe…";
+    try {
+      await mcp.callTool(CCR, "send_message", { session_id: journal.sessionId, message: text }, { cache: false });
+      noteEl.textContent = "Transmis. L'équipe l'enregistre dans ses décisions et en tient compte dès maintenant.";
+      return true;
+    } catch (e) { noteEl.textContent = mcpErrorCopy(e); return false; }
+    finally { btns.forEach(b => b.disabled = false); }
+  }
+  function renderJournal() {
+    const body = $("journalBody"); body.replaceChildren();
+    const head = el("div", "mission-new");
+    const st = !journal.sessionId ? "Première journée prévue demain matin à 6 h 52."
+      : dayRunning() ? "L'équipe est en pleine journée de travail. Reviens dans un moment."
+      : journal.status === "failed" ? "La dernière journée a rencontré un souci. Ouvre la session pour voir pourquoi."
+      : journal.report ? `Dernière journée : ${journal.data?.date || (journal.fired ? fmtTime(Date.parse(journal.fired)) : "")}. Prochaine : demain à 6 h 52.` : "Récupération du compte rendu…";
+    head.append(el("h3", null, dayRunning() ? "Journée en cours" : "Journée de travail automatique"), el("p", null, st));
+    const row = el("div", "row"), go = el("button", "btn", "Lancer une journée maintenant"), n = el("span", "note"); go.type = "button";
+    go.addEventListener("click", () => fireDay(go, n)); row.append(go);
+    if (journal.sessionId) { const a = el("a", "btn ghost", "Ouvrir la session"); a.href = `https://claude.ai/code/${journal.sessionId}`; a.target = "_blank"; a.rel = "noopener noreferrer"; row.append(a); }
+    const hist = el("a", "btn ghost", "Historique sur GitHub"); hist.href = `${REPO}/tree/${REPO_BRANCH}/entreprise/journal`; hist.target = "_blank"; hist.rel = "noopener noreferrer"; row.append(hist);
+    head.append(row, n); body.append(head);
+    if (journalNote) note(journalNote, body);
+    const decisions = journal.data?.decisions || [];
+    if (journal.report && decisions.length) {
+      body.append(el("h3", null, "Tes décisions"));
+      for (const d of decisions) {
+        const box = el("div", "decision"), key = journal.sessionId + ":" + (d.id || d.question);
+        box.append(el("h4", null, d.question));
+        if (d.recommandation) box.append(el("div", "reco", "Recommandation de l'équipe : " + d.recommandation));
+        const chosen = journal.answers?.[key];
+        if (chosen) box.append(el("div", "chosen", "Ta décision : " + chosen));
+        else {
+          const opts = el("div", "row"), dn = el("div", "note"), btns = [];
+          for (const o of d.options || []) {
+            const b = el("button", "btn ghost", o); b.type = "button"; btns.push(b);
+            b.addEventListener("click", async () => {
+              if (await tellTeam(`DÉCISION DE KARIM — ${d.question} : ${o}`, dn, btns)) { (journal.answers ||= {})[key] = o; saveJournal(); renderJournal(); }
+            });
+            opts.append(b);
+          }
+          box.append(opts, dn);
+        }
+        body.append(box);
+      }
+    }
+    if (journal.report) {
+      const rep = el("div", "report md"); rep.innerHTML = md(journal.report); rep.style.maxHeight = "none";
+      body.append(rep);
+    }
+    if (journal.sessionId) {
+      const f = el("div", "follow"), inp = el("input"), b = el("button", "btn ghost", "Envoyer"), fn = el("div", "note");
+      inp.type = "text"; inp.id = "journalMsg"; inp.placeholder = "Dire quelque chose à toute l'équipe…"; inp.setAttribute("aria-label", "Message à l'équipe");
+      const go2 = async () => { if (await tellTeam("MESSAGE DE KARIM À L'ÉQUIPE : " + inp.value.trim(), fn, [b])) inp.value = ""; };
+      b.type = "button"; b.addEventListener("click", go2); inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go2(); } });
+      f.append(inp, b); body.append(f, fn);
+    }
+    if (journal.report && journal.seen !== journal.sessionId) { journal.seen = journal.sessionId; saveJournal(); refreshAgents(); }
+  }
 
   function refreshAgents() {
     for (const m of TEAM) {
@@ -960,6 +1084,7 @@ ${s ? s.skill : m.pitch}
     }
     const active = missions.filter(ms => !FINAL.includes(ms.status)).length;
     $("activeCount").hidden = !active; $("activeCount").textContent = active;
+    $("journalCount").hidden = !journalUnseen();
     if (!$("teamPanel").hidden) buildTeam();
   }
 
@@ -1050,13 +1175,15 @@ ${s ? s.skill : m.pitch}
     if (current) { ctl?.abort(); delete chats[current.id]; saveChats(); renderChat(); }
   });
 
-  function closePanels() { for (const id of ["teamPanel", "companyPanel", "boardPanel"]) $(id).hidden = true; }
+  function closePanels() { for (const id of ["teamPanel", "companyPanel", "boardPanel", "journalPanel"]) $(id).hidden = true; }
   function openPanel(id) {
     $("toast").hidden = true; $("chat").hidden = true; current = null; closePanels(); $(id).hidden = false; $("help").hidden = true;
     if (id === "teamPanel") buildTeam();
     if (id === "boardPanel") { renderBoard(); poll(true); }
+    if (id === "journalPanel") { renderJournal(); pollJournal(true); }
   }
   $("btnTeam").addEventListener("click", () => $("teamPanel").hidden ? openPanel("teamPanel") : closePanels());
+  $("btnJournal").addEventListener("click", () => $("journalPanel").hidden ? openPanel("journalPanel") : closePanels());
   $("btnBoard").addEventListener("click", () => $("boardPanel").hidden ? openPanel("boardPanel") : closePanels());
   $("btnCompany").addEventListener("click", () => $("companyPanel").hidden ? openPanel("companyPanel") : closePanels());
   document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => $(b.dataset.close).hidden = true));
@@ -1099,6 +1226,7 @@ ${s ? s.skill : m.pitch}
     refreshAgents();
     if (!data?.player) showToast("Bienvenue dans tes bureaux", "19 collègues t'attendent dans leurs 5 pôles, dont le nouveau pôle Projets & Nouveautés. Parle-leur, ou confie-leur une mission : ils travaillent seuls, avec internet.", 5600);
     if (missions.some(ms => !FINAL.includes(ms.status) || !ms.report)) setTimeout(() => poll(true), 1500);
+    setTimeout(() => pollJournal(true).then(() => { if (journalUnseen()) showToast("Ton équipe a travaillé", `${(journal.data?.decisions || []).length || "Des"} décision(s) t'attendent. Ouvre le Journal.`, 6000); }), 2500);
     let last = performance.now();
     function frame(t) {
       const dt = Math.min(0.05, (t - last) / 1000); last = t;
