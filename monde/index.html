@@ -1029,6 +1029,10 @@ ${s ? s.skill : m.pitch}
   async function launchMission() {
     const m = current, input = $("missionInput"), task = input.value.trim(), go = $("missionGo"), noteEl = $("missionNote");
     if (!m || !task || go.disabled) return;
+    if (blocked) {
+      copyOut(missionPrompt(m, task), noteEl, "Mission copiée : colle-la dans une nouvelle session Claude Code sur ton dépôt astoria-mandat-ia (ou dans la session de l'équipe).");
+      return;
+    }
     go.disabled = true; noteEl.textContent = "Lancement…";
     const mcp = await getMcp();
     if (!mcp) { noteEl.textContent = "Les agents ne sont pas disponibles ici. Ouvre cette page dans Claude (claude.ai ou l'application)."; go.disabled = false; return; }
@@ -1049,7 +1053,8 @@ ${s ? s.skill : m.pitch}
       showToast(`${m.name} est sur le coup`, "La mission tourne dans le cloud. Tu peux fermer la page : le travail continue.", 3600);
       refreshAgents(); renderWork(); poll(true);
     } catch (e) {
-      noteEl.textContent = e?.code === "no_env" ? "Aucun environnement cloud trouvé sur ton compte. Crée-en un sur claude.ai/code." : mcpErrorCopy(e);
+      if (markBlocked(e)) noteEl.textContent = "La page ne peut pas lancer d'agent elle-même (règle de ton organisation). Rappuie sur « Lancer la mission » : la mission sera copiée pour que tu la colles dans Claude Code.";
+      else noteEl.textContent = e?.code === "no_env" ? "Aucun environnement cloud trouvé sur ton compte. Crée-en un sur claude.ai/code." : mcpErrorCopy(e);
     } finally { go.disabled = false; }
   }
 
@@ -1066,6 +1071,7 @@ ${s ? s.skill : m.pitch}
 
   let polling = false, lastPoll = 0, pollNote = "";
   async function poll(force) {
+    if (blocked) return;
     if (polling || (!force && Date.now() - lastPoll < 28000) || document.hidden) return;
     const todo = missions.filter(ms => !FINAL.includes(ms.status) || !ms.report).slice(0, 8);
     if (!todo.length) return;
@@ -1084,7 +1090,7 @@ ${s ? s.skill : m.pitch}
             ms.report = extractReport(r.payload) || null;
           }
           pollNote = "";
-        } catch (e) { pollNote = mcpErrorCopy(e); if (["not_in_manifest", "server_not_connected", "needs_reauth", "blocked_by_policy"].includes(e?.code)) break; }
+        } catch (e) { if (markBlocked(e)) break; pollNote = mcpErrorCopy(e); if (["not_in_manifest", "server_not_connected", "needs_reauth", "blocked_by_policy"].includes(e?.code)) break; }
       }
       saveMissions(); refreshAgents();
       if (current && view === "work") renderWork();
@@ -1120,7 +1126,26 @@ ${s ? s.skill : m.pitch}
     }
     return best;
   }
+  // Ton organisation peut bloquer les commandes directes depuis une page : on bascule alors sur la copie du message
+  let blocked = store.get("astoria-blocked-v1", false);
+  const SHORT_DAY = "NOUVELLE JOURNÉE DE TRAVAIL (lancée à la main par Karim) : applique exactement la procédure de entreprise/procedure-journee.md.";
+  function markBlocked(e) { if (e?.code === "blocked_by_policy") { blocked = true; store.set("astoria-blocked-v1", true); return true; } return false; }
+  function copyOut(text, noteEl, okMsg) {
+    noteEl.replaceChildren();
+    const done = () => {
+      noteEl.replaceChildren(document.createTextNode(okMsg + " "));
+      const a = el("a", "btn ghost", "Ouvrir la session de l'équipe"); a.href = `https://claude.ai/code/${TEAM_SESSION}`; a.target = "_blank"; a.rel = "noopener noreferrer";
+      noteEl.append(a);
+    };
+    const manual = () => {
+      const t = el("textarea"); t.value = text; t.rows = 3; t.style.width = "100%"; t.readOnly = true;
+      noteEl.append(el("div", null, "Copie ce texte, puis colle-le dans la session de l'équipe :"), t); t.focus(); t.select();
+      const a = el("a", "btn ghost", "Ouvrir la session de l'équipe"); a.href = `https://claude.ai/code/${TEAM_SESSION}`; a.target = "_blank"; a.rel = "noopener noreferrer"; noteEl.append(a);
+    };
+    try { navigator.clipboard.writeText(text).then(done, manual); } catch (_) { manual(); }
+  }
   async function pollJournal(force) {
+    if (blocked) return;
     if (!force && Date.now() - lastJournalPoll < 55000) return;
     const mcp = await getMcp(); if (!mcp) return;
     lastJournalPoll = Date.now();
@@ -1136,13 +1161,15 @@ ${s ? s.skill : m.pitch}
         }
       }
       journalNote = ""; saveJournal();
-    } catch (e) { journalNote = mcpErrorCopy(e); }
+    } catch (e) { if (!markBlocked(e)) journalNote = mcpErrorCopy(e); }
     refreshAgents();
     if (!$("journalPanel").hidden) renderJournal();
   }
   async function fireDay(btn, noteEl) {
     if (btn.dataset.confirm !== "1") { btn.dataset.confirm = "1"; btn.textContent = "Confirmer : lancer la journée"; setTimeout(() => { btn.dataset.confirm = ""; btn.textContent = "Lancer une journée maintenant"; }, 4000); return; }
-    btn.dataset.confirm = ""; btn.disabled = true; noteEl.textContent = "Lancement…";
+    btn.dataset.confirm = "";
+    if (blocked) { copyOut(SHORT_DAY, noteEl, "Message copié : colle-le dans la session de l'équipe pour lancer la journée."); return; }
+    btn.disabled = true; noteEl.textContent = "Lancement…";
     const mcp = await getMcp();
     if (!mcp) { noteEl.textContent = "Les agents ne sont pas disponibles ici. Ouvre la page dans Claude."; btn.disabled = false; return; }
     try {
@@ -1150,17 +1177,26 @@ ${s ? s.skill : m.pitch}
       journal.status = "working"; saveJournal(); refreshAgents();
       noteEl.textContent = "C'est parti : l'équipe se réunit. Le compte rendu arrive d'ici 15 à 40 minutes.";
       setTimeout(() => pollJournal(true), 8000);
-    } catch (e) { noteEl.textContent = mcpErrorCopy(e); }
+    } catch (e) {
+      if (markBlocked(e)) { noteEl.textContent = "La page ne peut pas lancer la journée elle-même. Rappuie sur le bouton : il copiera le message à coller dans la session de l'équipe."; }
+      else noteEl.textContent = mcpErrorCopy(e);
+    }
     finally { btn.disabled = false; btn.textContent = "Lancer une journée maintenant"; }
   }
   async function tellTeam(text, noteEl, btns) {
-    const mcp = await getMcp(); if (!mcp || !journal.sessionId || !text) return false;
+    if (!text) return false;
+    if (blocked) { copyOut(text, noteEl, "Copié : colle-le dans la session de l'équipe, elle l'enregistre tout de suite."); return true; }
+    const mcp = await getMcp(); if (!mcp || !journal.sessionId) return false;
     btns.forEach(b => b.disabled = true); noteEl.textContent = "Envoi à l'équipe…";
     try {
       await mcp.callTool(CCR, "send_message", { session_id: journal.sessionId, message: text }, { cache: false });
       noteEl.textContent = "Transmis. L'équipe l'enregistre dans ses décisions et en tient compte dès maintenant.";
       return true;
-    } catch (e) { noteEl.textContent = mcpErrorCopy(e); return false; }
+    } catch (e) {
+      if (markBlocked(e)) noteEl.textContent = "La page ne peut pas envoyer directement (règle de ton organisation). Rappuie : le message sera copié pour que tu le colles dans la session de l'équipe.";
+      else noteEl.textContent = mcpErrorCopy(e);
+      return false;
+    }
     finally { btns.forEach(b => b.disabled = false); }
   }
   function renderJournal() {
@@ -1168,7 +1204,7 @@ ${s ? s.skill : m.pitch}
     const head = el("div", "mission-new");
     const st = dayRunning() ? "L'équipe est en pleine journée de travail. Reviens dans un moment."
       : journal.status === "failed" ? "La dernière journée a rencontré un souci. Ouvre la session pour voir pourquoi."
-      : journal.report ? `Dernière journée : ${journal.data?.date || "récente"}. Prochaine : demain matin à 6 h 52.` : "Pas encore de compte rendu. La première journée est en cours ou prévue demain matin à 6 h 52.";
+      : journal.report ? `Dernière journée : ${journal.data?.date || "récente"}. Prochaine : demain matin à 6 h 52.` : "Le compte rendu de la prochaine journée (demain 6 h 52) s'affichera ici.";
     head.append(el("h3", null, dayRunning() ? "Journée en cours" : "Journée de travail automatique"), el("p", null, st));
     if (dayRunning() && live?.tache) head.append(el("p", null, "En ce moment : " + live.tache));
     const row = el("div", "row"), go = el("button", "btn", "Lancer une journée maintenant"), n = el("span", "note"); go.type = "button";
