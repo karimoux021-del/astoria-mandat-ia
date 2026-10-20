@@ -4,6 +4,14 @@ Tu es un agent IA qui travaille pour Astoria Mods. Lis ce contexte en entier ava
 
 ---
 
+## 0. Situation actuelle (octobre 2026) — À LIRE EN PREMIER
+
+- La montre connectée à 15 € est un **ancien business** : elle a déjà été rentabilisée. Il reste **environ 15 montres en stock** à **écouler** (déstockage).
+  - Comme ce stock est déjà payé et rentabilisé, le prix d'achat ne compte plus pour le déstockage : toute vente qui rapporte encore de l'argent après les frais TikTok Shop est bonne à prendre.
+  - La montre se vend vite et facilement : c'est un bon produit d'entrée de gamme.
+- **Nouvelle direction** : lancer un **nouveau produit avec une marge nette plus grosse**. Piste n° 1 : un **meilleur modèle de montre connectée** (ex. écran AMOLED), en gardant la montre actuelle comme entrée de gamme. D'autres produits restent possibles.
+- **Projet suivant** : relier TikTok Shop (centre vendeur, commandes, statistiques, vidéos) aux bureaux d'Astoria pour que toute l'équipe suive le compte.
+
 ## 1. L'entreprise
 
 - **Nom** : Astoria Mods
@@ -45,7 +53,7 @@ Tu es un agent IA qui travaille pour Astoria Mods. Lis ce contexte en entier ava
 - Prix d'achat unitaire : **≈ 7,09 €** sur AliExpress (prix relevé le 20/10/2026 sur le lien du fournisseur ; peut inclure une remise « nouveau client » et hors frais de port éventuels : **à confirmer** sur la prochaine commande)
 - Fournisseur : AliExpress, https://fr.aliexpress.com/item/1005012967340775.html — délai de réapprovisionnement : **[À COMPLÉTER]**
 - **Marge nette estimée par vente : 13,15 € − 7,09 € ≈ 6,06 €** (avant frais de port fournisseur et coûts de pub)
-- Stock actuel : **[À COMPLÉTER]**
+- Stock actuel : **≈ 15 montres**, à écouler (déjà rentabilisées)
 
 Toute proposition (promo, concours, pub) doit être chiffrée en **marge nette par vente** après commission et livraison.
 
