@@ -6,6 +6,13 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Alexandre (general-manager)** : hiérarchie en place (DG + 5 chefs de pôle, contrôle qualité, rapports dans `entreprise/rapports/`). — fait le 20/10 (validé par Karim)
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
+## URGENT (analyse des commandes du 21/10)
+- [ ] **Karim** : commande du 10/10 « en attente de collecte » depuis 10 jours (Mondial Relay) — vérifier le dépôt du colis / le déposer, garder le reçu. — urgent
+- [ ] **Karim + Antoine (chef Marketing)** : retirer « Watch Ultra » du titre de la fiche TikTok Shop (marque déposée) → « Montre connectée 49 mm écran HD 1,99" appels Bluetooth 123 modes sport iOS & Android ». — urgent
+- [ ] **Karim** : confirmer le stock réel (annulation « stock épuisé » le 14/10 vs ~15 montres annoncées). — urgent
+- [ ] **Clara (sop-creator) + Bastien (chef Ventes)** : procédure d'expédition anti-retard (dépôt le jour même, scan vérifié dans les 24 h). — à faire
+- [ ] **Chloé (cheffe Contenu)** : la seule vente livrée vient d'une vidéo : priorité aux 3 vidéos « dernières pièces ». — à faire
+
 ## Priorité 1 — Nouveau produit à plus forte marge
 - [x] **Sami (product-scout)** : trouver 5 montres connectées plus haut de gamme avec liens fournisseurs, prix d'achat, délais. — fait le 20/10 → `livrables/product-scout/2026-10-20-montres-premium.md` (piste n° 1 : réf. P86 AMOLED 1,93" ; prix indicatifs, AliExpress bloqué en accès direct)
 - [x] **Maëlle (margin-analyst)** : marge nette des modèles de Sami à 24,99 / 29,99 / 34,99 €. — fait le 20/10 → `livrables/margin-analyst/2026-10-20-marges-montres-premium.md` (P86 à 29,99 € : 11,73 €/vente si achat ≈ 15 €)
