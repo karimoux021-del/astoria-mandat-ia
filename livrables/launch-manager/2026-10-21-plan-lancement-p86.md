@@ -7,7 +7,7 @@
 Sources des chiffres : `livrables/margin-analyst/2026-10-20-marges-montres-premium.md`, `livrables/product-scout/2026-10-20-fournisseurs-p86.md` (prix indicatifs), `livrables/sop-creator/2026-10-20-sop-video-et-test-echantillon.md`.
 
 ## Hypothèse de délai (à confirmer)
-- Livraison AliExpress vers la France : **≈ 11 jours** (ancien relevé de Sami : 81,9 % des commandes livrées en 11 jours, pays non précisé). Délai exact vers la France : non confirmé, Zoé et Noé le vérifient aujourd'hui.
+- Livraison AliExpress vers la France : **≈ 11 jours** (ancien relevé de Sami : 81,9 % des commandes livrées en 11 jours, pays non précisé). Vérification de Zoé et Noé (21/10, guides tiers) : **23–27/10** si l'article est expédié depuis la France, **29/10–06/11** en AliExpress Choice, jusqu'au 06/12 en livraison standard. → **Choisir à la commande une offre expédiée de France ou en Choice, et noter la date de livraison affichée.** Sans livraison au 06/11, ouvrir un litige.
 - Toutes les dates ci-dessous en découlent : si l'échantillon arrive plus tard, tout glisse d'autant.
 
 ## Semaine 1 — du 21 au 27/10 : l'échantillon
@@ -31,7 +31,7 @@ Sources des chiffres : `livrables/margin-analyst/2026-10-20-marges-montres-premi
 ## Semaine 3 — du 04 au 10/11 : go/stop et commande
 | Tâche | Qui | Durée |
 |---|---|---|
-| **05/11 : verdict du test** (Go = CE présent + appels OK + écran lisible + autonomie ≥ 3 jours) | Karim + Clara | 10 min |
+| **05/11 : verdict du test** (si l'échantillon arrive après le 02/11, verdict 3 jours après sa réception et lancement pour Noël) (Go = CE présent + appels OK + écran lisible + autonomie ≥ 3 jours) | Karim + Clara | 10 min |
 | **Go → commander 10 pièces le 05/11 au plus tard** (≈ 150 €, décision de Karim) | Karim | 5 min |
 | Stop → plan B (GTS 4 AMOLED 1,94", seulement si ≤ 18 € livrée) ou lancement reporté à Noël | Sofia | — |
 | Fabriquer les 7 images de la fiche avec le studio (`node studio/render.cjs studio/briefs/p86.json`) | Léna (brief) + Théo (rendu) | — |
