@@ -8,9 +8,11 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 
 ## URGENT (analyse des commandes du 21/10)
 - [ ] **Karim** : commande du 10/10 « en attente de collecte » depuis 10 jours (Mondial Relay) — vérifier le dépôt du colis / le déposer, garder le reçu. — urgent
-- [ ] **Karim + Antoine (chef Marketing)** : retirer « Watch Ultra » du titre de la fiche TikTok Shop (marque déposée) → « Montre connectée 49 mm écran HD 1,99" appels Bluetooth 123 modes sport iOS & Android ». — urgent
-- [ ] **Karim** : confirmer le stock réel (annulation « stock épuisé » le 14/10 vs ~15 montres annoncées). — urgent
-- [ ] **Clara (sop-creator) + Bastien (chef Ventes)** : procédure d'expédition anti-retard (dépôt le jour même, scan vérifié dans les 24 h). — à faire
+- [x] **Jules + Nora** : titre, description et attributs conformes. — fait le 22/10 → `livrables/brand-copywriter/2026-10-22-fiche-conforme-t900.md`
+- [ ] **Karim** : coller le titre « Montre connectée sport 49 mm écran HD notifications cardio pas sommeil » + la description, remplir le champ GPSR (personne responsable UE), vérifier les anciennes vidéos (« Watch Ultra », 14,99 €). — URGENT (10 min)
+- [ ] **Karim** : confirmer le stock réel (annulation « stock épuisé » le 14/10 vs ~15 montres annoncées) et corriger le stock affiché dans le Seller Center. — URGENT (décide du déstockage et du financement de la P86, voir `livrables/margin-analyst/2026-10-22-chiffres-reels-commandes.md`)
+- [ ] **Karim** : consulter « Santé de la boutique » (taux d'expédition tardive, d'annulation, points) et noter les valeurs dans le relevé. — à faire (2 min)
+- [x] **Clara (sop-creator) + Bastien (chef Ventes)** : procédure d'expédition anti-retard + déblocage de la commande du 10/10 + relevé quotidien. — fait le 22/10 → `livrables/sop-creator/2026-10-22-sop-expedition-et-releve.md` (règle interne : expédier à J+1, la politique UE impose 2 jours ouvrés)
 - [ ] **Chloé (cheffe Contenu)** : la seule vente livrée vient d'une vidéo : priorité aux 3 vidéos « dernières pièces ». — à faire
 
 ## Priorité 1 — Nouveau produit à plus forte marge
@@ -40,7 +42,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Victor (competitor-intel)** : veille des vendeurs de montres sur TikTok Shop France. — chaque semaine
 - [x] **Yanis (prd-generator)** : cadrer « relier TikTok Shop aux bureaux ». — fait le 21/10 → `livrables/prd-generator/2026-10-21-relier-tiktok-shop-aux-bureaux.md`
 - [ ] **Karim** : remplir chaque matin `entreprise/ventes/AAAA-MM-JJ.md` (5 chiffres, 5 min, gabarit dans `entreprise/ventes/README.md`). — à faire
-- [ ] **Clara (sop-creator)** : SOP « relevé quotidien des ventes en 5 min ». — à faire
+- [x] **Clara (sop-creator)** : SOP « relevé quotidien des ventes en 5 min ». — fait le 22/10 (SOP C)
 - [ ] **Yanis** : palier B (export hebdo) à partir du 26/10 ; palier C (API) après le lancement de la P86. — plus tard
 
 ## Studio visuels (pôle Marketing)
@@ -52,6 +54,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Léna + Théo** : finaliser le brief et faire le rendu des visuels de la P86 après le test de l'échantillon. — bloqué (échantillon)
 
 ## Idées de l'équipe (à proposer à Karim)
+- **Maëlle** (22/10) : si le stock est à 0, réassort de 10 montres à 15 € (70,90 €, remboursé dès la 6e vente, 60,60 € de marge) pour garder l'entrée de gamme jusqu'à la P86 — en gardant en tête le risque de design signalé par Sami.
 - **Zoé** (21/10) : collaboration affiliée ouverte à 15 % sur la montre à 15 € (10,90 €/vente au lieu de 13,15 €) : des créateurs vendent à notre place, 0 € si rien n'est vendu.
 - **Victor** (20/10) : P86 à 27,99 € pendant le Black Friday et Noël (−1,82 €/vente, 9,91 € de marge) pour se rapprocher des ≈ 25 € constatés ailleurs ; jamais sous 24,99 €.
 - **Inès** (20/10) : vidéo « test appel au poignet » tournée avec l'échantillon (preuve contre le reproche n° 2 des clients : la qualité du son).
