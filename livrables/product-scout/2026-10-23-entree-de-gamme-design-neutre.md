@@ -1,4 +1,5 @@
 # Pistes produits : entrée de gamme au design neutre (≤ 8 € livrée, revente 15 €) — 23/10/2026
+> Contrôle : Validé avec réserves par Sofia, cheffe du pôle Projets & Nouveautés, le 23/10/2026 — marges justes (13,15 € − achat) ; prix très bas (≈ 4 €) probablement promotionnels et non datés : à revérifier ; un boîtier rectangulaire 1,83" reste proche d'un design de marque, donc la ronde est la plus sûre ; aucun achat sans décision de Karim.
 *Sami, product scout, et Maëlle, analyste rentabilité — pôle Projets & Nouveautés*
 
 **Pourquoi** : la montre actuelle (49 mm, type « T900 », boîtier carré « ultra ») copie le design d'une montre de marque. Si le stock est à 0 (commande du 14/10 annulée pour « stock épuisé »), il ne faut pas la réassortir telle quelle. On cherche une forme générique (ronde sport ou rectangle arrondi neutre, bracelet silicone) à **≤ 8 € livrée**.

@@ -13,7 +13,8 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Karim** : confirmer le stock réel (annulation « stock épuisé » le 14/10 vs ~15 montres annoncées) et corriger le stock affiché dans le Seller Center. — URGENT (décide du déstockage et du financement de la P86, voir `livrables/margin-analyst/2026-10-22-chiffres-reels-commandes.md`)
 - [ ] **Karim** : consulter « Santé de la boutique » (taux d'expédition tardive, d'annulation, points) et noter les valeurs dans le relevé. — à faire (2 min)
 - [x] **Clara (sop-creator) + Bastien (chef Ventes)** : procédure d'expédition anti-retard + déblocage de la commande du 10/10 + relevé quotidien. — fait le 22/10 → `livrables/sop-creator/2026-10-22-sop-expedition-et-releve.md` (règle interne : expédier à J+1, la politique UE impose 2 jours ouvrés)
-- [ ] **Chloé (cheffe Contenu)** : la seule vente livrée vient d'une vidéo : priorité aux 3 vidéos « dernières pièces ». — à faire
+- [x] **Chloé (cheffe Contenu)** : 2 nouvelles vidéos propres + correction du script 1 du 20/10. — fait le 23/10 → `livrables/viral-hook-creator/2026-10-23-videos-propres-fin-octobre.md`
+- [ ] **Karim** : tourner la vidéo « citrouille » (du 28 au 30/10) et « POV 15 € cadeau » (dès le 31/10), après avoir recompté le stock. — à faire (2 × 10 min)
 
 ## Priorité 1 — Nouveau produit à plus forte marge
 - [x] **Sami (product-scout)** : trouver 5 montres connectées plus haut de gamme avec liens fournisseurs, prix d'achat, délais. — fait le 20/10 → `livrables/product-scout/2026-10-20-montres-premium.md` (piste n° 1 : réf. P86 AMOLED 1,93" ; prix indicatifs, AliExpress bloqué en accès direct)
@@ -23,9 +24,12 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Clara (sop-creator)** : protocole de test de l'échantillon en 3 jours. — fait le 20/10 → `livrables/sop-creator/2026-10-20-sop-video-et-test-echantillon.md`
 - [x] **Sami (product-scout)** : fournisseurs alternatifs de la P86 / GTS 4. — fait le 20/10 → `livrables/product-scout/2026-10-20-fournisseurs-p86.md` (aucune alternative rentable : seule la boutique officielle AliExpress permet ≤ 16 € ; commander les 10 pièces au plus tard le 05/11 pour le Black Friday)
 - [x] **Victor (competitor-intel)** : veille des montres AMOLED avec appels. — fait le 20/10 → `livrables/competitor-intel/2026-10-20-veille-montres-amoled.md` (P86 vue à 25–34 € en France ; proposition : 27,99 € pendant le Black Friday)
-- [ ] **Léa (pricing-strategist)** : calendrier de prix de la P86 (29,99 € au lancement → prix Black Friday) selon la décision de Karim. — à faire
+- [x] **Léa (pricing-strategist)** : calendrier de prix du Black Friday. — fait le 23/10 → `livrables/pricing-strategist/2026-10-23-calendrier-prix-black-friday.md` (pas de « −X % » sur la P86 au Black Friday : règle des 30 jours)
 - [ ] **Karim** : vérifier sur téléphone 2 prix concurrents de la P86 (Powerplanet, TikTok Shop FR). — à faire (5 min)
 - [x] **Jade (launch-manager)** : plan de lancement de la P86 sur 4 semaines. — fait le 21/10 → `livrables/launch-manager/2026-10-21-plan-lancement-p86.md` (échantillon le 22/10 au plus tard → mise en vente le 17/11)
+
+- [x] **Sami + Maëlle** : entrée de gamme au design neutre (si le stock est à 0). — fait le 23/10 → `livrables/product-scout/2026-10-23-entree-de-gamme-design-neutre.md`
+- [ ] **Jade** : recaler le plan de la P86 (Black Friday compromis si l'échantillon n'est pas commandé avant le 23/10 en livraison rapide → cible Noël, mise en vente le 01/12 au plus tard). — à faire
 
 ## Priorité 2 — Écouler les ~15 montres restantes
 - [x] **Inès (viral-hook-creator) + Jules (brand-copywriter)** : 3 scripts « dernières pièces » à 15 €. — fait le 20/10 → `livrables/viral-hook-creator/2026-10-20-scripts-dernieres-pieces.md`
@@ -54,6 +58,8 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Léna + Théo** : finaliser le brief et faire le rendu des visuels de la P86 après le test de l'échantillon. — bloqué (échantillon)
 
 ## Idées de l'équipe (à proposer à Karim)
+- **Léa** (23/10) : P86 publiée directement à 27,99 € « prix de lancement jusqu'au 1er décembre », puis 29,99 € : seul argument d'urgence légal en novembre (9,91 €/vente).
+- **Sami** (23/10) : remplacer à terme la T900 (design à risque) par une montre ronde générique à ≈ 4 € d'achat (≈ 9 à 11 €/vente à 15 €).
 - **Maëlle** (22/10) : si le stock est à 0, réassort de 10 montres à 15 € (70,90 €, remboursé dès la 6e vente, 60,60 € de marge) pour garder l'entrée de gamme jusqu'à la P86 — en gardant en tête le risque de design signalé par Sami.
 - **Zoé** (21/10) : collaboration affiliée ouverte à 15 % sur la montre à 15 € (10,90 €/vente au lieu de 13,15 €) : des créateurs vendent à notre place, 0 € si rien n'est vendu.
 - **Victor** (20/10) : P86 à 27,99 € pendant le Black Friday et Noël (−1,82 €/vente, 9,91 € de marge) pour se rapprocher des ≈ 25 € constatés ailleurs ; jamais sous 24,99 €.
