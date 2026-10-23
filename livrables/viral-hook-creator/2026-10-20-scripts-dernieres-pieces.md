@@ -1,5 +1,6 @@
 # 3 scripts « dernières pièces » — montre 49 mm à 15 €
 > Contrôle : Validé par Chloé, cheffe du pôle Contenu & réseaux, le 20/10/2026 — prix 15 € conforme, aucune marque, rareté vraie à recompter le jour du tournage.
+> Re-contrôle du 23/10 par Chloé : À corriger → corrigé — le script 1 affichait « Écran 1,99" » (taille non vérifiée, cf. FOUNDER_CONTEXT §2) ; remplacé par « Grand écran ». Règle : aucune taille d'écran tant qu'elle n'est pas lue sur la boîte ou dans les réglages.
 *Inès (accroches) + Jules (texte) — 20/10/2026*
 
 Règles appliquées : prix affiché = **15 €** (prix boutique, plus 14,99 €), aucun nom de marque, aucune affirmation invérifiable, rareté **vraie** (≈ 15 pièces : mettre à jour le chiffre réel le jour du tournage), produit épinglé, son tendance ajouté dans TikTok (pas de musique intégrée), 100 % filmé par Astoria Mods.
@@ -12,7 +13,7 @@ Règles appliquées : prix affiché = **15 €** (prix boutique, plus 14,99 €)
 | Temps | Image | Texte à l'écran / voix |
 |---|---|---|
 | 0–2 s | Pile de boîtes sur la table, main qui en retire une | **« Il m'en reste 15. Après, c'est fini. »** + badge **15 €** |
-| 2–6 s | Montre allumée au poignet, swipe des cadrans | « Écran 1,99", cadrans au choix, même ta photo » |
+| 2–6 s | Montre allumée au poignet, swipe des cadrans | « Grand écran, cadrans au choix, même ta photo » |
 | 6–10 s | Appel / notification qui s'affiche, puis modes sport | « Notifs, pas, cardio, sommeil » |
 | 10–14 s | Bracelet orange puis noir côte à côte | « Orange ou noir. Choisis vite. » |
 | 14–17 s | Montre posée sur sa boîte, doigt vers le panier | **« 15 € · Lien dans le panier 🛒 »** |
