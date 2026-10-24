@@ -29,7 +29,8 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Jade (launch-manager)** : plan de lancement de la P86 sur 4 semaines. — fait le 21/10 → `livrables/launch-manager/2026-10-21-plan-lancement-p86.md` (échantillon le 22/10 au plus tard → mise en vente le 17/11)
 
 - [x] **Sami + Maëlle** : entrée de gamme au design neutre (si le stock est à 0). — fait le 23/10 → `livrables/product-scout/2026-10-23-entree-de-gamme-design-neutre.md`
-- [ ] **Jade** : recaler le plan de la P86 (Black Friday compromis si l'échantillon n'est pas commandé avant le 23/10 en livraison rapide → cible Noël, mise en vente le 01/12 au plus tard). — à faire
+- [x] **Jade** : plan de la P86 recalé sur Noël. — fait le 24/10 → `livrables/launch-manager/2026-10-24-plan-p86-noel.md` (échantillon au plus tard le 31/10, 10 pièces le 10/11, sinon report en janvier)
+- [x] **Clara** : fiche d'action de Karim en 15 min (tout ce qui est en attente sur 1 page). — fait le 24/10 → `livrables/sop-creator/2026-10-24-fiche-action-karim-15-min.md`
 
 ## Priorité 2 — Écouler les ~15 montres restantes
 - [x] **Inès (viral-hook-creator) + Jules (brand-copywriter)** : 3 scripts « dernières pièces » à 15 €. — fait le 20/10 → `livrables/viral-hook-creator/2026-10-20-scripts-dernieres-pieces.md`
@@ -43,7 +44,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 
 ## Priorité 3 — Préparer la suite
 - [ ] **Camille (strategic-planning)** : bilan hebdomadaire et 3 priorités de la semaine. — chaque lundi
-- [ ] **Victor (competitor-intel)** : veille des vendeurs de montres sur TikTok Shop France. — chaque semaine
+- [ ] **Victor (competitor-intel)** : veille des vendeurs de montres sur TikTok Shop France. — chaque semaine (dernière : 24/10 → `livrables/competitor-intel/2026-10-24-veille-hebdo-et-dates-noel.md`)
 - [x] **Yanis (prd-generator)** : cadrer « relier TikTok Shop aux bureaux ». — fait le 21/10 → `livrables/prd-generator/2026-10-21-relier-tiktok-shop-aux-bureaux.md`
 - [ ] **Karim** : remplir chaque matin `entreprise/ventes/AAAA-MM-JJ.md` (5 chiffres, 5 min, gabarit dans `entreprise/ventes/README.md`). — à faire
 - [x] **Clara (sop-creator)** : SOP « relevé quotidien des ventes en 5 min ». — fait le 22/10 (SOP C)
