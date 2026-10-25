@@ -7,6 +7,8 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
+- [ ] **Karim** : expédier la commande du 24/10 (« Créer + imprimer une étiquette ») **lundi 26/10** au plus tard (limite : mardi 27/10), garder le reçu, vérifier le scan sous 24 h. — URGENT → `entreprise/ventes/2026-10-24-commande.md`
+- [ ] **Jules + Inès** : aligner les vidéos et les scripts sur le prix réel de la boutique (14,99 € et non 15 €), ou Karim passe la fiche à 15 €. — à faire
 - [ ] **Karim** : commande du 10/10 « en attente de collecte » depuis 10 jours (Mondial Relay) — vérifier le dépôt du colis / le déposer, garder le reçu. — urgent
 - [x] **Jules + Nora** : titre, description et attributs conformes. — fait le 22/10 → `livrables/brand-copywriter/2026-10-22-fiche-conforme-t900.md`
 - [ ] **Karim** : coller le titre « Montre connectée sport 49 mm écran HD notifications cardio pas sommeil » + la description, remplir le champ GPSR (personne responsable UE), vérifier les anciennes vidéos (« Watch Ultra », 14,99 €). — URGENT (10 min)
