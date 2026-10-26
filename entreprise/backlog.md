@@ -7,12 +7,13 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
-- [ ] **Karim** : expédier la commande du 24/10 (« Créer + imprimer une étiquette ») **lundi 26/10** au plus tard (limite : mardi 27/10), garder le reçu, vérifier le scan sous 24 h. — URGENT → `entreprise/ventes/2026-10-24-commande.md`
+- [ ] **Karim** : fiche produit → alerte « Fournis les caractéristiques requises » à compléter (en même temps que le nouveau titre sans « Watch Ultra »). — URGENT (10 min)
+- [ ] **Karim** : étiquette Colissimo créée le 26/10 → **déposer le colis du 24/10 avant le 27/10 22:59**, garder le reçu. — URGENT (≈ 13,10 € encaissés) → `entreprise/ventes/2026-10-24-commande.md`
 - [x] **Chloé** : alerte de prix (14,99 € en boutique) en tête des scripts. — fait le 26/10 ; en attente de la décision de Karim (14,99 € ou 15 €)
-- [ ] **Karim** : commande du 10/10 « en attente de collecte » depuis 10 jours (Mondial Relay) — vérifier le dépôt du colis / le déposer, garder le reçu. — urgent
+- [x] ~~Commande du 10/10~~ : **annulée par le vendeur le 25/10** (« livraison impossible »), 0 € — caduc (`entreprise/ventes/2026-10-26-etat-des-lieux.md`)
 - [x] **Jules + Nora** : titre, description et attributs conformes. — fait le 22/10 → `livrables/brand-copywriter/2026-10-22-fiche-conforme-t900.md`
 - [ ] **Karim** : coller le titre « Montre connectée sport 49 mm écran HD notifications cardio pas sommeil » + la description, remplir le champ GPSR (personne responsable UE), vérifier les anciennes vidéos (« Watch Ultra », 14,99 €). — URGENT (10 min)
-- [ ] **Karim** : confirmer le stock réel (annulation « stock épuisé » le 14/10 vs ~15 montres annoncées) et corriger le stock affiché dans le Seller Center. — URGENT (décide du déstockage et du financement de la P86, voir `livrables/margin-analyst/2026-10-22-chiffres-reels-commandes.md`)
+- [ ] **Karim** : stock affiché = **17** (relevé du 26/10) → vérifier qu'il y a bien 17 montres réelles. — URGENT (décide du déstockage et du financement de la P86, voir `livrables/margin-analyst/2026-10-22-chiffres-reels-commandes.md`)
 - [ ] **Karim** : consulter « Santé de la boutique » (score de performance ≥ 3,5 ?, taux d'expédition tardive et d'annulation) et « Campagnes » (Smart Promotion Program, Black Friday ouverts ?). — à faire (2 min) → voir `livrables/pricing-strategist/2026-10-25-acces-campagnes-black-friday.md`
 - [x] **Clara (sop-creator) + Bastien (chef Ventes)** : procédure d'expédition anti-retard + déblocage de la commande du 10/10 + relevé quotidien. — fait le 22/10 → `livrables/sop-creator/2026-10-22-sop-expedition-et-releve.md` (règle interne : expédier à J+1, la politique UE impose 2 jours ouvrés)
 - [x] **Chloé (cheffe Contenu)** : 2 nouvelles vidéos propres + correction du script 1 du 20/10. — fait le 23/10 → `livrables/viral-hook-creator/2026-10-23-videos-propres-fin-octobre.md`
@@ -61,6 +62,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Léna + Théo** : finaliser le brief et faire le rendu des visuels de la P86 après le test de l'échantillon. — bloqué (échantillon)
 
 ## Idées de l'équipe (à proposer à Karim)
+- **Zoé** (26/10) : missions du centre vendeur → crédit publicitaire de 60–70 € offert pour une vente flash d'au moins 5 % ou 1 € (≈ 12,40 €/vente au lieu de 13,15 €) ou pour configurer la livraison gratuite. Les outils de promotion de la boutique sont accessibles ; le Black Friday France ne l'est pas.
 - **Léa** (23/10) : P86 publiée directement à 27,99 € « prix de lancement jusqu'au 1er décembre », puis 29,99 € : seul argument d'urgence légal en novembre (9,91 €/vente).
 - **Sami** (23/10) : remplacer à terme la T900 (design à risque) par une montre ronde générique à ≈ 4 € d'achat (≈ 9 à 11 €/vente à 15 €).
 - **Maëlle** (22/10) : si le stock est à 0, réassort de 10 montres à 15 € (70,90 €, remboursé dès la 6e vente, 60,60 € de marge) pour garder l'entrée de gamme jusqu'à la P86 — en gardant en tête le risque de design signalé par Sami.
