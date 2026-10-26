@@ -1,4 +1,5 @@
 # 3 scripts « dernières pièces » — montre 49 mm à 15 €
+> ⚠️ Note de Chloé du 26/10 : la boutique affiche **14,99 €** (capture de Karim du 24/10), pas 15 €. Règle : le prix de la vidéo = celui de la boutique le jour du tournage. Tant que la fiche n'est pas passée à 15 €, remplacer « 15 € » par « 14,99 € » partout (texte, voix, description). Dans le script B, le visuel « billet de 10 € + pièce de 5 € » ne marche qu'à 15 €.
 > Contrôle : Validé par Chloé, cheffe du pôle Contenu & réseaux, le 20/10/2026 — prix 15 € conforme, aucune marque, rareté vraie à recompter le jour du tournage.
 > Re-contrôle du 23/10 par Chloé : À corriger → corrigé — le script 1 affichait « Écran 1,99" » (taille non vérifiée, cf. FOUNDER_CONTEXT §2) ; remplacé par « Grand écran ». Règle : aucune taille d'écran tant qu'elle n'est pas lue sur la boîte ou dans les réglages.
 *Inès (accroches) + Jules (texte) — 20/10/2026*

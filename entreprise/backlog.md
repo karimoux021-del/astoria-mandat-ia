@@ -8,7 +8,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 
 ## URGENT (analyse des commandes du 21/10)
 - [ ] **Karim** : expédier la commande du 24/10 (« Créer + imprimer une étiquette ») **lundi 26/10** au plus tard (limite : mardi 27/10), garder le reçu, vérifier le scan sous 24 h. — URGENT → `entreprise/ventes/2026-10-24-commande.md`
-- [ ] **Jules + Inès** : aligner les vidéos et les scripts sur le prix réel de la boutique (14,99 € et non 15 €), ou Karim passe la fiche à 15 €. — à faire
+- [x] **Chloé** : alerte de prix (14,99 € en boutique) en tête des scripts. — fait le 26/10 ; en attente de la décision de Karim (14,99 € ou 15 €)
 - [ ] **Karim** : commande du 10/10 « en attente de collecte » depuis 10 jours (Mondial Relay) — vérifier le dépôt du colis / le déposer, garder le reçu. — urgent
 - [x] **Jules + Nora** : titre, description et attributs conformes. — fait le 22/10 → `livrables/brand-copywriter/2026-10-22-fiche-conforme-t900.md`
 - [ ] **Karim** : coller le titre « Montre connectée sport 49 mm écran HD notifications cardio pas sommeil » + la description, remplir le champ GPSR (personne responsable UE), vérifier les anciennes vidéos (« Watch Ultra », 14,99 €). — URGENT (10 min)
@@ -45,12 +45,12 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Karim** : vérifier dans le Seller Center si le LIVE est accessible au compte (abonnés, ancienneté). — à faire (2 min)
 
 ## Priorité 3 — Préparer la suite
-- [ ] **Camille (strategic-planning)** : bilan hebdomadaire et 3 priorités de la semaine. — chaque lundi
+- [ ] **Camille (strategic-planning)** : bilan hebdomadaire et 3 priorités de la semaine. — chaque lundi (dernier : 26/10 → `livrables/strategic-planning/2026-10-26-bilan-semaine-1.md`)
 - [ ] **Victor (competitor-intel)** : veille des vendeurs de montres sur TikTok Shop France. — chaque semaine (dernière : 24/10 → `livrables/competitor-intel/2026-10-24-veille-hebdo-et-dates-noel.md`)
 - [x] **Yanis (prd-generator)** : cadrer « relier TikTok Shop aux bureaux ». — fait le 21/10 → `livrables/prd-generator/2026-10-21-relier-tiktok-shop-aux-bureaux.md`
 - [ ] **Karim** : remplir chaque matin `entreprise/ventes/AAAA-MM-JJ.md` (5 chiffres, 5 min, gabarit dans `entreprise/ventes/README.md`). — à faire
 - [x] **Clara (sop-creator)** : SOP « relevé quotidien des ventes en 5 min ». — fait le 22/10 (SOP C)
-- [ ] **Yanis** : palier B (export hebdo) à partir du 26/10 ; palier C (API) après le lancement de la P86. — plus tard
+- [ ] **Yanis** : palier B (export hebdo) à partir du 26/10 ; palier C (API) après le lancement de la P86. — plus tard (26/10 : connecteur AfterShip testé, aucune boutique connectée)
 
 ## Studio visuels (pôle Marketing)
 - [x] **Léna (product-visuals)** : veille visuelle + plan des 7 images + brief T900. — fait le 20/10 → `livrables/product-visuals/2026-10-20-t900-direction-artistique.md`

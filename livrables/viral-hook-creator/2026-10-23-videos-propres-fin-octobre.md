@@ -1,4 +1,5 @@
 # 2 vidéos propres pour fin octobre : montre 49 mm à 15 €
+> ⚠️ Note de Chloé du 26/10 : la boutique affiche **14,99 €** (capture de Karim du 24/10), pas 15 €. Règle : le prix de la vidéo = celui de la boutique le jour du tournage. Tant que la fiche n'est pas passée à 15 €, remplacer « 15 € » par « 14,99 € » partout (texte, voix, description). Dans le script B, le visuel « billet de 10 € + pièce de 5 € » ne marche qu'à 15 €.
 > Contrôle : Validé par Chloé, cheffe du pôle Contenu & réseaux, le 23/10/2026 — conforme (15 €, aucune marque, sons commerciaux uniquement, rien de non vérifié) ; à tourner après recomptage du stock.
 *Noé (trend-scout), puis Inès (viral-hook-creator) et Jules (brand-copywriter). 23/10/2026*
 
