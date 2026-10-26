@@ -1298,8 +1298,9 @@ ${s ? s.skill : m.pitch}
   // ---------- Demandes de l'équipe à Karim (collection « demandes » de la base de la page) ----------
   // Chaque document : { agent, titre, question, details, images: [{url, legende}], options: ["Oui","Non"], statut: "attente"|"repondu", reponse, commentaire, creeLe, reponduLe }
   let demandes = [], askDb = null, askNote = "";
-  const pendingFor = m => demandes.filter(d => d.statut !== "repondu" && d.agent === m.id);
-  const pendingAll = () => demandes.filter(d => d.statut !== "repondu");
+  const isOpen = d => d.statut !== "repondu" && d.statut !== "traite";
+  const pendingFor = m => demandes.filter(d => isOpen(d) && d.agent === m.id);
+  const pendingAll = () => demandes.filter(isOpen);
   (async () => {
     askDb = window.claude?.use ? await window.claude.use("db").catch(() => null) : null;
     if (!askDb) return;
@@ -1330,8 +1331,9 @@ ${s ? s.skill : m.pitch}
       card.append(g);
     }
     if (d.creeLe) card.append(el("div", "meta", "Demandé le " + fmtTime(d.creeLe)));
-    if (d.statut === "repondu") {
+    if (!isOpen(d)) {
       card.append(el("div", "ask-done", "Ta réponse : " + (d.reponse || "") + (d.commentaire ? " — " + d.commentaire : "")));
+      if (d.suite) card.append(el("div", "meta", "Ce que l'équipe en a fait : " + d.suite));
       return card;
     }
     const com = el("input"); com.type = "text"; com.placeholder = "Ajouter un mot (facultatif) : une info, une précision…"; com.setAttribute("aria-label", "Commentaire");
@@ -1361,7 +1363,7 @@ ${s ? s.skill : m.pitch}
     const list = $("askList"); list.replaceChildren();
     if (askNote) note(askNote, list);
     if (!askDb) { list.append(el("div", "empty", "Ouvre la page dans Claude (claude.ai ou l'application) pour voir les demandes de l'équipe.")); return; }
-    const p = pendingAll(), done = demandes.filter(d => d.statut === "repondu").slice(0, 10);
+    const p = pendingAll(), done = demandes.filter(d => !isOpen(d)).slice(0, 10);
     if (!p.length) list.append(el("div", "empty", "Rien à décider pour l'instant. L'équipe avance seule."));
     for (const d of p) list.append(askCard(d, true));
     if (done.length) { list.append(el("h3", null, "Déjà répondu")); for (const d of done) list.append(askCard(d, true)); }

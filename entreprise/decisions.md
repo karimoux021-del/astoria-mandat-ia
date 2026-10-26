@@ -2,6 +2,7 @@
 
 Les décisions du fondateur, de la plus récente à la plus ancienne. Elles s'imposent à toute l'équipe.
 
+- 2026-10-26 — Réponses de Karim dans les bureaux : **affiliation 15 % : oui** ; **nouvelle montre AMOLED : 27,99 € prix de lancement puis 29,99 €** ; **vente flash −5 % pour le crédit pub : oui** (après réactivation de la fiche) ; **vidéo piscine : non, à refaire** (v2 proposée) ; fabricant : boutique AliExpress « Ailexpress Smart Store » (nom légal à trouver).
 - 2026-10-26 — Karim : les bureaux montrent chaque collègue qui a besoin de lui (étoile), avec images, et il répond Oui/Non directement (collection `demandes` de la page). Recherche de nouveaux produits/fournisseurs sur AliExpress etc. autorisée (sans achat).
 - 2026-10-26 — Karim : l'équipe doit être **toujours active** et gérer **en autonomie** tout ce qui se passe sur TikTok Shop ; chaque pôle explore le centre vendeur ; automatisé. → Cycle toutes les 2 h de 8 h à 22 h (`entreprise/cycle-continu.md`) en plus de la journée de 6 h 52, via la session Claude dans Chrome de Karim. Limites : argent, prix/promos, annulations, suppressions, stock et infos légales restent à Karim.
 - 2026-10-26 — Karim : l'équipe génère des prompts complets, prêts à coller dans Claude dans Chrome, pour agir sur le centre vendeur (fichiers `entreprise/a-appliquer/` + section « Prompt pour Chrome » du compte rendu). Section 7 ajoutée à la procédure.
