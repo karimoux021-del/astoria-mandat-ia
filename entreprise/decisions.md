@@ -2,6 +2,7 @@
 
 Les décisions du fondateur, de la plus récente à la plus ancienne. Elles s'imposent à toute l'équipe.
 
+- 2026-10-26 — Karim : l'équipe génère des prompts complets, prêts à coller dans Claude dans Chrome, pour agir sur le centre vendeur (fichiers `entreprise/a-appliquer/` + section « Prompt pour Chrome » du compte rendu). Section 7 ajoutée à la procédure.
 - 2026-10-25 — Information de Karim : nouvelle vente le 24/10 (client 9,99 €, réductions financées par TikTok, virement annoncé ≈ 13 €). Confirme que les réductions TikTok ne réduisent pas notre encaissement. Prix boutique constaté : 14,99 €.
 - 2026-10-20 — Karim veut une organisation hiérarchique : un directeur général (Alexandre) et un chef par pôle qui contrôle tout le travail de son équipe et fait des rapports. Objectif : une entreprise lucrative, fluide, où tout le monde communique. La routine du matin suit désormais `entreprise/procedure-journee.md` et `entreprise/organisation.md`.
 - 2026-10-20 — Consigne : la routine du matin intègre le Studio visuels (Léna, product-visuals ; Théo, listing-designer ; équipe de 21) et l'affichage en direct de l'avancement dans les bureaux (document `equipe/etat`).
