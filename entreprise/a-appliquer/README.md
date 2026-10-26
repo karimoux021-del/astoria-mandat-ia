@@ -9,3 +9,6 @@ Règles pour Claude dans Chrome :
 - **jamais** : paiement, publicité payante, expédition ou annulation de commande, suppression de produit, sans un « oui » explicite de Karim dans la conversation ;
 - s'arrêter et demander à Karim en cas de doute ou de message d'erreur ;
 - à la fin, résumer ce qui a été fait. Karim recolle le résumé dans la session de l'équipe.
+
+## Session Claude dans Chrome de Karim
+Identifiant : `session_01C7pJcHgwZ5u21riu9x7QqE` (créée le 26/10/2026). L'équipe peut **lire** son historique (outil `list_events`, filtre `kinds: ["user","result"]`) pour vérifier ce qui a été appliqué dans le centre vendeur. Elle ne lui envoie **aucune instruction** sans demande explicite de Karim.
