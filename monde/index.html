@@ -129,6 +129,21 @@
   .form textarea { font-size: 14px; padding: 7px 9px; border-radius: 6px; resize: vertical; }
   .form p { margin: 0; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
   .saved { font-size: 13px; color: var(--leaf); font-weight: 800; }
+  .btn.ask { background: var(--gold); }
+  .ask-card { border: 3px solid var(--ink); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; background: #fff6dc; box-shadow: 0 3px 0 var(--ink); }
+  .ask-card h4 { margin: 0; font: 700 16px/1.25 var(--display); letter-spacing: .02em; }
+  .ask-card .q { font-weight: 800; font-size: 15px; line-height: 1.4; }
+  .ask-card .meta { font-size: 12px; color: var(--ink-soft); }
+  .ask-imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  .ask-imgs a { display: block; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; background: #fff; }
+  .ask-imgs img { display: block; width: 100%; height: 140px; object-fit: cover; }
+  .ask-imgs figcaption { font-size: 12px; padding: 4px 6px; color: var(--ink-soft); line-height: 1.3; }
+  .ask-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ask-opts .btn { font-size: 15px; }
+  .ask-opts .btn.yes { background: var(--leaf); color: var(--paper); }
+  .ask-opts .btn.no { background: #f2a08a; }
+  .ask-card input[type="text"] { width: 100%; box-sizing: border-box; font-size: 14px; padding: 7px 9px; }
+  .ask-done { font-weight: 800; color: var(--leaf); }
   @media (prefers-reduced-motion: reduce) { .btn, .btn:hover, .btn:active { transform: none; } }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
@@ -139,6 +154,7 @@
 <div class="hud">
   <div class="group">
     <div class="chip brand">Astoria</div>
+    <button class="btn ask" id="btnAsk" type="button">★ Pour toi <span class="count" id="askCount" hidden>0</span></button>
     <button class="btn" id="btnTeam" type="button">L'équipe</button>
     <button class="btn" id="btnJournal" type="button">Journal <span class="count" id="journalCount" hidden>!</span></button>
     <button class="btn" id="btnBoard" type="button">Missions <span class="count" id="activeCount" hidden>0</span></button>
@@ -197,6 +213,14 @@
     <button class="btn close" data-close="boardPanel" type="button" aria-label="Fermer le tableau">✕</button>
   </div>
   <div class="panel-body" id="boardList"></div>
+</section>
+
+<section class="panel" id="askPanel" hidden aria-label="Ce que l'équipe attend de toi">
+  <div class="panel-head">
+    <div class="who"><h2>★ L'équipe a besoin de toi</h2><p>Regarde les images, réponds Oui ou Non : la personne concernée reçoit ta réponse tout de suite.</p></div>
+    <button class="btn close" data-close="askPanel" type="button" aria-label="Fermer">✕</button>
+  </div>
+  <div class="panel-body" id="askList"></div>
 </section>
 
 <section class="panel" id="teamPanel" hidden aria-label="Annuaire de l'équipe">
@@ -700,6 +724,7 @@
       const d = Math.hypot(m.x - player.x, m.y - player.y), by = sy(m.y) - ppt * 1.2;
       if (d < 3.6 || m === current) nameTag(m, m === near || m === current);
       if (m.busy) bubble(sx(m.x), by, "", now, { dots: true });
+      else if (pendingFor(m).length) bubble(sx(m.x), by, "★ Besoin de toi", now, { bg: "#f2b632" });
       else if (m.state === "working" || m.state === "starting") bubble(sx(m.x), by, "En mission", now, { bg: "#d8ecfa" });
       else if (m.state === "waiting") bubble(sx(m.x), by, "Attend ton accord", now, { bg: "#ffe2a8" });
       else if (m.say && m.sayUntil > tNow) bubble(sx(m.x), by, m.say, now, { bg: "#ffffff" });
@@ -772,6 +797,7 @@
         const t = el("span"); t.append(el("b", null, m.name), el("span", null, m.role));
         const st = { working: "En mission", starting: "En mission", waiting: "Attend ton accord", done: "Livrable prêt" }[m.state];
         if (st) t.append(el("span", "state", st));
+        if (pendingFor(m).length) t.append(el("span", "state", "★ Besoin de toi"));
         b.append(avatar(m), t);
         b.addEventListener("click", () => { goTo(m); openDesk(m, m.state ? "work" : "talk"); });
         g.append(b);
@@ -891,7 +917,9 @@ ${refs}`;
     }
     const sug = el("div", "suggest");
     for (const q of m.ask) { const b = el("button", null, q); b.type = "button"; b.addEventListener("click", () => { $("chatInput").value = q; send(); }); sug.append(b); }
-    intro.append(sug); body.append(intro);
+    intro.append(sug);
+    for (const d of pendingFor(m)) body.append(askCard(d, false));
+    body.append(intro);
     for (const t of chats[m.id] || []) addMsg(t.role, t.content, t.role === "assistant");
     if (sampleOff) note("La discussion n'est pas disponible ici. Ouvre cette page dans Claude (claude.ai ou l'application).");
     scrollDown();
@@ -1267,6 +1295,78 @@ ${s ? s.skill : m.pitch}
     }, () => {});
   })();
 
+  // ---------- Demandes de l'équipe à Karim (collection « demandes » de la base de la page) ----------
+  // Chaque document : { agent, titre, question, details, images: [{url, legende}], options: ["Oui","Non"], statut: "attente"|"repondu", reponse, commentaire, creeLe, reponduLe }
+  let demandes = [], askDb = null, askNote = "";
+  const pendingFor = m => demandes.filter(d => d.statut !== "repondu" && d.agent === m.id);
+  const pendingAll = () => demandes.filter(d => d.statut !== "repondu");
+  (async () => {
+    askDb = window.claude?.use ? await window.claude.use("db").catch(() => null) : null;
+    if (!askDb) return;
+    askDb.collection("demandes").onSnapshot(snap => {
+      demandes = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => String(b.creeLe || "").localeCompare(String(a.creeLe || "")));
+      refreshAgents();
+      if (!$("askPanel").hidden) renderAsk();
+      if (current && !$("chat").hidden && view === "talk") renderChat();
+    }, e => { askNote = "Les demandes n'ont pas pu être chargées (" + (e?.code || "erreur") + ")."; if (!$("askPanel").hidden) renderAsk(); });
+  })();
+  function askCard(d, withAgent) {
+    const m = byId[d.agent], card = el("article", "ask-card");
+    if (withAgent && m) { const a = el("div", "board-agent"); a.append(avatar(m), `${m.name} · ${m.role}`); card.append(a); }
+    card.append(el("h4", null, d.titre || "Une question pour toi"));
+    if (d.question) card.append(el("div", "q", d.question));
+    if (d.details) { const x = el("div", "md"); x.innerHTML = md(String(d.details)); card.append(x); }
+    const imgs = (d.images || []).filter(i => i && (i.url || typeof i === "string"));
+    if (imgs.length) {
+      const g = el("div", "ask-imgs");
+      for (const i of imgs) {
+        const url = typeof i === "string" ? i : i.url, cap = typeof i === "string" ? "" : (i.legende || "");
+        const a = el("a"); a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        const f = el("figure"); f.style.margin = "0";
+        const img = el("img"); img.src = url; img.alt = cap || "Image jointe"; img.loading = "lazy";
+        f.append(img); if (cap) f.append(el("figcaption", null, cap));
+        a.append(f); g.append(a);
+      }
+      card.append(g);
+    }
+    if (d.creeLe) card.append(el("div", "meta", "Demandé le " + fmtTime(d.creeLe)));
+    if (d.statut === "repondu") {
+      card.append(el("div", "ask-done", "Ta réponse : " + (d.reponse || "") + (d.commentaire ? " — " + d.commentaire : "")));
+      return card;
+    }
+    const com = el("input"); com.type = "text"; com.placeholder = "Ajouter un mot (facultatif) : une info, une précision…"; com.setAttribute("aria-label", "Commentaire");
+    const opts = el("div", "ask-opts"), n = el("div", "note"), btns = [];
+    for (const o of (d.options && d.options.length ? d.options : ["Oui", "Non"])) {
+      const b = el("button", "btn" + (/^oui/i.test(o) ? " yes" : /^non/i.test(o) ? " no" : ""), o); b.type = "button"; btns.push(b);
+      b.addEventListener("click", () => answerAsk(d, o, com.value.trim(), n, btns));
+      opts.append(b);
+    }
+    card.append(opts, com, n);
+    return card;
+  }
+  async function answerAsk(d, o, comment, n, btns) {
+    if (!askDb) { n.textContent = "Réponse impossible ici : ouvre la page dans Claude (claude.ai ou l'application)."; return; }
+    btns.forEach(b => b.disabled = true); n.textContent = "Envoi…";
+    try {
+      await askDb.collection("demandes").doc(d.id).update({ statut: "repondu", reponse: o, commentaire: comment || "", reponduLe: new Date().toISOString() });
+      n.textContent = "Réponse enregistrée.";
+      const m = byId[d.agent];
+      tellTeam(`DÉCISION DE KARIM (bureaux, demande ${d.id}${m ? " de " + m.name : ""}) — ${d.titre || d.question} : ${o}${comment ? " — " + comment : ""}`, n, []).catch(() => {});
+    } catch (e) {
+      n.textContent = e?.code === "permission_denied" ? "Tu n'as pas le droit de répondre depuis ce compte." : "La réponse n'a pas pu être enregistrée. Réessaie.";
+      btns.forEach(b => b.disabled = false);
+    }
+  }
+  function renderAsk() {
+    const list = $("askList"); list.replaceChildren();
+    if (askNote) note(askNote, list);
+    if (!askDb) { list.append(el("div", "empty", "Ouvre la page dans Claude (claude.ai ou l'application) pour voir les demandes de l'équipe.")); return; }
+    const p = pendingAll(), done = demandes.filter(d => d.statut === "repondu").slice(0, 10);
+    if (!p.length) list.append(el("div", "empty", "Rien à décider pour l'instant. L'équipe avance seule."));
+    for (const d of p) list.append(askCard(d, true));
+    if (done.length) { list.append(el("h3", null, "Déjà répondu")); for (const d of done) list.append(askCard(d, true)); }
+  }
+
   function refreshAgents() {
     for (const m of TEAM) {
       const mine = missions.filter(ms => ms.agent === m.id);
@@ -1278,6 +1378,7 @@ ${s ? s.skill : m.pitch}
     const active = missions.filter(ms => !FINAL.includes(ms.status)).length;
     $("activeCount").hidden = !active; $("activeCount").textContent = active;
     $("journalCount").hidden = !journalUnseen();
+    const nAsk = pendingAll().length; $("askCount").hidden = !nAsk; $("askCount").textContent = nAsk;
     if (!$("teamPanel").hidden) buildTeam();
   }
 
@@ -1368,13 +1469,15 @@ ${s ? s.skill : m.pitch}
     if (current) { ctl?.abort(); delete chats[current.id]; saveChats(); renderChat(); }
   });
 
-  function closePanels() { for (const id of ["teamPanel", "companyPanel", "boardPanel", "journalPanel"]) $(id).hidden = true; }
+  function closePanels() { for (const id of ["teamPanel", "companyPanel", "boardPanel", "journalPanel", "askPanel"]) $(id).hidden = true; }
   function openPanel(id) {
     $("toast").hidden = true; $("chat").hidden = true; current = null; closePanels(); $(id).hidden = false; $("help").hidden = true;
     if (id === "teamPanel") buildTeam();
     if (id === "boardPanel") { renderBoard(); poll(true); }
     if (id === "journalPanel") { renderJournal(); pollJournal(true); }
+    if (id === "askPanel") renderAsk();
   }
+  $("btnAsk").addEventListener("click", () => $("askPanel").hidden ? openPanel("askPanel") : closePanels());
   $("btnTeam").addEventListener("click", () => $("teamPanel").hidden ? openPanel("teamPanel") : closePanels());
   $("btnJournal").addEventListener("click", () => $("journalPanel").hidden ? openPanel("journalPanel") : closePanels());
   $("btnBoard").addEventListener("click", () => $("boardPanel").hidden ? openPanel("boardPanel") : closePanels());
@@ -1419,6 +1522,7 @@ ${s ? s.skill : m.pitch}
     refreshAgents();
     if (!data?.player) showToast("Bienvenue dans tes bureaux", "Alexandre, tes 5 chefs de pôle et 21 collègues t'attendent. Parle-leur, ou confie-leur une mission : ils travaillent seuls, avec internet.", 5600);
     if (missions.some(ms => !FINAL.includes(ms.status) || !ms.report)) setTimeout(() => poll(true), 1500);
+    setTimeout(() => { const n = pendingAll().length; if (n) showToast("★ L'équipe a besoin de toi", `${n} question(s) t'attendent : bouton « Pour toi » ou les collègues marqués d'une étoile.`, 6000); }, 4200);
     setTimeout(() => pollJournal(true).then(() => { if (journalUnseen()) showToast("Ton équipe a travaillé", `${(journal.data?.decisions || []).length || "Des"} décision(s) t'attendent. Ouvre le Journal.`, 6000); }), 2500);
     let last = performance.now();
     function frame(t) {

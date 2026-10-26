@@ -29,3 +29,11 @@ La seule façon d'agir sur TikTok Shop est la **session Claude dans Chrome de Ka
 
 ## Ce qui reste TOUJOURS à Karim (« oui » écrit)
 Argent (achat de stock, publicité, GMV Max, abonnement), prix et promotions, annulation ou remboursement d'une commande, suppression de produit, modification du stock affiché (seul Karim connaît le stock réel), informations légales qu'on ne connaît pas (fabricant, adresse, GPSR, CE), dépôt physique des colis.
+
+## Demander quelque chose à Karim : les bureaux, pas le compte rendu (consigne du 26/10)
+Karim répond directement dans les bureaux (https://claude.ai/artifact/RNJC2sv2aRo1wpUWfap1VP). Chaque question pour lui = **un document** de la collection `demandes` de la base de la page (outil ArtifactData) :
+`{ agent: "<id du collègue qui demande>", titre, question, details (Markdown court, chiffré en marge nette si argent), images: [{url, legende}], options: ["Oui","Non"] (ou 2–3 choix courts), statut: "attente", creeLe: "<ISO>" }`. Le collègue porte alors une étoile « ★ Besoin de toi » dans les bureaux.
+- **Images** : toujours quand ça aide à décider (photo produit, capture, visuel, lien AliExpress illustré). Pour en ajouter : 1) les fichiers du dépôt `visuels/demandes/` publiés avec la page (Artifact publish de `monde/index.html` avec `files: {"demandes/<nom>.jpg": "visuels/demandes/<nom>.jpg"}`, url de la page) → `url: "demandes/<nom>.jpg"` ; ou 2) Artifact `asset: true` (upload) → l'`url` renvoyée. Jamais d'image d'un autre vendeur dans une fiche ou une vidéo ; dans une demande, une capture de fiche fournisseur sert seulement à décider.
+- **Réponses** : à chaque cycle, `ArtifactData query` sur `demandes` (statut `repondu`), puis appliquer : inscrire la décision en haut de `entreprise/decisions.md`, mettre à jour le backlog, préparer l'action (Chrome si besoin), puis passer le document en `statut: "traite"`. Karim peut aussi avoir écrit une info dans `commentaire`.
+- Maximum ~8 demandes en attente à la fois ; fermer (`statut: "traite"`) celles devenues inutiles.
+- Recherches libres autorisées par Karim (26/10) : AliExpress, Alibaba, CJ… pour trouver de nouveaux produits ou fournisseurs. Aucun achat sans son « oui ».
