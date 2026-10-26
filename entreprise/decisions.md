@@ -2,6 +2,7 @@
 
 Les décisions du fondateur, de la plus récente à la plus ancienne. Elles s'imposent à toute l'équipe.
 
+- 2026-10-26 — Karim : l'équipe doit être **toujours active** et gérer **en autonomie** tout ce qui se passe sur TikTok Shop ; chaque pôle explore le centre vendeur ; automatisé. → Cycle toutes les 2 h de 8 h à 22 h (`entreprise/cycle-continu.md`) en plus de la journée de 6 h 52, via la session Claude dans Chrome de Karim. Limites : argent, prix/promos, annulations, suppressions, stock et infos légales restent à Karim.
 - 2026-10-26 — Karim : l'équipe génère des prompts complets, prêts à coller dans Claude dans Chrome, pour agir sur le centre vendeur (fichiers `entreprise/a-appliquer/` + section « Prompt pour Chrome » du compte rendu). Section 7 ajoutée à la procédure.
 - 2026-10-25 — Information de Karim : nouvelle vente le 24/10 (client 9,99 €, réductions financées par TikTok, virement annoncé ≈ 13 €). Confirme que les réductions TikTok ne réduisent pas notre encaissement. Prix boutique constaté : 14,99 €.
 - 2026-10-20 — Karim veut une organisation hiérarchique : un directeur général (Alexandre) et un chef par pôle qui contrôle tout le travail de son équipe et fait des rapports. Objectif : une entreprise lucrative, fluide, où tout le monde communique. La routine du matin suit désormais `entreprise/procedure-journee.md` et `entreprise/organisation.md`.

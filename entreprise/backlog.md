@@ -7,7 +7,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
-- [ ] **Karim + Claude dans Chrome** : fiche T900 en cours de modification le 26/10 (titre sans « Watch Ultra » saisi, en attente du « oui » de Karim) ; un produit « Montre connectée sport 49 mm… » est au statut **Rejeté** (onglet violations) → récupérer le motif. — en cours
+- [ ] **Karim** : fiche T900 **REJETÉE** (relevé de la session Chrome du 26/10 18:33) → 1) dire oui pour supprimer la photo n°4 (« Watch Ultra ») ; 2) fournir une photo nette de l'étiquette (CE, poubelle barrée DEEE, fabricant, responsable UE) ; 3) nom et adresse du vrai fabricant (fiche AliExpress / boîte). — URGENT : pas de vente possible tant que la fiche est rejetée
 - [ ] **Karim** : fiche produit → alerte « Fournis les caractéristiques requises » à compléter (en même temps que le nouveau titre sans « Watch Ultra »). — URGENT (10 min)
 - [ ] **Karim** : étiquette Colissimo créée le 26/10 → **déposer le colis du 24/10 avant le 27/10 22:59**, garder le reçu. — URGENT (≈ 13,10 € encaissés) → `entreprise/ventes/2026-10-24-commande.md`
 - [x] **Chloé** : alerte de prix (14,99 € en boutique) en tête des scripts. — fait le 26/10 ; en attente de la décision de Karim (14,99 € ou 15 €)
