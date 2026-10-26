@@ -7,7 +7,9 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
-- [ ] **Karim** : publier la vidéo v2 (`visuels/t900/videos/2026-10-26-t900-v2-13s-1499.mp4`) dès que la fiche est réactivée, son commercial TikTok, produit épinglé. — validée le 26/10
+- [ ] **Karim** : publier une vidéo dès maintenant (la fiche actuelle est active) : la version **vente flash 14,25 €** faite par Claude dans Chrome jusqu'au 29/10 20:19, puis la version 14,99 € (ou notre v2 à 14,99 €). Son commercial TikTok, produit épinglé. — à faire
+- [ ] **Karim** : se connecter à AliExpress dans Chrome pour que le message au vendeur (fabricant + déclaration CE) parte. — à faire
+- [ ] **Claude dans Chrome** : confirmer coupon −1 € et offres 2/3 montres (créés ou non). — à vérifier
 - [ ] **Claude dans Chrome** : promotions + missions/crédits (`entreprise/a-appliquer/2026-10-26-promotions.md`) dès que la fiche est active. — autorisé par Karim le 26/10
 - [ ] **Karim** : fiche T900 **REJETÉE** (relevé de la session Chrome du 26/10 18:33) → 1) dire oui pour supprimer la photo n°4 (« Watch Ultra ») ; 2) fournir une photo nette de l'étiquette (CE, poubelle barrée DEEE, fabricant, responsable UE) ; 3) nom et adresse du vrai fabricant → Karim a donné la boutique « Ailexpress Smart Store » (https://a.aliexpress.com/_EjQD2XY) le 26/10 ; il manque le **nom légal + adresse** (section sécurité du produit de la fiche AliExpress, lecture préparée dans `entreprise/a-appliquer/2026-10-26-infos-fabricant.md`). — URGENT : pas de vente possible tant que la fiche est rejetée
 - [ ] **Karim** : fiche produit → alerte « Fournis les caractéristiques requises » à compléter (en même temps que le nouveau titre sans « Watch Ultra »). — URGENT (10 min)
