@@ -7,6 +7,9 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
+- [ ] **Karim** : répondre à « Livraison gratuite dès 2 articles » dans les bureaux (l'équipe recommande de la supprimer : ≈ 9,40 € encaissés par montre). — URGENT (s'applique déjà)
+- [ ] **Bastien** : vérifier le 28/10 que la commande du 24/10 est scannée ; si elle est marquée tardive, ticket au support avec le reçu de Karim. — à faire
+- [ ] **Chloé** : nouvelle description pour la vidéo du 02/10, sans « La seule à ce prix » (affirmation invérifiable). — à faire
 - [ ] **Karim** : envoyer au vendeur AliExpress le message de la SOP (nom légal + adresse du fabricant + déclaration UE RED/RoHS), via Claude dans Chrome. **Échéance du vendeur : 03/11** ; sans réponse, fiche T900 hors ligne. — URGENT → `livrables/sop-creator/2026-10-27-conformite-importateur-ue.md`
 - [ ] **Théo (listing-designer)** : étiquette importateur (nom + adresse de Karim, fabricant, référence, poubelle barrée), **sans CE** tant que la déclaration n'est pas reçue. — en attente des données du fabricant
 - [ ] **Jules + Antoine** : fiche propre (titre neutre sans « Watch / Ultra / 49 mm / Premium », pas de gros plan sur le bouton orange). Une seule tentative de soumission. — en attente du oui sur la photo n°4 et du dossier fabricant → `livrables/competitor-intel/2026-10-27-rejet-contrefacon-que-faire.md`
@@ -16,7 +19,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Claude dans Chrome** : promotions + missions/crédits (`entreprise/a-appliquer/2026-10-26-promotions.md`) dès que la fiche est active. — autorisé par Karim le 26/10
 - [ ] **Karim** : fiche T900 **REJETÉE** (relevé de la session Chrome du 26/10 18:33) → 1) dire oui pour supprimer la photo n°4 (« Watch Ultra ») ; 2) fournir une photo nette de l'étiquette (CE, poubelle barrée DEEE, fabricant, responsable UE) ; 3) nom et adresse du vrai fabricant → Karim a donné la boutique « Ailexpress Smart Store » (https://a.aliexpress.com/_EjQD2XY) le 26/10 ; il manque le **nom légal + adresse** (section sécurité du produit de la fiche AliExpress, lecture préparée dans `entreprise/a-appliquer/2026-10-26-infos-fabricant.md`). — URGENT : pas de vente possible tant que la fiche est rejetée
 - [ ] **Karim** : fiche produit → alerte « Fournis les caractéristiques requises » à compléter (en même temps que le nouveau titre sans « Watch Ultra »). — URGENT (10 min)
-- [ ] **Karim** : étiquette Colissimo créée le 26/10 → **déposer le colis du 24/10 avant le 27/10 22:59**, garder le reçu. — URGENT (≈ 13,10 € encaissés) → `entreprise/ventes/2026-10-24-commande.md`
+- [x] **Karim** : colis du 24/10 **déposé le 27/10** (et commande du 27/10 déposée aussi) ; ~~déposer le colis du 24/10 avant le 27/10 22:59~~, garder le reçu. — URGENT (≈ 13,10 € encaissés) → `entreprise/ventes/2026-10-24-commande.md`
 - [x] **Chloé** : alerte de prix (14,99 € en boutique) en tête des scripts. — fait le 26/10 ; en attente de la décision de Karim (14,99 € ou 15 €)
 - [x] ~~Commande du 10/10~~ : **annulée par le vendeur le 25/10** (« livraison impossible »), 0 € — caduc (`entreprise/ventes/2026-10-26-etat-des-lieux.md`)
 - [x] **Jules + Nora** : titre, description et attributs conformes. — fait le 22/10 → `livrables/brand-copywriter/2026-10-22-fiche-conforme-t900.md`

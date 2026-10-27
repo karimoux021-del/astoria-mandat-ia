@@ -11,7 +11,7 @@
 | 2 | **Vente flash** | −5 % (14,99 → 14,24 €), 5 pièces maximum, durée la plus courte proposée | ≈ 12,44 € | Débloque la mission « vente flash ≥ 5 % ». Déjà validé par Karim. |
 | 3 | **Remise sur quantité / offre groupée** | 2 montres achetées = −10 % (26,98 € les deux) ; 3 montres = −15 % (38,22 €) | ≈ 11,77 € (×2) · ≈ 11,09 € (×3) | Les gens achètent plus : cadeau + soi-même, avant Noël. |
 | 4 | **Coupon boutique** | −1 € dès 14,99 €, réservé aux **nouveaux clients / abonnés**, 20 coupons max, valable 30 jours | ≈ 12,21 € | Fait passer à l'achat les 374 visiteurs qui regardent sans acheter. |
-| 5 | **Livraison gratuite** | **Seulement à partir de 2 articles** (seuil 25 €). **Jamais** sur 1 seul article | ≈ 11,77 € (×2, avec l'offre n° 3) | Pousse au panier de 2 sans tuer la marge d'une montre seule (à 1 article, la livraison offerte coûterait ≈ 4,99 €). Débloque aussi la mission « configurer la livraison gratuite » si elle existe encore. |
+| 5 ~~(ANNULÉ le 27/10 : coût de livraison oublié, ≈ 9,40 € encaissés par montre, sous le plancher)~~ | **Livraison gratuite** | **Seulement à partir de 2 articles** (seuil 25 €). **Jamais** sur 1 seul article | ≈ 11,77 € (×2, avec l'offre n° 3) | Pousse au panier de 2 sans tuer la marge d'une montre seule (à 1 article, la livraison offerte coûterait ≈ 4,99 €). Débloque aussi la mission « configurer la livraison gratuite » si elle existe encore. |
 | 6 | **Code promo** | « ASTORIA1 » : −1 €, 50 utilisations, à citer dans les vidéos | ≈ 12,21 € | Mesure quelles vidéos font vendre. |
 
 **Ne pas cumuler** : si TikTok permet le cumul vente flash + coupon + offre groupée, vérifier dans l'aperçu que le prix final par montre ne descend pas sous **12,66 €**. Sinon, désactiver le coupon pendant la vente flash.
