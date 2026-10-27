@@ -7,6 +7,9 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
+- [ ] **Karim** : envoyer au vendeur AliExpress le message de la SOP (nom légal + adresse du fabricant + déclaration UE RED/RoHS), via Claude dans Chrome. **Échéance du vendeur : 03/11** ; sans réponse, fiche T900 hors ligne. — URGENT → `livrables/sop-creator/2026-10-27-conformite-importateur-ue.md`
+- [ ] **Théo (listing-designer)** : étiquette importateur (nom + adresse de Karim, fabricant, référence, poubelle barrée), **sans CE** tant que la déclaration n'est pas reçue. — en attente des données du fabricant
+- [ ] **Jules + Antoine** : fiche propre (titre neutre sans « Watch / Ultra / 49 mm / Premium », pas de gros plan sur le bouton orange). Une seule tentative de soumission. — en attente du oui sur la photo n°4 et du dossier fabricant → `livrables/competitor-intel/2026-10-27-rejet-contrefacon-que-faire.md`
 - [ ] **Karim** : publier une vidéo dès maintenant (la fiche actuelle est active) : la version **vente flash 14,25 €** faite par Claude dans Chrome jusqu'au 29/10 20:19, puis la version 14,99 € (ou notre v2 à 14,99 €). Son commercial TikTok, produit épinglé. — à faire
 - [ ] **Karim** : se connecter à AliExpress dans Chrome pour que le message au vendeur (fabricant + déclaration CE) parte. — à faire
 - [ ] **Claude dans Chrome** : confirmer coupon −1 € et offres 2/3 montres (créés ou non). — à vérifier
