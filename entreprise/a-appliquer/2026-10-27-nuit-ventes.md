@@ -32,7 +32,7 @@ Tableau de bord, Données ou Analyses (aujourd'hui, 7 jours, 28 jours) :
 6. **Affiliation** : si c'est gratuit (commission payée seulement sur les ventes), proposer une collaboration ciblée à 15 % aux créateurs mode, tech et bons plans France qui ont déjà vendu des montres connectées, 10 à 20 maximum. Message court : produit à 14,99 €, 15 % de commission, vente flash en cours. **Aucun échantillon envoyé sans Karim.**
 7. **Missions gratuites** : faire toutes celles qui ne demandent ni argent ni stock, et réclamer les récompenses.
 8. **Messages clients** : répondre poliment à chacun (délai 2 jours ouvrés, suivi Colissimo), sans rien promettre d'autre.
-9. **Livraison gratuite dès 2 articles** : la supprimer **seulement si Karim dit oui ici** (elle fait tomber l'encaissé à ≈ 9,40 € par montre).
+9. **Livraison gratuite dès 2 articles** : la supprimer (**Karim a dit oui dans les bureaux le 27/10 à 20:03**) (elle fait tomber l'encaissé à ≈ 9,40 € par montre).
 
 ## 3. Résumé final
 - Les chiffres clés en tableau.
