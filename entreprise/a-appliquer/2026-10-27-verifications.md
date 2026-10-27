@@ -11,5 +11,7 @@ Autorisations : décisions de Karim du 26/10 (promotions, affiliation, vente fla
 6. **Santé de la boutique** : score de performance, taux d'expédition tardive, d'annulation, points de violation éventuels.
 7. **AliExpress** (si Karim est connecté) : sur la fiche de la montre, rubrique « Sécurité du produit / Informations du fabricant », copier le nom légal, l'adresse et la personne responsable UE si elles y figurent. Envoyer le message au vendeur préparé dans `2026-10-26-infos-fabricant.md`. **Aucun achat.**
 
+8. **Données (ajout de Margaux, 12 h)** : dans « Données / Analyses », relever pour les 7 derniers jours les vues de la fiche, les visiteurs, le taux de conversion et la source des commandes (vidéo, affilié, boutique, recherche). Lecture seule.
+
 Interdits : paiement, pub payante, expédition, annulation, suppression (dont la photo n°4 : Karim n'a pas dit oui).
-À la fin : un résumé en 7 points numérotés comme ci-dessus.
+À la fin : un résumé en 8 points numérotés comme ci-dessus.
