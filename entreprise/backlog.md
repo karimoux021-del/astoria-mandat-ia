@@ -28,6 +28,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [ ] **Karim** : tourner la vidéo « citrouille » (du 28 au 30/10) et « POV 15 € cadeau » (dès le 31/10), après avoir recompté le stock. — à faire (2 × 10 min)
 
 ## Priorité 1 — Nouveau produit à plus forte marge
+- [ ] **Sofia + Sami** : avant l'échantillon P86 (au plus tard le 31/10), demander au vendeur P86 le nom légal et l'adresse du fabricant + la déclaration UE RED/RoHS (même message que la SOP du 27/10), via Claude dans Chrome quand Karim est connecté à AliExpress. — à faire (règle du 27/10 : critère éliminatoire)
 - [x] **Sami (product-scout)** : trouver 5 montres connectées plus haut de gamme avec liens fournisseurs, prix d'achat, délais. — fait le 20/10 → `livrables/product-scout/2026-10-20-montres-premium.md` (piste n° 1 : réf. P86 AMOLED 1,93" ; prix indicatifs, AliExpress bloqué en accès direct)
 - [x] **Maëlle (margin-analyst)** : marge nette des modèles de Sami à 24,99 / 29,99 / 34,99 €. — fait le 20/10 → `livrables/margin-analyst/2026-10-20-marges-montres-premium.md` (P86 à 29,99 € : 11,73 €/vente si achat ≈ 15 €)
 - [x] **Noé (trend-scout)** : demande TikTok Shop France + formats vidéo. — fait le 20/10 → `livrables/trend-scout/2026-10-20-demande-montres-premium.md` (pic Black Friday 27/11 → Noël)
