@@ -7,6 +7,9 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
+- [ ] **Karim** : publier « Fonctions » à 14,25 € le 28/10 à 12:30, puis suivre le calendrier → `livrables/viral-hook-creator/2026-10-28-plan-video-et-ia.md`. — URGENT (7 vidéos prêtes, 0 en ligne)
+- [ ] **Claude dans Chrome** : `entreprise/a-appliquer/2026-10-28-affilies-et-videos.md` (livraison dès 2 articles, message aux 57 créateurs, contrôle des vidéos IA). — prêt
+- [ ] **Karim** : 3 échantillons aux créateurs qui répondent (≈ 36 €) ? — décision au plus tard le 31/10 → `livrables/outreach-specialist/2026-10-28-activer-les-affilies.md`
 - [ ] **Karim** : répondre à « Livraison gratuite dès 2 articles » dans les bureaux (l'équipe recommande de la supprimer : ≈ 9,40 € encaissés par montre). — URGENT (s'applique déjà)
 - [ ] **Bastien** : vérifier le 28/10 que la commande du 24/10 est scannée ; si elle est marquée tardive, ticket au support avec le reçu de Karim. — à faire
 - [ ] **Chloé** : nouvelle description pour la vidéo du 02/10, sans « La seule à ce prix » (affirmation invérifiable). — à faire
