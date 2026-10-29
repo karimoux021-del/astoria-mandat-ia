@@ -7,6 +7,8 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
+- [ ] **Karim** : NE PAS soumettre la fiche des écouteurs « thinkplus » (marque Lenovo) ; répondre dans les bureaux. — URGENT → `livrables/competitor-intel/2026-10-29-ecouteurs-marque-thinkplus.md`
+- [ ] **Sami** : trouver 3 écouteurs à boîtier tactile **génériques sans logo** (fabricant et CE fournis), si Karim dit oui. — en attente
 - [ ] **Karim** : publier « Fonctions » à 14,25 € le 28/10 à 12:30, puis suivre le calendrier → `livrables/viral-hook-creator/2026-10-28-plan-video-et-ia.md`. — URGENT (7 vidéos prêtes, 0 en ligne)
 - [ ] **Claude dans Chrome** : `entreprise/a-appliquer/2026-10-28-affilies-et-videos.md` (livraison dès 2 articles, message aux 57 créateurs, contrôle des vidéos IA). — prêt
 - [ ] **Karim** : 3 échantillons aux créateurs qui répondent (≈ 36 €) ? — décision au plus tard le 31/10 → `livrables/outreach-specialist/2026-10-28-activer-les-affilies.md`
