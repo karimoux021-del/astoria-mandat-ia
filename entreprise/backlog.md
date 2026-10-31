@@ -7,6 +7,7 @@ Règle : chaque ligne = une tâche, son responsable, son statut (à faire / en c
 - [x] **Chefs de pôle (department-head)** : contrôle des livrables du 20/10 + rapports → `entreprise/rapports/2026-10-20-*.md`. — fait le 20/10
 
 ## URGENT (analyse des commandes du 21/10)
+- [ ] **Karim** : collaboration ouverte à **20 %** (relevé du 31/10) → ≈ 10,12 € encaissés par vente affiliée, sous le plancher de 11 €. Repasser à 15 % ? — à décider
 - [ ] **Karim** : stock de montres = 4. Choisir le réassort (A, B ou C) → `livrables/product-scout/2026-10-30-reassort-montre-neutre.md`. — URGENT pour le Black Friday
 - [ ] **Karim** : demandes d'échantillon. Accepter nolane.tiktok.shop ; bonplandenils seulement si réassort ; répondre avant ≈ 05/11. → `livrables/outreach-specialist/2026-10-30-demandes-echantillons.md`
 - [ ] **Karim** : déposer la commande du 29/10 (19,24 €) avant le 04/11.
