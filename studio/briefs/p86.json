@@ -1,0 +1,37 @@
+{
+  "produit": "p86",
+  "nom": "Montre connectée AMOLED 1,93\"",
+  "couleur": "#ff6a00",
+  "slogan": "Ton temps. Ton style.",
+  "photos": {
+    "principale": "visuels/sources/p86/principale.jpg",
+    "profil": "visuels/sources/p86/profil.jpg",
+    "poignet": "visuels/sources/p86/poignet.jpg",
+    "colis": "visuels/sources/p86/colis.jpg"
+  },
+  "accroche_kicker": "Montre connectée AMOLED",
+  "accroche": "Réponds à tes appels <em>depuis ton poignet</em>",
+  "atouts": [
+    { "titre": "Écran AMOLED", "texte": "Des couleurs vives, un noir profond" },
+    { "titre": "Appels Bluetooth", "texte": "Décroche et parle sans sortir ton téléphone" },
+    { "titre": "Tes cadrans", "texte": "Plein de styles au choix" },
+    { "titre": "Sport & santé", "texte": "Pas, cardio, sommeil et modes sport" }
+  ],
+  "fonctions": [
+    { "icone": "notif", "titre": "Appels & messages" },
+    { "icone": "coeur", "titre": "Cardio" },
+    { "icone": "pas", "titre": "Pas" },
+    { "icone": "sommeil", "titre": "Sommeil" },
+    { "icone": "sport", "titre": "Modes sport" }
+  ],
+  "caracteristiques": [
+    { "nom": "Écran", "valeur": "AMOLED 1,93\"" },
+    { "nom": "Connexion", "valeur": "Bluetooth" },
+    { "nom": "Appels", "valeur": "Micro et haut-parleur intégrés" }
+  ],
+  "notifications": ["Appel entrant", "Nouveau message"],
+  "compat_badges": ["iOS", "Android"],
+  "contenu_colis": ["La montre connectée", "Son bracelet"],
+  "engagements": ["Expédiée sous 3 jours ouvrés", "Suivi de colis"],
+  "_a_verifier": "BROUILLON du 21/10 (Léna) — rien n'est publiable avant le test de l'échantillon (procédure de Clara). À confirmer sur le vrai produit : 1) taille et type d'écran (AMOLED 1,93\", 368×448 selon la fiche fournisseur) ; 2) appels Bluetooth réellement audibles (micro + haut-parleur) ; 3) fonctions présentes (cardio, sommeil, modes sport, jeux ?) ; 4) contenu du colis (câble de charge ?) ; 5) étanchéité (IP68 annoncée) et autonomie (7 à 12 jours annoncés) : NE PAS afficher sans mesure ; 6) photos : uniquement celles de Karim, ou celles du fournisseur avec son autorisation écrite ; 7) jamais le nom du fabricant (marque déposée) ni « GTS »."
+}

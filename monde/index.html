@@ -1,0 +1,1539 @@
+<title>Bureaux d'Astoria</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+  /* Layout: l'open space en plein écran ; HUD en pastilles ; panneau latéral (feuille du bas sur téléphone) pour discuter et suivre les missions. Look unique, assumé, pour les deux thèmes. */
+  :root {
+    --floor: #2d2a33;
+    --parchment: #f6ecd2;
+    --paper: #fffaf0;
+    --ink: #3a2a1a;
+    --ink-soft: #7a6247;
+    --gold: #f2b632;
+    --leaf: #4f8f3c;
+    --rust: #a8452a;
+    --sky: #2f6fa8;
+    --display: "Pixelify Sans", "Courier New", monospace;
+    --body: "Nunito", "Segoe UI", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body { background: var(--floor); color: var(--ink); font-family: var(--body); overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100vw; height: 100%; display: block; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
+
+  .hud { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); left: 0; right: 0;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; pointer-events: none; }
+  .group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip, .btn { pointer-events: auto; background: var(--parchment); color: var(--ink); border: 2px solid var(--ink);
+    border-radius: 6px; box-shadow: 0 3px 0 var(--ink); padding: 6px 12px; font: 700 15px/1.2 var(--body); }
+  .brand { font-family: var(--display); font-size: 20px; letter-spacing: 0.02em; }
+  .clock { font-family: var(--display); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .btn { cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 0 var(--ink); }
+  .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+  .btn:disabled { opacity: .55; cursor: default; transform: none; box-shadow: 0 3px 0 var(--ink); }
+  .btn.primary { background: var(--leaf); color: var(--paper); }
+  .btn.ghost { box-shadow: none; border-width: 1.5px; padding: 4px 10px; font-size: 13px; }
+  .count { background: var(--rust); color: var(--paper); border-radius: 999px; padding: 0 7px; font-size: 12px; line-height: 18px; font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  .help { position: fixed; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+    left: max(16px, env(safe-area-inset-left, 0px)); max-width: calc(100vw - 32px);
+    background: rgba(246, 236, 210, 0.94); border-radius: 6px; padding: 6px 10px; font-size: 13px; pointer-events: none; }
+  .toast { position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); width: min(540px, calc(100vw - 32px));
+    text-align: center; background: var(--parchment); border: 3px solid var(--ink); border-radius: 8px; box-shadow: 0 5px 0 var(--ink);
+    padding: 14px 18px; pointer-events: none; z-index: 6; }
+  .toast strong { display: block; font: 700 22px/1.2 var(--display); margin-bottom: 4px; text-wrap: balance; }
+
+  .panel { position: fixed; z-index: 5; background: var(--paper); border: 3px solid var(--ink); box-shadow: 0 6px 0 var(--ink);
+    display: flex; flex-direction: column; top: calc(env(safe-area-inset-top, 0px) + 64px);
+    right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    width: min(460px, calc(100vw - 32px)); border-radius: 10px; overflow: hidden; }
+  @media (max-width: 760px) {
+    .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 76%; border-radius: 14px 14px 0 0; border-bottom: 0; box-shadow: 0 -4px 0 var(--ink);
+      padding-bottom: env(safe-area-inset-bottom, 0px); }
+  }
+  .panel-head { display: flex; gap: 12px; align-items: center; padding: 12px 14px; background: var(--parchment); border-bottom: 2px solid var(--ink); }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--ink); flex: none; display: grid; place-items: center;
+    font: 700 18px/1 var(--display); color: var(--paper); }
+  .who { min-width: 0; flex: 1; }
+  .who h2 { margin: 0; font: 700 19px/1.15 var(--display); letter-spacing: 0.02em; }
+  .who p { margin: 2px 0 0; font-size: 13px; color: var(--ink-soft); }
+  .close { flex: none; width: 36px; height: 36px; padding: 0; font-size: 18px; line-height: 1; justify-content: center; }
+  .tabs { display: flex; border-bottom: 2px solid var(--ink); background: var(--parchment); }
+  .tabs button { flex: 1; border: 0; background: none; padding: 9px 8px; font: 800 14px/1.2 var(--body); color: var(--ink-soft); cursor: pointer; border-bottom: 3px solid transparent; }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--rust); background: var(--paper); }
+  .panel-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+  .intro { background: var(--parchment); border-radius: 8px; padding: 10px 12px; font-size: 14px; line-height: 1.45; }
+  .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .suggest button { font: 700 13px/1.25 var(--body); background: var(--paper); border: 1.5px solid var(--ink); border-radius: 999px; padding: 5px 10px; cursor: pointer; color: var(--ink); text-align: left; }
+  .suggest button:hover { background: #fff1c7; }
+  .msg { max-width: 92%; padding: 9px 12px; border-radius: 10px; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; min-width: 0; }
+  .msg.me { align-self: flex-end; background: #2d4f7c; color: var(--paper); border-bottom-right-radius: 3px; white-space: pre-wrap; }
+  .msg.them { align-self: flex-start; background: #f1e8d4; border-bottom-left-radius: 3px; }
+  .msg.them.thinking { color: var(--ink-soft); font-style: italic; }
+  .md > :first-child { margin-top: 0; } .md > :last-child { margin-bottom: 0; }
+  .md h1, .md h2, .md h3, .md h4 { font-family: var(--display); font-size: 16px; margin: 12px 0 4px; letter-spacing: .02em; }
+  .md ul, .md ol { padding-left: 20px; margin: 6px 0; }
+  .md p { margin: 6px 0; }
+  .md code { background: rgba(58,42,26,.08); padding: 1px 4px; border-radius: 3px; font-size: 13px; }
+  .md pre { background: rgba(58,42,26,.08); padding: 8px; border-radius: 6px; overflow-x: auto; }
+  .md pre code { background: none; padding: 0; }
+  .md table { border-collapse: collapse; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
+  .md th, .md td { border: 1px solid rgba(58,42,26,.25); padding: 4px 6px; text-align: left; vertical-align: top; }
+  .md a { color: var(--rust); }
+  .msg-tools { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .note { font-size: 13px; color: var(--rust); align-self: flex-start; line-height: 1.4; }
+  .composer { border-top: 2px solid var(--ink); padding: 10px; display: flex; gap: 8px; align-items: flex-end; background: var(--parchment); }
+  textarea, input[type="text"] { border: 2px solid var(--ink); border-radius: 8px; padding: 8px 10px; font: 500 15px/1.4 var(--body); background: var(--paper); color: var(--ink); }
+  .composer textarea { flex: 1; min-width: 0; resize: none; max-height: 140px; }
+  .foot { display: flex; justify-content: space-between; gap: 8px; padding: 0 12px 8px; background: var(--parchment); font-size: 12px; color: var(--ink-soft); flex-wrap: wrap; }
+  .foot button { background: none; border: 0; color: var(--ink-soft); text-decoration: underline; cursor: pointer; font: inherit; padding: 0; }
+
+  .mission-new { background: var(--parchment); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .mission-new h3 { margin: 0; font: 700 16px/1.2 var(--display); }
+  .mission-new p { margin: 0; font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
+  .mission-new textarea { resize: vertical; min-height: 84px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .mission { border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; background: var(--paper); min-width: 0; }
+  .mission header { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
+  .mission h4 { margin: 0; font-size: 15px; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+  .mission .meta { font-size: 12px; color: var(--ink-soft); }
+  .pill { flex: none; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 9px; border: 1.5px solid currentColor; white-space: nowrap; }
+  .pill.working { color: #1f6fa8; } .pill.waiting { color: #b06a00; } .pill.done { color: #3f7d33; } .pill.failed { color: var(--rust); } .pill.starting { color: var(--ink-soft); }
+  .report { background: #f7f1e3; border-radius: 6px; padding: 10px; font-size: 14px; line-height: 1.5; max-height: 420px; overflow-y: auto; overflow-wrap: anywhere; }
+  .follow { display: flex; gap: 6px; }
+  .follow input { flex: 1; min-width: 0; font-size: 14px; padding: 6px 8px; }
+  .empty { font-size: 14px; color: var(--ink-soft); text-align: center; padding: 8px; }
+  .board-agent { display: flex; gap: 8px; align-items: center; font-weight: 800; font-size: 13px; }
+  .decision { border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; background: var(--parchment); }
+  .decision h4 { margin: 0; font-size: 15px; line-height: 1.35; }
+  .decision .reco { font-size: 13px; color: var(--ink-soft); }
+  .decision .chosen { font-weight: 800; color: var(--leaf); font-size: 14px; }
+  .board-agent .avatar { width: 24px; height: 24px; font-size: 11px; }
+
+  .team { display: flex; flex-direction: column; gap: 14px; }
+  .pole h3 { margin: 0 0 6px; font: 700 15px/1.2 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
+  .pole-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+  .card { display: flex; gap: 10px; align-items: center; text-align: left; background: var(--parchment); border: 2px solid var(--ink); border-radius: 8px;
+    padding: 8px; cursor: pointer; font: inherit; color: var(--ink); min-width: 0; }
+  .card:hover { background: #fff1c7; }
+  .card span.avatar { display: grid; width: 32px; height: 32px; color: var(--paper); font: 700 14px/1 var(--display); }
+  .card b { display: block; font-size: 15px; } .card span { display: block; font-size: 12px; color: var(--ink-soft); line-height: 1.3; }
+  .card .state { color: #1f6fa8; font-weight: 800; }
+  .form { display: flex; flex-direction: column; gap: 10px; }
+  .form label { display: flex; flex-direction: column; gap: 4px; font-weight: 800; font-size: 13px; }
+  .form textarea { font-size: 14px; padding: 7px 9px; border-radius: 6px; resize: vertical; }
+  .form p { margin: 0; font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+  .saved { font-size: 13px; color: var(--leaf); font-weight: 800; }
+  .btn.ask { background: var(--gold); }
+  .ask-card { border: 3px solid var(--ink); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; background: #fff6dc; box-shadow: 0 3px 0 var(--ink); }
+  .ask-card h4 { margin: 0; font: 700 16px/1.25 var(--display); letter-spacing: .02em; }
+  .ask-card .q { font-weight: 800; font-size: 15px; line-height: 1.4; }
+  .ask-card .meta { font-size: 12px; color: var(--ink-soft); }
+  .ask-imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  .ask-imgs a { display: block; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; background: #fff; }
+  .ask-imgs img { display: block; width: 100%; height: 140px; object-fit: cover; }
+  .ask-imgs figcaption { font-size: 12px; padding: 4px 6px; color: var(--ink-soft); line-height: 1.3; }
+  .ask-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ask-opts .btn { font-size: 15px; }
+  .ask-opts .btn.yes { background: var(--leaf); color: var(--paper); }
+  .ask-opts .btn.no { background: #f2a08a; }
+  .ask-card input[type="text"] { width: 100%; box-sizing: border-box; font-size: 14px; padding: 7px 9px; }
+  .ask-done { font-weight: 800; color: var(--leaf); }
+  @media (prefers-reduced-motion: reduce) { .btn, .btn:hover, .btn:active { transform: none; } }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+
+<canvas id="world" aria-label="Les bureaux d'Astoria : promène-toi et parle à tes collègues, ou confie-leur des missions"></canvas>
+
+<div class="hud">
+  <div class="group">
+    <div class="chip brand">Astoria</div>
+    <button class="btn ask" id="btnAsk" type="button">★ Pour toi <span class="count" id="askCount" hidden>0</span></button>
+    <button class="btn" id="btnTeam" type="button">L'équipe</button>
+    <button class="btn" id="btnJournal" type="button">Journal <span class="count" id="journalCount" hidden>!</span></button>
+    <button class="btn" id="btnBoard" type="button">Missions <span class="count" id="activeCount" hidden>0</span></button>
+    <button class="btn" id="btnCompany" type="button">Mon entreprise</button>
+  </div>
+  <div class="group">
+    <div class="chip clock" id="clock">12:00</div>
+    <button class="btn" id="btnTime" type="button">☾ Nuit</button>
+  </div>
+</div>
+
+<div class="help" id="help">Flèches ou ZQSD, ou touche le sol pour marcher · Touche un collègue pour lui parler ou lui confier une mission</div>
+<div class="toast" id="toast" hidden></div>
+
+<section class="panel" id="chat" hidden aria-label="Bureau du collègue">
+  <div class="panel-head">
+    <div class="avatar" id="chatAvatar"></div>
+    <div class="who"><h2 id="chatName"></h2><p id="chatRole"></p></div>
+    <button class="btn close" id="chatClose" type="button" aria-label="Fermer">✕</button>
+  </div>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" id="tabTalk" aria-selected="true">Discuter</button>
+    <button type="button" role="tab" id="tabWork" aria-selected="false">Missions</button>
+  </div>
+  <div id="talkView" class="panel-body" style="padding:0;gap:0">
+    <div class="panel-body" id="chatBody"></div>
+    <form class="composer" id="composer">
+      <textarea id="chatInput" rows="2" placeholder="Écris ton message…" aria-label="Ton message"></textarea>
+      <button class="btn primary" id="chatSend" type="submit">Envoyer</button>
+      <button class="btn" id="chatStop" type="button" hidden>Stop</button>
+    </form>
+    <div class="foot"><span>Entrée pour envoyer · Maj+Entrée pour aller à la ligne</span><button type="button" id="chatClear">Effacer la discussion</button></div>
+  </div>
+  <div id="workView" class="panel-body" hidden>
+    <div class="mission-new">
+      <h3>Confier une mission</h3>
+      <p id="missionHint"></p>
+      <textarea id="missionInput" aria-label="Décris la mission" placeholder="Décris ce que ton collègue doit faire."></textarea>
+      <div class="row"><button class="btn primary" id="missionGo" type="button">Lancer la mission</button><button class="btn ghost" id="missionExample" type="button">Reprendre l'exemple</button><span class="note" id="missionNote" aria-live="polite"></span></div>
+    </div>
+    <div id="missionList" class="team"></div>
+  </div>
+</section>
+
+<section class="panel" id="journalPanel" hidden aria-label="Journal de l'équipe">
+  <div class="panel-head">
+    <div class="who"><h2>Journal de l'équipe</h2><p>Chaque matin, l'équipe se réunit et travaille sans toi. Toi, tu décides.</p></div>
+    <button class="btn close" data-close="journalPanel" type="button" aria-label="Fermer le journal">✕</button>
+  </div>
+  <div class="panel-body" id="journalBody"></div>
+</section>
+
+<section class="panel" id="boardPanel" hidden aria-label="Tableau des missions">
+  <div class="panel-head">
+    <div class="who"><h2>Tableau des missions</h2><p>Ce que ton équipe fait en ce moment, et ce qu'elle a livré.</p></div>
+    <button class="btn close" data-close="boardPanel" type="button" aria-label="Fermer le tableau">✕</button>
+  </div>
+  <div class="panel-body" id="boardList"></div>
+</section>
+
+<section class="panel" id="askPanel" hidden aria-label="Ce que l'équipe attend de toi">
+  <div class="panel-head">
+    <div class="who"><h2>★ L'équipe a besoin de toi</h2><p>Regarde les images, réponds Oui ou Non : la personne concernée reçoit ta réponse tout de suite.</p></div>
+    <button class="btn close" data-close="askPanel" type="button" aria-label="Fermer">✕</button>
+  </div>
+  <div class="panel-body" id="askList"></div>
+</section>
+
+<section class="panel" id="teamPanel" hidden aria-label="Annuaire de l'équipe">
+  <div class="panel-head">
+    <div class="who"><h2>L'équipe</h2><p>27 personnes : un directeur, 5 chefs de pôle et 21 collègues. Choisis quelqu'un pour aller à son bureau.</p></div>
+    <button class="btn close" data-close="teamPanel" type="button" aria-label="Fermer l'annuaire">✕</button>
+  </div>
+  <div class="panel-body"><div class="team" id="teamList"></div></div>
+</section>
+
+<section class="panel" id="companyPanel" hidden aria-label="Mon entreprise">
+  <div class="panel-head">
+    <div class="who"><h2>Mon entreprise</h2><p>Toute l'équipe lit cette fiche avant de travailler.</p></div>
+    <button class="btn close" data-close="companyPanel" type="button" aria-label="Fermer la fiche entreprise">✕</button>
+  </div>
+  <div class="panel-body"><form class="form" id="companyForm"></form></div>
+</section>
+
+<script>
+(() => {
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cv = document.getElementById("world"), ctx = cv.getContext("2d");
+  const lc = document.createElement("canvas"), lctx = lc.getContext("2d");
+  const $ = id => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (_) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} },
+  };
+  const REPO = "https://github.com/karimoux021-del/astoria-mandat-ia";
+  const REPO_BRANCH = "claude/new-session-mx7nnp";
+  const CCR = "Claude Code Remote";
+  // Session permanente de l'équipe : la routine trig_0154vvvuRmv48bvmi3HWZmpG la réveille chaque matin à 6 h 52 (heure de Paris)
+  const TEAM_SESSION = "session_01J48TY3cWK7nTPRcvBctXfp";
+  const DAY_PROMPT = "NOUVELLE JOURNÉE DE TRAVAIL — Tu es la session permanente de l'entreprise Astoria Mods (boutique TikTok Shop du fondateur Karim). Tu fais tourner, en totale autonomie, une journée de travail de toute l'entreprise, avec sa hiérarchie. Karim n'est PAS là : ne lui pose aucune question et n'utilise aucun outil de question. Il passe une fois par jour ou tous les deux jours, lit le rapport de direction et décide. Objectif permanent : une entreprise rentable et en croissance, où tout le monde communique et où le travail est fiable.\n\n## 0. Préparer le dépôt\nLe dépôt karimoux021-del/astoria-mandat-ia est attaché à ta session. Place-toi dans son clone et mets-toi à jour sur la branche de l'entreprise :\n`git fetch origin claude/new-session-mx7nnp && git checkout claude/new-session-mx7nnp 2>/dev/null || git checkout -B claude/new-session-mx7nnp origin/claude/new-session-mx7nnp; git pull --rebase origin claude/new-session-mx7nnp`\nPousse uniquement sur cette branche. N'ouvre jamais de pull request.\n\n## 1. Lire la mémoire de l'entreprise (dans cet ordre)\n1. `FOUNDER_CONTEXT.md` : contexte, chiffres, règles TikTok Shop NON NÉGOCIABLES (section 5), façon de travailler (section 8).\n2. `entreprise/organisation.md` : la hiérarchie et le circuit du travail.\n3. `entreprise/decisions.md` : décisions de Karim. Elles s'imposent à tous.\n4. `entreprise/backlog.md` : tâches, responsables, statuts, idées.\n5. Le dernier journal de `entreprise/journal/`, les derniers rapports de `entreprise/rapports/` et les livrables récents de `livrables/`.\n\n## 2. L'entreprise (27 personnes) et leurs méthodes\nChaque personne a sa méthode dans `.claude/skills/<skill>/SKILL.md` : utilise-la quand elle travaille.\n- **Directeur général : Alexandre** (general-manager)\n- **Stratégie** — cheffe : Margaux (department-head) — Camille (strategic-planning), Hugo (go-to-market-plan), Léa (pricing-strategist), Victor (competitor-intel)\n- **Marketing** — chef : Antoine (department-head) — Zoé (marketing-ideas), Jules (brand-copywriter), Nora (cro-optimization), Emma (product-hunt-launch-plan), Léna (product-visuals) et Théo (listing-designer, studio : `node studio/render.cjs`)\n- **Contenu & réseaux** — cheffe : Chloé (department-head) — Sacha (linkedin-writer), Tom (x-writer), Inès (viral-hook-creator), Lou (lead-magnet-generator)\n- **Ventes & opérations** — chef : Bastien (department-head) — Malik (outreach-specialist), Yanis (prd-generator), Clara (sop-creator)\n- **Projets & Nouveautés** — cheffe : Sofia (department-head) — Sami (product-scout), Maëlle (margin-analyst), Noé (trend-scout), Jade (launch-manager)\n\n## 3. Déroulé de la journée (respecte la hiérarchie)\na) **Ouverture par Alexandre** : 1 à 3 objectifs chiffrés du jour (chiffre d'affaires, marge, stock, nouveau produit), tirés des décisions de Karim et du backlog.\nb) **Répartition par les chefs de pôle** : chaque chef concerné donne une tâche claire à ses collègues.\nc) **Réunion d'équipe** : les collègues de tous les pôles se parlent, se challengent et se passent le relais (ex. Sami trouve → Maëlle chiffre → Noé vérifie la demande → Jade planifie → Léna et Théo font les visuels → Inès et Jules écrivent les vidéos). Ils peuvent proposer leurs PROPRES idées pour gagner plus d'argent ; toute idée nouvelle va dans « Idées de l'équipe » du backlog, chiffrée.\nd) **Travail réel** : 2 à 4 tâches parmi les plus rentables du backlog, faites vraiment, avec recherche web (WebSearch, WebFetch) : liens réels, prix réels, sources datées, aucun chiffre inventé (sinon « Non trouvé »). Fais un vrai travail de fond. Tu peux lancer des sous-agents en parallèle. Chaque livrable va dans `livrables/<skill-de-l-auteur>/<AAAA-MM-JJ>-<sujet>.md`. Toute proposition est chiffrée en marge nette par vente. Respecte toujours les règles TikTok Shop.\ne) **Contrôle par les chefs de pôle** : chaque livrable est relu par le chef de son pôle avec la grille de `department-head` → « Validé » ou « À corriger ». Les corrections sont faites tout de suite, puis relues. Le verdict est noté en tête du livrable.\nf) **Rapports des chefs** : un fichier par pôle qui a travaillé : `entreprise/rapports/<AAAA-MM-JJ>-<pole>.md`.\ng) **Comité des chefs + rapport de direction** : Alexandre vérifie les rapports, arbitre, demande les dernières corrections, puis rédige le rapport de direction. Il propose au maximum 3 décisions à Karim, avec options chiffrées et recommandation. Personne n'engage d'argent (stock, pub payante) sans décision de Karim.\nh) **Backlog** : mets à jour statuts, liens des livrables, nouvelles tâches.\n\n## 4. Compte rendu\nÉcris `entreprise/journal/<AAAA-MM-JJ>.md` (date de Paris), puis `git add -A && git commit -m \"Journée de travail <date>\" && git pull --rebase origin claude/new-session-mx7nnp && git push origin claude/new-session-mx7nnp` (réessaie le push jusqu'à 4 fois en cas d'erreur réseau). Si l'outil PushNotification existe, envoie à Karim une notification d'une ligne.\n\nTon DERNIER message doit être ce compte rendu, en français, court et lisible sur téléphone, avec exactement ces sections :\n## Rapport du directeur\n(Alexandre : état de l'entreprise en 3 lignes — ventes, stock, marge, nouveau produit — et objectifs du jour atteints ou non)\n## Réunion du jour\n(le dialogue entre collègues et chefs, 6 à 12 répliques au format « **Prénom** : … »)\n## Travail fait et contrôlé\n(une puce par livrable : qui, quoi, résultat clé chiffré, verdict du chef, chemin du fichier)\n## Rapports des pôles\n(une ligne par chef de pôle : ce qui est validé, bloqué, besoin)\n## Décisions pour Karim\n(numérotées, avec options chiffrées et recommandation d'Alexandre)\n## Demain\n(2 à 3 tâches prévues)\n\nPuis, tout à la fin, un bloc de code json (et rien après) qui sert à animer les bureaux :\n```json\n{\"date\": \"AAAA-MM-JJ\", \"actifs\": [\"skill-ou-id\", \"...\"], \"decisions\": [{\"id\": \"d1\", \"question\": \"…\", \"options\": [\"…\", \"…\"], \"recommandation\": \"…\"}]}\n```\nDans \"actifs\", mets les skills de ceux qui ont travaillé ; pour les chefs, mets \"head-strategie\", \"head-marketing\", \"head-contenu\", \"head-ventes\", \"head-projets\" ; pour le directeur, \"general-manager\".\n\n## 5. Messages de Karim dans cette session\nKarim peut t'écrire entre deux journées (« DÉCISION DE KARIM : … » ou « MESSAGE DE KARIM À L'ÉQUIPE : … »). Dans ce cas : mets-toi à jour sur la branche, ajoute la décision ou la consigne en haut de `entreprise/decisions.md` avec la date, mets le backlog à jour, commit, pull --rebase, push, et réponds en 2 lignes (au nom d'Alexandre) ce que l'entreprise va faire. Ne mets PAS de bloc json dans ces réponses courtes.\n\n## 6. Montrer ton avancement en direct dans les bureaux (important)\nLes bureaux d'Astoria (page https://claude.ai/artifact/RNJC2sv2aRo1wpUWfap1VP) affichent en direct le travail de l'entreprise grâce au document `equipe/etat` de la base de données de la page. Charge l'outil avec ToolSearch (`select:ArtifactData`). Lis d'abord le document (action `get`, url ci-dessus, collection `equipe`, doc_id `etat`) pour connaître sa `version`, puis écris-le avec `update` et `if_version` (ou `set` s'il n'existe pas) :\n- **au début de la journée** : `{\"status\": \"working\", \"tache\": \"<objectif du jour, 1 phrase>\", \"activites\": {\"<id>\": \"<ce qu'il fait, 30 caractères max>\", ...}, \"updatedAt\": \"<date ISO>\"}` (4 à 10 personnes, ids = skills ou head-… ou general-manager) ;\n- **à chaque nouvelle étape** (répartition, travail, contrôle, comité) : mets à jour `tache` et `activites` (ces phrases s'affichent dans les bulles de dialogue) ;\n- **à la fin**, juste avant ton dernier message : `{\"status\": \"done\", \"report\": \"<ton compte rendu complet, bloc json final compris>\", \"reportKey\": \"<AAAA-MM-JJ>-<HHMM>\", \"updatedAt\": \"<date ISO>\"}`.\nSi l'outil n'est pas disponible ou refuse l'écriture, continue ta journée normalement.\n";
+  // Contexte complet fourni par le fondateur (copie de FOUNDER_CONTEXT.md du dépôt)
+  const BASE_CONTEXT = "# CONTEXTE ENTREPRISE — ASTORIA MODS\n\nTu es un agent IA qui travaille pour Astoria Mods. Lis ce contexte en entier avant chaque tâche. Il décrit l'entreprise, le produit, les chiffres, ce qui a déjà été fait et les règles à respecter.\n\n---\n\n## 0. Situation actuelle (octobre 2026) — À LIRE EN PREMIER\n\n- La montre connectée à 15 € est un **ancien business** : elle a déjà été rentabilisée. Il reste **environ 15 montres en stock** à **écouler** (déstockage).\n  - Comme ce stock est déjà payé et rentabilisé, le prix d'achat ne compte plus pour le déstockage : toute vente qui rapporte encore de l'argent après les frais TikTok Shop est bonne à prendre.\n  - La montre se vend vite et facilement : c'est un bon produit d'entrée de gamme.\n- **Nouvelle direction** : lancer un **nouveau produit avec une marge nette plus grosse**. Piste n° 1 : un **meilleur modèle de montre connectée** (ex. écran AMOLED), en gardant la montre actuelle comme entrée de gamme. D'autres produits restent possibles.\n- **Projet suivant** : relier TikTok Shop (centre vendeur, commandes, statistiques, vidéos) aux bureaux d'Astoria pour que toute l'équipe suive le compte.\n\n## 1. L'entreprise\n\n- **Nom** : Astoria Mods\n- **Logo** : monogramme « AM » avec deux horloges\n- **Activité** : vente de montres connectées petit prix, 100 % via **TikTok Shop** (France)\n- **Fondateur** : Karim, basé en Normandie (Caen). Il a un SIRET. Il gère Astoria Mods **en parallèle d'un emploi salarié** : son temps est limité, donc tout ce que tu proposes doit être simple, rapide à exécuter et rentable.\n- **Stade** : démarrage. Premières ventes début octobre 2026 (environ 1 vente par jour les premiers jours).\n\n## 2. Le produit\n\n- **Montre connectée 49 mm**, style « ultra » (boîtier carré sport), bracelet **orange ou noir**\n- Écran HD ~1,99\" (320 × 380 px) — *certaines vidéos indiquent 2,09\", à vérifier avant de publier un chiffre*\n- Fonctions : nombreux cadrans au choix (dont photo perso), notifications appels/messages, modes sport, pas, cardio, sommeil, jeux (ex. Snake), compatible iOS & Android en Bluetooth\n- Référence fournisseur proche : type « T900 Ultra »\n- **Prix de vente : 15 €** (les anciennes vidéos affichent 14,99 € : le prix annoncé dans une vidéo doit toujours correspondre au prix de la boutique)\n- **Livraison facturée au client : 4,99 €**, étiquette **fournie par TikTok Shop**\n\n## 3. Positionnement\n\n- **Cible** : petits budgets, jeunes, gens qui veulent le look d'une montre « ultra » sans payer 800 €\n- **Promesse** : « le style d'une grosse montre connectée pour le prix d'un menu »\n- **Slogan utilisé** : « Ton temps. Ton style. »\n- **Ton** : direct, tutoiement, énergique, emojis avec modération, jamais de jargon technique\n\n## 4. Économie (à garder en tête pour toute décision)\n\n**Frais TikTok Shop par commande (relevé réel, produit à 15 €) : 1,85 €**\n- Commission TikTok Shop : 1,33 € (~9 % du prix produit)\n- Frais de service REP (éco-contributions) : 0,50 €, soit emballage/papier 0,09 € + piles/batteries 0,27 € + DEEE 0,14 €\n- Frais de promotion Smart : 0,02 €\n\n**Modèle actuel (depuis octobre 2026)** : le client paie 4,99 € de livraison et TikTok Shop fournit l'étiquette.\n- Encaissé estimé par vente : 15 € − 1,85 € ≈ **13,15 €**, avant prix d'achat de la montre\n- *À confirmer sur le détail de règlement d'une commande récente* (vérifier qu'aucun frais d'étiquette n'est retenu en plus)\n\n**Ancien modèle (abandonné)** : livraison 3,99 € payée par le client, étiquette achetée par Karim (Mondial Relay ~4,99 €).\n- Règlement TikTok : 18,99 € − 1,85 € = 17,14 €, moins l'étiquette ≈ 12,15 € net\n- Le nouveau modèle rapporte donc environ **1 € de plus par vente** et supprime la gestion des étiquettes\n- Prix d'achat unitaire : **≈ 7,09 €** sur AliExpress (prix relevé le 20/10/2026 sur le lien du fournisseur ; peut inclure une remise « nouveau client » et hors frais de port éventuels : **à confirmer** sur la prochaine commande)\n- Fournisseur : AliExpress, https://fr.aliexpress.com/item/1005012967340775.html — délai de réapprovisionnement : **[À COMPLÉTER]**\n- **Marge nette estimée par vente : 13,15 € − 7,09 € ≈ 6,06 €** (avant frais de port fournisseur et coûts de pub)\n- Stock actuel : **≈ 15 montres**, à écouler (déjà rentabilisées)\n\nToute proposition (promo, concours, pub) doit être chiffrée en **marge nette par vente** après commission et livraison.\n\n## 5. Règles TikTok Shop — NON NÉGOCIABLES\n\n1. **Ne jamais utiliser « Watch Ultra », « Apple » ou tout nom de marque déposée** dans les titres, descriptions ou vidéos. Risque de signalement propriété intellectuelle. Titre recommandé : « Montre connectée 49 mm écran 1,99\" ».\n2. **Pas d'affirmations invérifiables** type « la seule à 14,99 € ». Préférer « Prix mini : 14,99 € » ou « 14,99 € seulement ».\n3. **Expédition sous 3 jours ouvrés avec numéro de suivi**, uniquement via transporteurs agréés (Colissimo, Chronopost, Mondial Relay, Colis Privé, DPD, GLS…). La liste de colisage n'est pas une étiquette.\n4. **Jamais de vidéos ou images d'autres créateurs** sans autorisation écrite. Uniquement du contenu filmé par Astoria Mods ou créé de zéro.\n5. **Concours** : toujours ajouter « sans obligation d'achat », « non affilié à TikTok », la date du tirage, et filmer le tirage (outil de tirage au sort de commentaires).\n\n## 6. Ce qui a déjà été fait\n\n- **Vidéo unboxing / démo** (28 s, 9:16) : boîte → montre en main → cadrans → menu → modes sport → Snake → capteur cardio → fin « Lien dans le panier », badge prix 14,99 € affiché en continu\n- **Pub animée** avec le logo : intro logo, slogan, écran animé (heure, pas, cardio, appel entrant), atouts, fin « Dispo sur TikTok Shop » ; musique électro 128 BPM ; exportée en MP4 1080×1920\n- **Version avec accroche prix** « Seulement 14,99 € » sur les 4 premières secondes + sticker prix à la fin\n- **Concours** : 3 gagnants, chaque gagnant fait gagner l'ami identifié = 6 montres. Conditions : s'abonner, liker, identifier un ami\n- Le vendeur a passé le **quiz de période probatoire** TikTok Shop\n\n## 7. Ce qui marche en contenu\n\n- **Accroche prix dans les 2 premières secondes** (le prix est l'argument n°1)\n- Vidéos courtes (15–30 s), rythmées, uniquement les plans nets et utiles\n- **Pas de musique intégrée** quand c'est possible : ajouter un **son tendance directement dans TikTok** pour la portée\n- **Descriptions courtes** : 1–2 lignes + 5 hashtags ciblés max. Exemple :\n  > Montre connectée à 14,99€ 😱 Parfait pour les petits budgets ⌚🛒\n  > #montreconnectee #smartwatch #tiktokshop #bonplan #petitbudget\n- **Toujours épingler le produit TikTok Shop** sur la vidéo\n- Concours et commentaires = engagement ; le tirage filmé devient un contenu en plus\n\n## 8. Comment tu dois travailler\n\n- Réponds **en français**, de façon **directe et concise**. Pas de longues explications, pas de solutions sur-compliquées.\n- Donne des **livrables prêts à l'emploi** (texte à copier, script de vidéo, calcul) plutôt que des conseils généraux.\n- Si une info manque (prix d'achat, stock…), **demande-la en une ligne** au lieu d'inventer.\n- Si une idée viole une règle de la section 5, **dis-le clairement** et propose une alternative conforme.\n- Priorité absolue : **vendre plus, avec une marge positive, sans se faire bloquer par TikTok Shop.**\n";
+
+  // ---------- L'équipe ----------
+  const POLES = ["Stratégie", "Marketing", "Contenu & réseaux", "Ventes & opérations", "Projets & Nouveautés", "Direction"];
+  const TEAM = [
+    { id: "general-manager", name: "Alexandre", role: "Directeur général", pole: 5, ceo: true, coat: "#1d2433", hair: "#3a2414",
+      pitch: "Je dirige l'entreprise : je fixe les objectifs chiffrés, je pilote les 5 chefs de pôle, je vérifie leurs rapports et je te propose les décisions.", ask: ["Où en est l'entreprise ?", "Quelles sont tes priorités cette semaine ?"],
+      job: "Fais le point complet de l'entreprise (ventes, stock, marge, nouveau produit), fixe les 3 objectifs chiffrés de la semaine et répartis-les entre les chefs de pôle." },
+    { id: "head-strategie", skill: "department-head", name: "Margaux", role: "Cheffe du pôle Stratégie", pole: 0, head: true, coat: "#22406a", hair: "#7a2e1a",
+      pitch: "Je dirige le pôle Stratégie : je répartis le travail de Camille, Hugo, Léa et Victor, je contrôle chaque livrable et je fais le rapport au directeur.", ask: ["Qu'a validé ton pôle aujourd'hui ?", "Qu'est-ce qui bloque ?"],
+      job: "Relis et contrôle tous les livrables récents du pôle Stratégie avec ta grille, fais corriger ce qui doit l'être et écris le rapport du pôle." },
+    { id: "head-marketing", skill: "department-head", name: "Antoine", role: "Chef du pôle Marketing", pole: 1, head: true, coat: "#8c2f1e", hair: "#2a1d14",
+      pitch: "Je dirige le Marketing et le Studio visuels : je répartis le travail, je contrôle chaque livrable et je fais le rapport au directeur.", ask: ["Qu'a validé ton pôle aujourd'hui ?", "Les visuels sont prêts ?"],
+      job: "Relis et contrôle tous les livrables récents du pôle Marketing (idées, textes, visuels), fais corriger ce qui doit l'être et écris le rapport du pôle." },
+    { id: "head-contenu", skill: "department-head", name: "Chloé", role: "Cheffe du pôle Contenu & réseaux", pole: 2, head: true, coat: "#2f6b44", hair: "#c9a25a",
+      pitch: "Je dirige le pôle Contenu : je contrôle chaque script, accroche et post avant publication, et je fais le rapport au directeur.", ask: ["Quelles vidéos publier cette semaine ?", "Qu'a validé ton pôle ?"],
+      job: "Relis et contrôle tous les scripts, accroches et posts récents du pôle Contenu (règles TikTok Shop, prix exact), fais corriger et écris le rapport du pôle." },
+    { id: "head-ventes", skill: "department-head", name: "Bastien", role: "Chef du pôle Ventes & opérations", pole: 3, head: true, coat: "#5a3d22", hair: "#1c1c1c",
+      pitch: "Je dirige les Ventes et les opérations : prospection, procédures, expéditions. Je contrôle et je fais le rapport au directeur.", ask: ["Où en sont les expéditions ?", "Qu'a validé ton pôle ?"],
+      job: "Relis et contrôle les livrables récents du pôle Ventes & opérations, vérifie que les procédures d'expédition respectent les 3 jours ouvrés, et écris le rapport du pôle." },
+    { id: "head-projets", skill: "department-head", name: "Sofia", role: "Cheffe du pôle Projets & Nouveautés", pole: 4, head: true, coat: "#6b5a12", hair: "#2a1d14",
+      pitch: "Je dirige les Projets : nouveau produit, marges, tendances, lancement. Je contrôle chaque analyse et je fais le rapport au directeur.", ask: ["Où en est la P86 ?", "Qu'a validé ton pôle ?"],
+      job: "Relis et contrôle les analyses récentes du pôle Projets (fournisseurs, marges, tendances, plan de lancement), vérifie la cohérence des chiffres et écris le rapport du pôle." },
+    { id: "strategic-planning", name: "Camille", role: "Stratégie & priorités", pole: 0, coat: "#2f5d8c", hair: "#2a1d14",
+      pitch: "Je t'aide à choisir les 3 prochains coups qui feront vraiment avancer ton entreprise.", ask: ["Quelles sont mes 3 priorités ce mois-ci ?", "Qu'est-ce qui freine ma croissance ?"],
+      job: "Analyse le marché d'Astoria Mods sur internet et propose-moi mes 3 priorités pour le trimestre." },
+    { id: "go-to-market-plan", name: "Hugo", role: "Lancement & acquisition", pole: 0, coat: "#b5452f", hair: "#5a3a22",
+      pitch: "Je construis ton plan de lancement : le bon segment, les canaux, les messages, les jalons.", ask: ["Comment trouver mes 10 premiers clients ?", "Fais-moi un plan de lancement sur 90 jours"],
+      job: "Repère sur internet où se trouvent mes clients idéaux en France et construis mon plan de lancement sur 90 jours." },
+    { id: "pricing-strategist", name: "Léa", role: "Prix & offres", pole: 0, coat: "#6b8e3a", hair: "#c9a25a",
+      pitch: "Je fixe tes prix et tes formules, adaptés au marché français (TVA, TTC, rétractation).", ask: ["Quel prix pour mon offre ?", "Propose-moi 3 formules"],
+      job: "Relève les prix réels de mes concurrents en ligne et propose-moi une grille de 3 formules." },
+    { id: "competitor-intel", name: "Victor", role: "Veille concurrentielle", pole: 0, coat: "#4a4a5e", hair: "#1c1c1c",
+      pitch: "J'analyse tes concurrents : leurs forces, leurs faiblesses et leurs prochains mouvements, chiffres sourcés.", ask: ["Analyse mon principal concurrent", "Comment me différencier ?"],
+      job: "Trouve mes 5 principaux concurrents en France, avec leurs prix, leurs avis clients et leurs points faibles, sources à l'appui." },
+    { id: "marketing-ideas", name: "Zoé", role: "Idées marketing", pole: 1, coat: "#d07a2c", hair: "#7a2e1a",
+      pitch: "Je pioche dans plus de 170 stratégies éprouvées celles qui collent à ton activité.", ask: ["5 idées marketing qui coûtent peu", "Une idée originale pour me faire connaître"],
+      job: "Regarde ce que font les entreprises de mon secteur qui marchent et sors-moi 10 idées marketing applicables cette semaine." },
+    { id: "brand-copywriter", name: "Jules", role: "Copywriting", pole: 1, coat: "#8a4f8c", hair: "#3a2414",
+      pitch: "J'écris tes textes : publicités, pages de vente, e-mails, fiches produit.", ask: ["Écris le texte de ma page d'accueil", "Une pub Facebook pour mon offre"],
+      job: "Lis la page index.html du dépôt et réécris tous ses textes pour qu'ils donnent envie de me contacter." },
+    { id: "cro-optimization", name: "Nora", role: "Conversion des pages", pole: 1, coat: "#2f7d8c", hair: "#2a1d14",
+      pitch: "J'audite ta landing page et je te dis quoi changer pour qu'elle convertisse mieux.", ask: ["Les 5 erreurs qui tuent une landing page", "Je te colle le HTML de ma page"],
+      job: "Audite la page index.html du dépôt et propose une version améliorée prête à publier." },
+    { id: "product-hunt-launch-plan", name: "Emma", role: "Lancement Product Hunt", pole: 1, coat: "#c2410c", hair: "#d9b26a",
+      pitch: "Je prépare ton lancement sur Product Hunt, de la préparation au jour J.", ask: ["Prépare mon lancement Product Hunt", "Product Hunt, c'est fait pour moi ?"],
+      job: "Étudie les derniers lancements réussis de ma catégorie sur Product Hunt et prépare mon plan de lancement." },
+    { id: "linkedin-writer", name: "Sacha", role: "Posts LinkedIn", pole: 2, coat: "#1f6fa8", hair: "#5a3a22",
+      pitch: "J'écris des posts LinkedIn qui se lisent jusqu'au bout, avec ta voix.", ask: ["Un post pour présenter mon entreprise", "3 idées de posts pour cette semaine"],
+      job: "Regarde les sujets qui marchent en ce moment sur LinkedIn dans mon secteur et écris-moi 5 posts prêts à publier." },
+    { id: "x-writer", name: "Tom", role: "Posts X (Twitter)", pole: 2, coat: "#2b2b2b", hair: "#c9a25a",
+      pitch: "J'écris tes posts et tes threads pour X, courts et percutants.", ask: ["Un thread sur mon parcours de fondateur", "5 tweets sur mon produit"],
+      job: "Écris-moi 10 posts X et 1 thread pour la semaine, sur les tendances actuelles de mon secteur." },
+    { id: "viral-hook-creator", name: "Inès", role: "Accroches", pole: 2, coat: "#b03a64", hair: "#2a1d14",
+      pitch: "Je trouve les premières lignes qui arrêtent le scroll.", ask: ["10 accroches pour une vidéo TikTok", "Améliore cette accroche"],
+      job: "Trouve 20 accroches pour mes vidéos et posts, inspirées de ce qui marche en ce moment dans mon secteur." },
+    { id: "lead-magnet-generator", name: "Lou", role: "Lead magnets", pole: 2, coat: "#3f8a5a", hair: "#7a2e1a",
+      pitch: "J'écris les posts qui offrent une ressource gratuite contre un commentaire ou un message.", ask: ["Un post pour offrir mon guide gratuit", "Quelle ressource gratuite proposer ?"],
+      job: "Imagine la meilleure ressource gratuite pour attirer mes clients, rédige-la, puis écris le post qui l'offre." },
+    { id: "outreach-specialist", name: "Malik", role: "Prospection", pole: 3, coat: "#7a5230", hair: "#1c1c1c",
+      pitch: "J'écris tes messages de prospection et tes relances : e-mail et LinkedIn.", ask: ["Une séquence de 3 e-mails de prospection", "Un message LinkedIn pour décrocher un appel"],
+      job: "Dresse une liste de 20 types d'entreprises ou de profils à démarcher, avec où les trouver, et écris la séquence de messages." },
+    { id: "prd-generator", name: "Yanis", role: "Cahier des charges produit", pole: 3, coat: "#4b5d2a", hair: "#3a2414",
+      pitch: "Je transforme ton idée de produit en cahier des charges clair, prêt pour un développeur ou une IA.", ask: ["J'ai une idée d'application", "Rédige le cahier des charges de mon site"],
+      job: "Rédige le cahier des charges complet du site d'Astoria Mods, en t'inspirant des meilleurs sites du secteur." },
+    { id: "sop-creator", name: "Clara", role: "Procédures (SOP)", pole: 3, coat: "#5d4a8c", hair: "#c9a25a",
+      pitch: "Je documente tes processus pas à pas, pour que tout le monde fasse pareil.", ask: ["Une procédure d'accueil d'un nouveau client", "Documente ma façon de répondre aux devis"],
+      job: "Rédige la procédure complète de traitement d'une demande client, du premier contact à la facture." },
+    { id: "product-visuals", name: "Léna", role: "Directrice artistique (Studio)", pole: 1, coat: "#e0507a", hair: "#2a1d14",
+      pitch: "Je pilote les visuels de tes fiches TikTok Shop : je regarde ce que font les meilleurs concurrents, je choisis les 7 images et j'écris leurs textes en français.", ask: ["Que valent mes photos actuelles ?", "Les 7 images d'une fiche qui vend"],
+      job: "Analyse les visuels des 5 meilleures fiches de montres connectées concurrentes, puis améliore le brief studio/briefs/t900.json pour avoir les 7 images les plus professionnelles possible." },
+    { id: "listing-designer", name: "Théo", role: "Graphiste fiches produit (Studio)", pole: 1, coat: "#2a8c7a", hair: "#c9a25a",
+      pitch: "Je fabrique les images de ta fiche avec le studio : détourage, mise en page, textes en français, prêtes à téléverser.", ask: ["Quelles photos dois-je te donner ?", "Fabrique les visuels de la T900"],
+      job: "Fabrique les visuels de la T900 avec node studio/render.cjs studio/briefs/t900.json à partir des photos de visuels/sources/t900/, contrôle la qualité et range-les dans visuels/t900/." },
+    { id: "product-scout", name: "Sami", role: "Chasseur de produits", pole: 4, coat: "#c78a1e", hair: "#2a1d14",
+      pitch: "Je déniche les produits et les modèles à lancer : fournisseurs, prix d'achat réels, demande sur TikTok Shop.", ask: ["Quel meilleur modèle de montre lancer ?", "Un autre produit que la montre ?"],
+      job: "Trouve 5 montres connectées plus haut de gamme que mon modèle actuel (écran AMOLED, appels Bluetooth…) chez des fournisseurs AliExpress ou Alibaba, avec prix d'achat livré en France, et compare-les à ce qui se vend sur TikTok Shop France." },
+    { id: "margin-analyst", name: "Maëlle", role: "Analyste rentabilité", pole: 4, coat: "#1f7a6a", hair: "#7a2e1a",
+      pitch: "Je calcule ce que tu gagnes vraiment : marge nette par vente, prix de déstockage, combien investir dans le stock.", ask: ["À quel prix déstocker mes 15 montres ?", "Combien je gagne avec une montre à 30 € ?"],
+      job: "Calcule la marge nette par vente d'une montre AMOLED achetée 15 à 20 € et vendue 24,99 €, 29,99 € ou 34,99 € sur TikTok Shop, compare avec ma montre actuelle, et donne le prix plancher pour écouler mes 15 montres restantes." },
+    { id: "trend-scout", name: "Noé", role: "Tendances TikTok Shop", pole: 4, coat: "#d4456a", hair: "#c9a25a",
+      pitch: "Je surveille ce qui monte sur TikTok Shop France : produits, formats de vidéo, sons, créateurs.", ask: ["Qu'est-ce qui se vend en ce moment ?", "Quel format de vidéo marche cette semaine ?"],
+      job: "Repère ce qui se vend le plus en ce moment sur TikTok Shop France dans les montres connectées et accessoires tech petit prix, avec preuves, et dis-moi quel produit et quelles vidéos en tirer cette semaine." },
+    { id: "launch-manager", name: "Jade", role: "Cheffe de projet nouveautés", pole: 4, coat: "#3b4a8c", hair: "#1c1c1c",
+      pitch: "Je transforme une idée de produit en plan de lancement simple, semaine par semaine, et j'écoule l'ancien stock en parallèle.", ask: ["Plan de lancement d'une nouvelle montre", "Comment écouler mes 15 montres ?"],
+      job: "Prépare le plan sur 4 semaines pour lancer une montre connectée plus haut de gamme sur TikTok Shop tout en écoulant mes 15 montres actuelles, en t'appuyant sur les livrables déjà rangés dans livrables/." },
+  ];
+  const BIZ = {"strategic-planning": {"ask": ["Mes 3 priorités pour vendre plus ?", "Qu'est-ce qui freine mes ventes ?"], "job": "Analyse mes chiffres et le marché des montres connectées petit prix sur TikTok Shop, puis donne-moi mes 3 priorités pour passer de 1 à 5 ventes par jour."}, "go-to-market-plan": {"ask": ["Comment passer à 5 ventes par jour ?", "Mon plan sur 30 jours"], "job": "Construis mon plan sur 30 jours pour passer de 1 à 5 ventes par jour sur TikTok Shop, avec un budget quasi nul et peu de temps."}, "pricing-strategist": {"ask": ["Calcule ma marge nette par vente", "Un pack 2 montres, ça vaut le coup ?"], "job": "Relève les prix des montres connectées 49 mm sur TikTok Shop, Amazon et AliExpress en France et dis-moi si 15 € + 4,99 € de livraison est le bon prix, marge nette par vente à l'appui."}, "competitor-intel": {"ask": ["Qui vend la même montre que moi ?", "Comment me démarquer sur TikTok Shop ?"], "job": "Trouve les 5 vendeurs de montres connectées petit prix les plus visibles sur TikTok Shop France : prix, contenus, avis clients, points faibles, sources à l'appui."}, "marketing-ideas": {"ask": ["5 idées pour vendre plus cette semaine", "Une idée de concours conforme"], "job": "Sors-moi 10 idées marketing pour vendre ma montre à 15 € sur TikTok Shop cette semaine, chacune chiffrée en marge nette par vente."}, "brand-copywriter": {"ask": ["Réécris ma description TikTok Shop", "Un script de vidéo de 20 s"], "job": "Réécris le titre et la description de ma fiche produit TikTok Shop pour qu'ils vendent plus, sans aucune marque déposée, puis écris 3 scripts de vidéos de 20 s."}, "cro-optimization": {"ask": ["Audite ma fiche produit TikTok Shop", "Les 5 erreurs qui tuent une fiche produit"], "job": "Étudie les fiches TikTok Shop de montres connectées qui vendent le plus en France et dis-moi précisément quoi changer sur la mienne (titre, photos, description, prix)."}, "product-hunt-launch-plan": {"ask": ["Product Hunt, utile pour moi ?", "Un lancement équivalent sur TikTok ?"], "job": "Dis-moi si un lancement Product Hunt a du sens pour Astoria Mods ; sinon, prépare un « jour de lancement » équivalent sur TikTok (live, concours, vidéos)."}, "linkedin-writer": {"ask": ["Un post sur mon lancement", "3 idées de posts pour cette semaine"], "job": "Écris 3 posts LinkedIn sur mon parcours : lancer une boutique TikTok Shop à côté d'un emploi salarié, avec mes vrais chiffres."}, "x-writer": {"ask": ["5 posts sur Astoria Mods", "Un thread sur mes premières ventes"], "job": "Écris 10 posts X et 1 thread sur les coulisses d'Astoria Mods et mes premières ventes sur TikTok Shop."}, "viral-hook-creator": {"ask": ["10 accroches pour ma prochaine vidéo", "Améliore cette accroche"], "job": "Trouve 20 accroches de 2 secondes pour mes vidéos TikTok de la montre à 15 €, inspirées de ce qui marche en ce moment sur TikTok France."}, "lead-magnet-generator": {"ask": ["Quelle ressource gratuite proposer ?", "Un post qui fait commenter"], "job": "Imagine une ressource gratuite pour gagner des abonnés TikTok (par ex. les 10 meilleurs cadrans), rédige-la, puis écris la vidéo et la description qui l'offrent."}, "outreach-specialist": {"ask": ["Un message pour un créateur TikTok", "Une relance qui obtient une réponse"], "job": "Trouve 20 micro-créateurs TikTok français (tech, bons plans) à contacter pour l'affiliation TikTok Shop, et écris le message d'approche et la relance."}, "prd-generator": {"ask": ["Un mini-site pour Astoria Mods ?", "Une appli pour mes cadrans ?"], "job": "Rédige le cahier des charges d'un petit site vitrine Astoria Mods qui renvoie vers ma boutique TikTok Shop."}, "sop-creator": {"ask": ["Ma procédure d'expédition", "Ma procédure de réponse aux clients"], "job": "Rédige ma procédure d'expédition d'une commande TikTok Shop, de la commande au numéro de suivi, en moins de 3 jours ouvrés."}};
+  TEAM.forEach(m => Object.assign(m, BIZ[m.id]));
+  const byId = Object.fromEntries(TEAM.map(m => [m.id, m]));
+
+  // ---------- Plan des bureaux ----------
+  // 0 sol du couloir, 1 mur, 2..5 moquette des pôles
+  const W = 40, H = 38;
+  const tile = new Uint8Array(W * H), block = new Uint8Array(W * H);
+  const set = (x, y, t) => { if (x >= 0 && y >= 0 && x < W && y < H) tile[y * W + x] = t; };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) set(x, y, (x === 0 || y === 0 || x === W - 1 || y === H - 1) ? 1 : 0);
+  const ROOMS = [[1, 1, 16, 10], [23, 1, 16, 10], [1, 17, 16, 10], [23, 17, 16, 10], [1, 28, 38, 9], [18, 1, 4, 3]];
+  ROOMS.forEach(([ox, oy, w, h], p) => { for (let y = oy; y < oy + h; y++) for (let x = ox; x < ox + w; x++) set(x, y, 2 + p); });
+  for (let x = 0; x < W; x++) if (x < 18 || x > 21) { set(x, 11, 1); set(x, 16, 1); }
+  for (let y = 0; y < 27; y++) if (y < 12 || y > 15) { set(17, y, 1); set(22, y, 1); }
+  for (let x = 0; x < W; x++) if (x < 19 || x > 20) set(x, 27, 1); // mur du pôle Projets, porte au bout du couloir
+  [[8, 11], [9, 11], [30, 11], [31, 11], [8, 16], [9, 16], [30, 16], [31, 16], [17, 5], [17, 6], [22, 5], [22, 6], [17, 21], [17, 22], [22, 21], [22, 22]].forEach(([x, y]) => set(x, y, 0));
+  const isWall = (x, y) => x < 0 || y < 0 || x >= W || y >= H || tile[y * W + x] === 1;
+
+  const desks = [], props = [];
+  ROOMS.forEach(([ox, oy, w, h], p) => {
+    (p === 5 ? [[0, 1]] : p === 4 ? [[4, 3], [12, 3], [23, 3], [31, 3]] : p === 1 ? [[2, 2], [9, 2], [2, 6], [9, 6], [13, 2], [13, 6]] : [[2, 2], [9, 2], [2, 6], [9, 6]]).forEach(([dx, dy], k) => {
+      const d = { x: ox + dx, y: oy + dy, pole: p, k, ceo: p === 5 };
+      desks.push(d); for (let i = 0; i < 3; i++) block[d.y * W + d.x + i] = 1;
+    });
+    if (p < 5) { const [hx, hy] = p === 4 ? [17, 6] : [12, 8], d = { x: ox + hx, y: oy + hy, pole: p, k: "head", head: true }; desks.push(d); for (let i = 0; i < 3; i++) block[d.y * W + d.x + i] = 1; }
+    if (p === 5) return;
+    props.push({ kind: "plant", x: ox + w - 1, y: oy }, { kind: "plant", x: ox, y: oy + h - 1 }, { kind: "shelf", x: ox + w - 3, y: oy });
+  });
+  props.push({ kind: "board", x: 18, y: 12 }, { kind: "coffee", x: 21, y: 12 }, { kind: "plant", x: 18, y: 15 }, { kind: "plant", x: 21, y: 15 });
+  for (const p of props) { block[p.y * W + p.x] = 1; if (p.kind === "board") block[p.y * W + p.x + 1] = 1; }
+  const myDesk = desks.find(d => d.pole === 3 && d.k === 3);
+
+  const walkTile = (tx, ty) => tx >= 0 && ty >= 0 && tx < W && ty < H && tile[ty * W + tx] !== 1 && !block[ty * W + tx];
+  const walk = (x, y) => walkTile(Math.floor(x), Math.floor(y));
+
+  let seed = 20261020;
+  const rnd = () => (seed = (seed * 16807) % 2147483647, (seed - 1) / 2147483646);
+  const hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+
+  const slot = {};
+  TEAM.forEach(m => {
+    const k = m.head ? "head" : (slot[m.pole] = (slot[m.pole] ?? -1) + 1), d = desks.find(d => d.pole === m.pole && d.k === k);
+    m.desk = d; d.owner = m;
+    Object.assign(m, { hx: d.x + 1.5, hy: d.y + 1.7, step: 0, face: 1, moving: false, wait: rnd() * 3, state: null });
+    m.x = m.tx = m.hx; m.y = m.ty = m.hy;
+  });
+
+  const player = { x: 20, y: 14, tx: null, ty: null, moving: false, face: 1, step: 0 };
+  let clock = 0.08;
+  const DAY = 240;
+  const keys = new Set();
+
+  // ---------- Affichage ----------
+  let vw = 0, vh = 0, ppt = 40, camX = 0, camY = 0, dpr = 1;
+  function resize() {
+    dpr = Math.min(2, devicePixelRatio || 1); vw = innerWidth; vh = innerHeight;
+    for (const c of [cv, lc]) { c.width = vw * dpr; c.height = vh * dpr; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ppt = Math.max(30, Math.min(46, Math.min(vw, vh) / 12));
+  }
+  addEventListener("resize", resize); resize();
+  const sx = x => (x - camX) * ppt, sy = y => (y - camY) * ppt;
+  const shade = (hex, f) => {
+    const n = parseInt(hex.slice(1), 16), m = v => Math.max(0, Math.min(255, Math.round(v * f)));
+    return `rgb(${m(n >> 16)},${m((n >> 8) & 255)},${m(n & 255)})`;
+  };
+  const FLOOR = ["#e6dfd0", null, "#c9d6e8", "#f0d6c6", "#d3e5c6", "#ddd3ea", "#f2e3b3", "#d9c7a6"];
+  const ellipse = (x, y, rx, ry, c) => { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); };
+  const circle = (x, y, r, c) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); };
+  const rect = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+
+  function drawFloor(night) {
+    const x0 = Math.max(0, Math.floor(camX)), y0 = Math.max(0, Math.floor(camY));
+    const x1 = Math.min(W, Math.ceil(camX + vw / ppt) + 1), y1 = Math.min(H, Math.ceil(camY + vh / ppt) + 1), p = Math.ceil(ppt) + 1;
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+      const t = tile[y * W + x], X = Math.floor(sx(x)), Y = Math.floor(sy(y));
+      if (t === 1) continue;
+      const v = hash(x, y);
+      rect(X, Y, p, p, shade(FLOOR[t], t === 0 ? 0.97 + v * 0.05 : 0.96 + v * 0.06));
+      if (t === 0) { ctx.strokeStyle = "rgba(90,70,50,0.12)"; ctx.lineWidth = 1; ctx.strokeRect(X + 0.5, Y + 0.5, ppt, ppt); }
+      else if ((x + y) % 2 === 0) rect(X + ppt * 0.45, Y + ppt * 0.45, 2, 2, "rgba(0,0,0,0.06)");
+    }
+    // murs : dessus clair, face avant plus sombre, fenêtres sur la façade nord
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+      if (tile[y * W + x] !== 1) continue;
+      const X = Math.floor(sx(x)), Y = Math.floor(sy(y)), front = !isWall(x, y + 1);
+      rect(X, Y, p, p, "#7d6a5c");
+      rect(X, Y, p, front ? ppt * 0.55 : p, "#9c8778");
+      if (front) rect(X, Y + ppt * 0.55, p, 3, "#5d4c40");
+      if (y === 0 && x % 3 === 1 && x > 0 && x < W - 1 && x !== 17 && x !== 22) {
+        rect(X + ppt * 0.15, Y + ppt * 0.6, ppt * 0.7, ppt * 0.32, night > 0.5 ? "#1d2a4a" : "#9fd0ef");
+        rect(X + ppt * 0.48, Y + ppt * 0.6, 2, ppt * 0.32, "#5d4c40");
+        if (night > 0.5 && hash(x, 7) > 0.5) circle(X + ppt * (0.3 + hash(x, 3) * 0.4), Y + ppt * 0.7, 1.2, "#fff6c8");
+      }
+    }
+    // tableaux blancs des pôles
+    ROOMS.forEach(([ox, oy, rw], i) => {
+      const cells = Math.min(6, rw), X = sx(i === 5 ? ox : ox + 5), Y = sy(oy - 1) + ppt * 0.05, w = ppt * cells, h = ppt * 0.5;
+      if (X > vw || X + w < 0 || Y > vh || Y + h < 0) return;
+      rect(X, Y, w, h, "#fbfbf6"); ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2; ctx.strokeRect(X, Y, w, h);
+      ctx.font = `700 ${Math.round(ppt * 0.32)}px "Pixelify Sans", monospace`; ctx.fillStyle = "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(i === 5 ? "Direction" : `Pôle ${POLES[i]}`, X + w / 2, Y + h / 2 + 1);
+    });
+  }
+
+  function drawDesk(d, now) {
+    const X = sx(d.x), Y = sy(d.y), u = ppt, m = d.owner, on = m && atDesk(m) && Math.hypot(m.x - m.hx, m.y - m.hy) < 0.15;
+    // chaise
+    ellipse(X + u * 1.5, Y + u * 1.55, u * 0.32, u * 0.12, "rgba(0,0,0,0.15)");
+    rect(X + u * 1.22, Y + u * 1.05, u * 0.56, u * 0.5, d === myDesk ? "#b5452f" : "#4a4f5c");
+    rect(X + u * 1.15, Y + u * 1.4, u * 0.7, u * 0.12, d === myDesk ? "#8c3422" : "#333844");
+    // plateau
+    rect(X + 2, Y + u * 0.2, u * 3 - 4, u * 0.85, "#5d4c40");
+    rect(X + 2, Y + u * 0.12, u * 3 - 4, u * 0.78, d.head || d.ceo ? "#7a4e2e" : "#b98a5a");
+    if (d.head || d.ceo) { rect(X + u * 2.05, Y + u * 0.62, u * 0.8, u * 0.2, "#e2b84a"); ctx.fillStyle = "#3a2a1a"; ctx.font = `800 ${Math.round(u * 0.14)}px Nunito, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(d.ceo ? "DIRECTEUR" : "CHEF", X + u * 2.45, Y + u * 0.725); }
+    rect(X + 2, Y + u * 0.12, u * 3 - 4, 3, "#d0a473");
+    // écran
+    const sxm = X + u * 0.95, sym = Y - u * 0.38, sw = u * 1.1, sh = u * 0.72;
+    rect(X + u * 1.43, Y + u * 0.2, u * 0.14, u * 0.2, "#2b2b2b");
+    rect(sxm, sym, sw, sh, "#2b2b2b");
+    const scr = on ? "#0f2f45" : m?.state === "done" ? "#16371f" : m?.state === "waiting" ? "#3d2a0a" : m?.state === "failed" ? "#3a1414" : "#1d2430";
+    rect(sxm + 3, sym + 3, sw - 6, sh - 6, scr);
+    if (on) {
+      const t = reduceMotion ? 0 : now * 3;
+      for (let i = 0; i < 5; i++) {
+        const w = (0.25 + hash(i, Math.floor(t + i)) * 0.6) * (sw - 14);
+        rect(sxm + 7, sym + 7 + i * (sh - 14) / 5, w, 2.5, i % 2 ? "#7fd6ff" : "#c6f07a");
+      }
+    } else if (m?.state === "done") { ctx.fillStyle = "#7ee08a"; ctx.font = `800 ${Math.round(u * 0.4)}px Nunito, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("✓", sxm + sw / 2, sym + sh / 2); }
+    else if (m?.state === "waiting") { ctx.fillStyle = "#ffc24a"; ctx.font = `800 ${Math.round(u * 0.4)}px Nunito, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("?", sxm + sw / 2, sym + sh / 2); }
+    else rect(sxm + sw * 0.3, sym + sh * 0.45, sw * 0.4, 2, "rgba(140,170,210,0.35)");
+    // clavier, tasse, papiers
+    rect(X + u * 1.05, Y + u * 0.5, u * 0.9, u * 0.18, "#e9e4da");
+    circle(X + u * 2.5, Y + u * 0.45, u * 0.1, "#f3efe6"); circle(X + u * 2.5, Y + u * 0.45, u * 0.06, "#6b4a2e");
+    rect(X + u * 0.25, Y + u * 0.3, u * 0.5, u * 0.38, "#fffdf6"); rect(X + u * 0.3, Y + u * 0.36, u * 0.4, 2, "#c9c2b4"); rect(X + u * 0.3, Y + u * 0.46, u * 0.3, 2, "#c9c2b4");
+    if (d === myDesk) {
+      ctx.font = "800 11px Nunito, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+      ctx.lineWidth = 3; ctx.strokeStyle = "rgba(255,250,240,0.92)"; ctx.fillStyle = "#3a2a1a";
+      ctx.strokeText("Ton bureau", X + u * 1.5, Y + u * 1.62); ctx.fillText("Ton bureau", X + u * 1.5, Y + u * 1.62);
+    }
+  }
+
+  function drawProp(p, now) {
+    const X = sx(p.x), Y = sy(p.y), u = ppt;
+    if (p.kind === "plant") {
+      ellipse(X + u * 0.5, Y + u * 0.92, u * 0.3, u * 0.1, "rgba(0,0,0,0.18)");
+      rect(X + u * 0.3, Y + u * 0.55, u * 0.4, u * 0.38, "#b8693d"); rect(X + u * 0.26, Y + u * 0.52, u * 0.48, u * 0.08, "#9a5530");
+      const sw = reduceMotion ? 0 : Math.sin(now * 1.3 + p.x) * u * 0.02;
+      circle(X + u * 0.36 + sw, Y + u * 0.36, u * 0.2, "#3f8a3e"); circle(X + u * 0.64 + sw, Y + u * 0.34, u * 0.19, "#3f8a3e"); circle(X + u * 0.5 + sw, Y + u * 0.16, u * 0.21, "#4f9c47");
+    } else if (p.kind === "shelf") {
+      rect(X + u * 0.05, Y - u * 0.4, u * 0.9, u * 1.3, "#7a5230");
+      for (let i = 0; i < 3; i++) { rect(X + u * 0.1, Y - u * 0.32 + i * u * 0.42, u * 0.8, u * 0.32, "#5d3f24");
+        for (let j = 0; j < 4; j++) rect(X + u * (0.14 + j * 0.19), Y - u * 0.3 + i * u * 0.42, u * 0.13, u * 0.28, ["#b5452f", "#2f5d8c", "#e0b040", "#4f8f3c"][(i + j) % 4]); }
+    } else if (p.kind === "coffee") {
+      ellipse(X + u * 0.5, Y + u * 0.92, u * 0.32, u * 0.1, "rgba(0,0,0,0.18)");
+      rect(X + u * 0.18, Y - u * 0.1, u * 0.64, u * 1.0, "#3b3f48"); rect(X + u * 0.26, Y + u * 0.0, u * 0.48, u * 0.3, "#16191f");
+      circle(X + u * 0.62, Y + u * 0.15, u * 0.04, "#7ee08a");
+      rect(X + u * 0.36, Y + u * 0.5, u * 0.28, u * 0.24, "#f3efe6");
+      if (!reduceMotion) for (let i = 0; i < 2; i++) { const k = (now * 0.8 + i * 0.5) % 1; circle(X + u * (0.46 + i * 0.08), Y + u * (0.45 - k * 0.5), u * 0.04 * (1 - k), `rgba(255,255,255,${0.6 * (1 - k)})`); }
+    } else if (p.kind === "board") {
+      ellipse(X + u, Y + u * 0.95, u * 0.9, u * 0.1, "rgba(0,0,0,0.18)");
+      rect(X + u * 0.2, Y + u * 0.5, u * 0.08, u * 0.45, "#3a2a1a"); rect(X + u * 1.72, Y + u * 0.5, u * 0.08, u * 0.45, "#3a2a1a");
+      rect(X + u * 0.05, Y - u * 0.55, u * 1.9, u * 1.1, "#f6ecd2"); ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2; ctx.strokeRect(X + u * 0.05, Y - u * 0.55, u * 1.9, u * 1.1);
+      ctx.font = `700 ${Math.round(u * 0.24)}px "Pixelify Sans", monospace`; ctx.fillStyle = "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+      ctx.fillText("Missions", X + u, Y - u * 0.5);
+      const list = missions.slice(0, 4);
+      list.forEach((ms, i) => rect(X + u * 0.18 + i * u * 0.43, Y - u * 0.15, u * 0.36, u * 0.5, { working: "#9fd0ef", starting: "#e2dccd", waiting: "#ffd27a", done: "#a9e2a0", failed: "#f2a08a" }[ms.status] || "#e2dccd"));
+      if (!list.length) { ctx.font = `700 ${Math.round(u * 0.18)}px Nunito, sans-serif`; ctx.fillStyle = "#7a6247"; ctx.fillText("aucune", X + u, Y); }
+    }
+  }
+
+  function drawPerson(p, coat, hair, scarf, seated) {
+    const x = sx(p.x), y = sy(p.y), u = ppt, bob = p.moving ? Math.abs(Math.sin(p.step * 9)) * u * 0.06 : 0;
+    ellipse(x, y, u * 0.22, u * 0.08, "rgba(0,0,0,0.22)");
+    if (!seated) {
+      const leg = p.moving ? Math.sin(p.step * 9) * u * 0.06 : 0;
+      rect(x - u * 0.1, y - u * 0.18 + leg, u * 0.07, u * 0.18 - leg, "#3a2a1a"); rect(x + u * 0.03, y - u * 0.18 - leg, u * 0.07, u * 0.18 + leg, "#3a2a1a");
+    }
+    const lift = seated ? -u * 0.08 : 0;
+    ctx.fillStyle = coat; ctx.beginPath(); ctx.roundRect(x - u * 0.17, y - u * 0.55 - bob - lift, u * 0.34, u * 0.4, u * 0.08); ctx.fill();
+    if (scarf) { rect(x - u * 0.17, y - u * 0.55 - bob, u * 0.34, u * 0.08, scarf); rect(x - p.face * u * 0.2, y - u * 0.52 - bob, u * 0.08, u * 0.2, scarf); }
+    circle(x, y - u * 0.7 - bob - lift, u * 0.17, "#f0c9a0");
+    ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(x, y - u * 0.74 - bob - lift, u * 0.17, seated ? 0 : Math.PI, seated ? Math.PI * 2 : 0); ctx.fill();
+    if (!seated) circle(x + p.face * u * 0.07, y - u * 0.68 - bob, u * 0.025, "#3a2a1a");
+  }
+  function bubble(x, y, text, now, opts = {}) {
+    ctx.font = "800 13px Nunito, sans-serif";
+    const w = opts.dots ? 34 : Math.max(26, ctx.measureText(text).width + 14);
+    ctx.fillStyle = opts.bg || "#fffaf0"; ctx.strokeStyle = "#3a2a1a"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.roundRect(x - w / 2, y - 12, w, 22, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = opts.fg || "#3a2a1a"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    if (opts.dots) for (let i = 0; i < 3; i++) circle(x - 9 + i * 9, y - 1 - (reduceMotion ? 0 : Math.max(0, Math.sin(now * 6 - i)) * 3), 2.4, opts.fg || "#3a2a1a");
+    else ctx.fillText(text, x, y);
+  }
+  function nameTag(m, withRole) {
+    const x = sx(m.x), y = sy(m.y) + ppt * 0.12;
+    ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(255,250,240,0.92)"; ctx.fillStyle = "#3a2a1a";
+    ctx.font = "800 12px Nunito, sans-serif"; ctx.strokeText(m.name, x, y); ctx.fillText(m.name, x, y);
+    if (withRole) { ctx.font = "700 10px Nunito, sans-serif"; ctx.strokeText(m.role, x, y + 13); ctx.fillStyle = "#5c4630"; ctx.fillText(m.role, x, y + 13); }
+  }
+
+  // ---------- Logique du monde ----------
+  function moveBody(p, dx, dy, r) {
+    const ok = (x, y) => walk(x - r, y - r * 0.6) && walk(x + r, y - r * 0.6) && walk(x - r, y + r * 0.4) && walk(x + r, y + r * 0.4);
+    if (ok(p.x + dx, p.y)) p.x += dx;
+    if (ok(p.x, p.y + dy)) p.y += dy;
+  }
+  const nearest = max => { let best = null, bd = max; for (const m of TEAM) { const d = Math.hypot(m.x - player.x, m.y - player.y); if (d < bd) { bd = d; best = m; } } return best; };
+  function showToast(title, text, ms) {
+    const t = $("toast"); t.replaceChildren(el("strong", null, title), document.createTextNode(text));
+    t.hidden = false; clearTimeout(showToast.h); showToast.h = setTimeout(() => t.hidden = true, ms);
+  }
+  const onMission = m => m.state === "working" || m.state === "starting";
+  const atDesk = m => onMission(m) || m.mode === "desk";
+
+  // ---------- Vie de bureau : chacun travaille, va voir les autres pôles, prend un café ----------
+  const LINES = {
+    "strategic-planning": ["On cale les 3 priorités ?", "Point d'étape cet après-midi"],
+    "go-to-market-plan": ["Objectif : 5 ventes par jour", "J'ai un plan sur 30 jours"],
+    "pricing-strategist": ["29,99 €, ça passe ?", "Et un pack 2 montres ?"],
+    "competitor-intel": ["Je surveille les vendeurs", "J'ai lu leurs avis clients"],
+    "marketing-ideas": ["Idée : un concours en live", "Et une vidéo avant/après ?"],
+    "brand-copywriter": ["Nouvelle accroche prête", "Je réécris la fiche produit"],
+    "cro-optimization": ["Le prix doit se voir tout de suite", "Photo 1 : la montre au poignet"],
+    "product-hunt-launch-plan": ["Un jour de lancement en live ?", "Je prépare le teasing"],
+    "linkedin-writer": ["Post coulisses en cours", "Ton parcours, ça parle"],
+    "x-writer": ["Thread bons plans prêt", "5 posts pour la semaine"],
+    "viral-hook-creator": ["« 15 € seulement » en 2 s", "J'ai 10 accroches à tester"],
+    "lead-magnet-generator": ["Guide des cadrans gratuit ?", "« Commente CADRAN »"],
+    "outreach-specialist": ["10 créateurs à contacter", "Je prépare la relance"],
+    "prd-generator": ["Un mini-site vitrine ?", "Cahier des charges en cours"],
+    "sop-creator": ["Procédure d'expédition à jour", "Checklist colis en 5 étapes"],
+    "product-scout": ["Je cherche des AMOLED", "Je compare 5 modèles"],
+    "margin-analyst": ["Envoie-moi le prix livré", "Je calcule les marges nettes"],
+    "trend-scout": ["Les AMOLED montent sur TikTok", "Format unboxing = top"],
+    "launch-manager": ["Commande test de 10 pièces ?", "Planning sur 4 semaines"],
+    "general-manager": ["Objectif : vider le stock d'ici le 01/11", "Où en est la P86 ?", "Chefs de pôle : rapport à 17 h", "On vise plus de marge"],
+    "head-strategie": ["Je relis vos analyses", "Rapport Stratégie prêt"], "head-marketing": ["Je contrôle les visuels", "Rapport Marketing prêt"],
+    "head-contenu": ["Je relis les scripts", "Prix exact dans les vidéos ?"], "head-ventes": ["Expéditions sous 3 jours ?", "Rapport Ventes prêt"],
+    "head-projets": ["Je vérifie les marges", "Rapport Projets prêt"],
+    "product-visuals": ["Image 1 : fond blanc, sans texte", "J'ai analysé 5 fiches concurrentes"],
+    "listing-designer": ["Détourage terminé", "Il me faut tes photos de face"],
+  };
+  const REVIEW = ["Validé ✓", "À corriger : ajoute la source", "Chiffre la marge nette", "Validé, je le mets au rapport", "Refais le titre, plus court", "Parfait, on publie"];
+  const BOSS = ["Bien, continue", "Priorité : la marge", "Je valide, on avance", "Envoie-moi les chiffres", "Bon travail, merci"];
+  const REPLIES = ["OK, je regarde ça", "Envoie-moi les chiffres", "Bonne idée !", "Je m'en occupe", "On en parle en réunion", "Je te fais un retour", "Ça marche, je note", "Top, on avance"];
+  const RELAY = {
+    "product-scout": ["margin-analyst", "trend-scout", "launch-manager"], "margin-analyst": ["product-scout", "pricing-strategist", "launch-manager"],
+    "trend-scout": ["viral-hook-creator", "product-scout", "marketing-ideas"], "launch-manager": ["margin-analyst", "strategic-planning", "brand-copywriter"],
+    "strategic-planning": ["launch-manager", "go-to-market-plan", "margin-analyst"], "viral-hook-creator": ["brand-copywriter", "trend-scout"],
+    "brand-copywriter": ["viral-hook-creator", "cro-optimization"], "pricing-strategist": ["margin-analyst", "competitor-intel"],
+    "competitor-intel": ["pricing-strategist", "product-scout", "product-visuals"], "product-visuals": ["listing-designer", "brand-copywriter", "competitor-intel"], "listing-designer": ["product-visuals", "cro-optimization"], "outreach-specialist": ["lead-magnet-generator", "linkedin-writer"],
+  };
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  let live = null; // état écrit par l'équipe dans la base de la page (equipe/etat)
+  const liveLine = m => live?.activites?.[m.id];
+  const lineFor = m => liveLine(m) || pick(LINES[m.id] || ["Je bosse dessus"]);
+  let tNow = 0;
+  function say(m, text, secs) { m.say = text; m.sayUntil = tNow + secs; }
+  function nextActivity(m) {
+    if (onMission(m)) { m.mode = "desk"; m.timer = 20; return; }
+    const r = Math.random(), deskBias = dayRunning() ? 0.62 : 0.5;
+    if (r < deskBias) { m.mode = "desk"; m.timer = 12 + Math.random() * 22; if (Math.random() < 0.35) say(m, lineFor(m), 4); return; }
+    if (r < 0.9) {
+      const myHead = TEAM.find(x => x.head && x.pole === m.pole && x !== m), ceo = byId["general-manager"];
+      const ids = m.ceo ? TEAM.filter(x => x.head).map(x => x.id)
+        : m.head ? [ceo.id, ceo.id, ...TEAM.filter(x => x.pole === m.pole && !x.head).map(x => x.id), ...TEAM.filter(x => x.head && x !== m).map(x => x.id)]
+        : Math.random() < 0.4 && myHead ? [myHead.id] : (RELAY[m.id] || TEAM.filter(x => x !== m && x.pole === m.pole).map(x => x.id));
+      const who = byId[pick(ids.length ? ids : TEAM.filter(x => x !== m).map(x => x.id))];
+      if (who && who !== m && who.mode === "desk" && !(who.heldUntil > tNow) && Math.hypot(who.x - who.hx, who.y - who.hy) < 0.2) { m.mode = "visit"; m.who = who; m.talk = 0; who.heldUntil = tNow + 60; return; }
+    }
+    m.mode = "coffee"; m.talk = 0; m.cx = 19.6 + Math.random() * 1.2; m.cy = 13.3 + Math.random() * 0.8;
+  }
+  function walkTo(m, tx, ty, dt) {
+    const dx = tx - m.x, dy = ty - m.y, d = Math.hypot(dx, dy);
+    if (d < 0.08) { m.moving = false; return true; }
+    const sp = 1.4 * dt, bx = m.x, by = m.y;
+    moveBody(m, dx / d * Math.min(sp, d), dy / d * Math.min(sp, d), 0.2);
+    m.moving = true; m.step += dt; if (Math.abs(dx) > 0.02) m.face = dx > 0 ? 1 : -1;
+    if (Math.hypot(m.x - bx, m.y - by) < sp * 0.05) { m.stuck = (m.stuck || 0) + dt; if (m.stuck > 1.5) { m.x = tx; m.y = ty; m.stuck = 0; return true; } }
+    return false;
+  }
+  // Trajets par les portes : salle → porte → couloir → porte → salle
+  const DOORS = [[[8.5, 10.4], [8.5, 12.6]], [[30.5, 10.4], [30.5, 12.6]], [[8.5, 17.6], [8.5, 15.3]], [[30.5, 17.6], [30.5, 15.3]], [[19.5, 28.6], [19.5, 26.2]], [[19.5, 4.3], [19.5, 6.5]]];
+  const HUB = [19.5, 13.9];
+  const roomOf = (x, y) => { const t = tile[Math.floor(y) * W + Math.floor(x)]; return t >= 2 ? t - 2 : -1; };
+  function routeTo(m, tx, ty, dt) {
+    const key = tx.toFixed(2) + "," + ty.toFixed(2);
+    if (m.routeKey !== key) {
+      const a = roomOf(m.x, m.y), b = roomOf(tx, ty), path = [];
+      if (a !== b) {
+        if (a >= 0) path.push(DOORS[a][0], DOORS[a][1]);
+        path.push(HUB);
+        if (b >= 0) path.push(DOORS[b][1], DOORS[b][0]);
+      }
+      path.push([tx, ty]); m.path = path; m.routeKey = key;
+    }
+    const [wx, wy] = m.path[0];
+    if (walkTo(m, wx, wy, dt)) { m.path.shift(); if (!m.path.length) { m.routeKey = null; return true; } }
+    return false;
+  }
+  function lifeStep(m, dt) {
+    if (current === m && !onMission(m)) { m.moving = false; m.face = player.x > m.x ? 1 : -1; return; }
+    if (!m.mode) { m.mode = "desk"; m.timer = Math.random() * 18; }
+    if (onMission(m) && m.mode !== "desk") m.mode = "desk";
+    if (m.mode === "desk") {
+      if (routeTo(m, m.hx, m.hy, dt)) { m.x = m.hx; m.y = m.hy; m.face = 1; if (!(m.heldUntil > tNow)) m.timer -= dt; if (m.timer <= 0) nextActivity(m); }
+    } else if (m.mode === "visit") {
+      const w = m.who;
+      if (routeTo(m, w.hx + (m.desk.pole === w.desk.pole && m.hx < w.hx ? -0.75 : 0.75), w.hy + 0.05, dt)) {
+        m.face = w.x > m.x ? 1 : -1; w.heldUntil = tNow + 3; w.face = m.x > w.x ? 1 : -1;
+        if (!m.talk) {
+          const answer = () => w.ceo ? pick(BOSS) : w.head && !m.head && !m.ceo ? pick(REVIEW) : pick(REPLIES);
+          const opener = !m.head && !m.ceo && w.head ? "Voici mon livrable" : m.head && w.ceo ? pick(["Rapport du pôle prêt", "Tout est contrôlé", lineFor(m)]) : lineFor(m);
+          m.talk = tNow; m.convo = [opener, answer(), lineFor(m), answer()];
+        }
+        const k = Math.floor((tNow - m.talk) / 2.4);
+        if (k < m.convo.length) { const speaker = k % 2 ? w : m; if (speaker.say !== m.convo[k]) say(speaker, m.convo[k], 2.3); }
+        else { m.mode = "desk"; m.timer = 15 + Math.random() * 20; m.talk = 0; w.heldUntil = 0; }
+      }
+    } else if (m.mode === "coffee") {
+      if (routeTo(m, m.cx, m.cy, dt)) {
+        if (!m.talk) { m.talk = tNow; say(m, pick(["Pause café", "Un café et j'y retourne", "Qui veut un café ?"]), 2.5); }
+        if (tNow - m.talk > 5) { m.mode = "desk"; m.timer = 15 + Math.random() * 20; m.talk = 0; }
+      }
+    }
+  }
+
+  function update(dt) {
+    tNow += dt;
+    clock = (clock + dt / DAY) % 1;
+    let ix = 0, iy = 0;
+    if (keys.has("ArrowLeft") || keys.has("KeyA")) ix--; if (keys.has("ArrowRight") || keys.has("KeyD")) ix++;
+    if (keys.has("ArrowUp") || keys.has("KeyW")) iy--; if (keys.has("ArrowDown") || keys.has("KeyS")) iy++;
+    if (ix || iy) player.tx = null;
+    else if (player.tx != null) {
+      const dx = player.tx - player.x, dy = player.ty - player.y, d = Math.hypot(dx, dy);
+      if (d < 0.08) player.tx = null; else { ix = dx / d; iy = dy / d; }
+    }
+    const len = Math.hypot(ix, iy);
+    player.moving = len > 0;
+    if (len) {
+      const sp = 3.8 * dt, bx = player.x, by = player.y;
+      moveBody(player, ix / len * sp, iy / len * sp, 0.24);
+      if (ix) player.face = ix > 0 ? 1 : -1;
+      player.step += dt;
+      if (player.tx != null && Math.hypot(player.x - bx, player.y - by) < sp * 0.2) player.tx = null;
+    }
+    for (const m of TEAM) lifeStep(m, dt);
+    const off = !$("chat").hidden && vw > 760 ? 240 / ppt : 0;
+    camX = Math.max(0, Math.min(W - vw / ppt, player.x - vw / ppt / 2 + off));
+    camY = Math.max(0, Math.min(H - vh / ppt, player.y - vh / ppt / 2));
+    if (vw / ppt > W) camX = (W - vw / ppt) / 2;
+    if (vh / ppt > H) camY = (H - vh / ppt) / 2;
+    const mins = Math.floor(((clock * 24 + 12) % 24) * 60);
+    $("clock").textContent = `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(Math.floor(mins % 60 / 10) * 10).padStart(2, "0")}`;
+  }
+  const nightness = () => Math.max(0, Math.min(1, (0.25 - Math.cos(clock * Math.PI * 2)) / 0.6));
+
+  function render(now) {
+    const night = nightness();
+    ctx.fillStyle = "#2d2a33"; ctx.fillRect(0, 0, vw, vh);
+    drawFloor(night);
+    const vis = (x, y, m) => x > camX - m && x < camX + vw / ppt + m && y > camY - m && y < camY + vh / ppt + m;
+    const ents = [];
+    for (const d of desks) if (vis(d.x + 1.5, d.y, 3)) ents.push([d.y + 0.9, () => drawDesk(d, now)]);
+    for (const p of props) if (vis(p.x, p.y, 3)) ents.push([p.y + 0.9, () => drawProp(p, now)]);
+    for (const m of TEAM) if (vis(m.x, m.y, 2)) {
+      const seated = atDesk(m) && Math.hypot(m.x - m.hx, m.y - m.hy) < 0.1;
+      ents.push([seated ? m.desk.y + 0.95 : m.y, () => drawPerson(m, m.coat, m.hair, null, seated)]);
+    }
+    ents.push([player.y, () => drawPerson(player, "#2d4f7c", "#3a2414", "#d8442f")]);
+    ents.sort((a, b) => a[0] - b[0]).forEach(e => e[1]());
+
+    const near = nearest(1.8);
+    for (const m of TEAM) {
+      if (!vis(m.x, m.y, 2)) continue;
+      const d = Math.hypot(m.x - player.x, m.y - player.y), by = sy(m.y) - ppt * 1.2;
+      if (d < 3.6 || m === current) nameTag(m, m === near || m === current);
+      if (m.busy) bubble(sx(m.x), by, "", now, { dots: true });
+      else if (pendingFor(m).length) bubble(sx(m.x), by, "★ Besoin de toi", now, { bg: "#f2b632" });
+      else if (m.state === "working" || m.state === "starting") bubble(sx(m.x), by, "En mission", now, { bg: "#d8ecfa" });
+      else if (m.state === "waiting") bubble(sx(m.x), by, "Attend ton accord", now, { bg: "#ffe2a8" });
+      else if (m.say && m.sayUntil > tNow) bubble(sx(m.x), by, m.say, now, { bg: "#ffffff" });
+      else if (m.state === "done" && m.unseen) bubble(sx(m.x), by, "Livrable prêt", now, { bg: "#c8eec0" });
+      else if (m.state === "failed" && m.unseen) bubble(sx(m.x), by, "Souci", now, { bg: "#f7c3b5" });
+      else if (journalUnseen() && journal.data?.actifs?.includes(m.id)) bubble(sx(m.x), by, "Du nouveau", now, { bg: "#c8eec0" });
+      else if (m === near && m !== current) bubble(sx(m.x), by, "E · Parler", now);
+      else if (dayRunning() && atDesk(m) && !m.moving) bubble(sx(m.x), by, "", now, { dots: true, bg: "#d8ecfa" });
+    }
+
+    if (night > 0.01) {
+      lctx.globalCompositeOperation = "source-over"; lctx.clearRect(0, 0, vw, vh);
+      lctx.fillStyle = `rgba(12,16,40,${0.66 * night})`; lctx.fillRect(0, 0, vw, vh);
+      lctx.globalCompositeOperation = "destination-out";
+      const lights = [[player.x, player.y - 0.4, 2.4], [20, 13.5, 3.2]];
+      for (const d of desks) lights.push([d.x + 1.5, d.y + 0.2, d.owner && atDesk(d.owner) ? 2.6 : 1.4]);
+      for (let x = 3; x < W; x += 6) lights.push([x, 13.5, 1.8]);
+      for (const [x, y, r] of lights) {
+        if (!vis(x, y, r + 1)) continue;
+        const gx = sx(x), gy = sy(y), gr = r * ppt, g = lctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
+        g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)");
+        lctx.fillStyle = g; lctx.beginPath(); lctx.arc(gx, gy, gr, 0, Math.PI * 2); lctx.fill();
+      }
+      ctx.drawImage(lc, 0, 0, vw, vh);
+      ctx.globalCompositeOperation = "lighter";
+      for (const d of desks) if (d.owner && atDesk(d.owner) && vis(d.x, d.y, 3)) {
+        const gx = sx(d.x + 1.5), gy = sy(d.y - 0.1), g = ctx.createRadialGradient(gx, gy, 0, gx, gy, ppt * 1.6);
+        g.addColorStop(0, `rgba(90,170,255,${0.3 * night})`); g.addColorStop(1, "rgba(90,170,255,0)"); ctx.fillStyle = g; ctx.fillRect(gx - ppt * 1.6, gy - ppt * 1.6, ppt * 3.2, ppt * 3.2);
+      }
+      ctx.globalCompositeOperation = "source-over";
+    }
+    $("btnTime").textContent = night > 0.5 ? "☀ Jour" : "☾ Nuit";
+  }
+
+  // ---------- Fiche entreprise ----------
+  const FIELDS = [
+    ["Entreprise", [["nom", "Nom", "Astoria Mods"], ["produit", "Produit", "Montre connectée 49 mm style « ultra », bracelet orange ou noir"], ["canal", "Où je vends", "100 % sur TikTok Shop (France)"], ["stade", "Stade", "Démarrage : environ 1 vente par jour depuis début octobre 2026"]]],
+    ["Chiffres à compléter", [["achat", "Prix d'achat unitaire de la montre", "≈ 7,09 € sur AliExpress (relevé le 20/10/2026, remise nouveau client possible, frais de port à vérifier)"], ["fournisseur", "Fournisseur et délai de réapprovisionnement", "AliExpress : https://fr.aliexpress.com/item/1005012967340775.html (délai à préciser)"], ["stock", "Stock actuel", "≈ 15 montres à écouler (déjà rentabilisées)"], ["boutique", "Lien de ma boutique ou de ma fiche TikTok Shop", ""]]],
+    ["Objectifs", [["objectif", "Objectif à 3 mois", "Écouler les ~15 montres restantes, puis lancer un meilleur produit avec une plus grosse marge nette"], ["budget", "Budget marketing mensuel", ""]]],
+    ["Notes", [["notes", "Infos récentes pour l'équipe (nouvelle vidéo, promo en cours, problème…)", ""]]],
+  ];
+  const savedCo = store.get("astoria-company-v1", {});
+  if (savedCo.nom === "Astoria Mandat IA") delete savedCo.nom;
+  const company = Object.fromEntries(FIELDS.flatMap(([, fs]) => fs.map(([k, , d]) => [k, savedCo[k]?.trim() ? savedCo[k] : d])));
+  const companyMarkdown = () => BASE_CONTEXT + "\n\n---\n\n# COMPLÉMENTS DU FONDATEUR (fiche Mon entreprise, plus récents : ils priment)\n\n" +
+    FIELDS.map(([sec, fs]) => `## ${sec}\n` + fs.map(([k, label]) => `- ${label} : ${company[k]?.trim() || "(non renseigné)"}`).join("\n")).join("\n\n");
+  const companyFilled = () => !!company.stock?.trim();
+  (function buildCompanyForm() {
+    const f = $("companyForm");
+    f.append(el("p", null, "L'équipe connaît déjà tout le contexte d'Astoria Mods (produit, prix, frais TikTok Shop, règles). Complète ici ce qui manque ou ce qui change : ça part avec chaque message et chaque mission. La fiche reste dans ton navigateur."));
+    const saved = el("span", "saved"); saved.setAttribute("aria-live", "polite");
+    for (const [sec, fs] of FIELDS) for (const [k, label] of fs) {
+      const l = el("label"), t = el("textarea");
+      t.id = "co-" + k; t.rows = ["nom", "achat", "stock", "boutique", "budget"].includes(k) ? 1 : 2; t.value = company[k] || "";
+      t.addEventListener("input", () => { company[k] = t.value; store.set("astoria-company-v1", company); saved.textContent = "Enregistré"; clearTimeout(saved.h); saved.h = setTimeout(() => saved.textContent = "", 1500); });
+      l.append(`${sec} · ${label}`, t); f.append(l);
+    }
+    f.append(saved);
+  })();
+
+  // ---------- Annuaire ----------
+  const initials = m => m.name.slice(0, 1);
+  const avatar = (m, cls = "avatar") => { const a = el("span", cls, initials(m)); a.style.background = m.coat; return a; };
+  function buildTeam() {
+    const list = $("teamList"); list.replaceChildren();
+    [5, 0, 1, 2, 3, 4].forEach(i => {
+      const pole = POLES[i], sec = el("div", "pole"), g = el("div", "pole-grid");
+      for (const m of TEAM.filter(m => m.pole === i).sort((a, b) => (b.head ? 1 : 0) - (a.head ? 1 : 0))) {
+        const b = el("button", "card"); b.type = "button";
+        const t = el("span"); t.append(el("b", null, m.name), el("span", null, m.role));
+        const st = { working: "En mission", starting: "En mission", waiting: "Attend ton accord", done: "Livrable prêt" }[m.state];
+        if (st) t.append(el("span", "state", st));
+        if (pendingFor(m).length) t.append(el("span", "state", "★ Besoin de toi"));
+        b.append(avatar(m), t);
+        b.addEventListener("click", () => { goTo(m); openDesk(m, m.state ? "work" : "talk"); });
+        g.append(b);
+      }
+      sec.append(el("h3", null, pole), g); list.append(sec);
+    });
+  }
+  function goTo(m) {
+    for (const [dx, dy] of [[0, 0.9], [0.9, 0.2], [-0.9, 0.2], [0, -0.9], [1.6, 0.9], [-1.6, 0.9]]) if (walk(m.x + dx, m.y + dy)) { player.x = m.x + dx; player.y = m.y + dy; break; }
+    player.tx = null;
+  }
+
+  // ---------- Fiches de poste ----------
+  let skills = null, skillsErr = false;
+  fetch("skills.json").then(r => r.ok ? r.json() : Promise.reject()).then(j => skills = j).catch(() => skillsErr = true);
+  const waitSkills = async () => { for (let i = 0; i < 24 && !skills && !skillsErr; i++) await new Promise(r => setTimeout(r, 250)); };
+
+  const md = text => {
+    if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(text, { breaks: true, gfm: true }));
+    const d = el("div", null, text); return d.innerHTML.replace(/\n/g, "<br>");
+  };
+  if (window.DOMPurify) DOMPurify.addHook("afterSanitizeAttributes", n => { if (n.tagName === "A") { n.setAttribute("target", "_blank"); n.setAttribute("rel", "noopener noreferrer"); } });
+
+  // ---------- Discussion rapide (sample) ----------
+  let samplePromise = null;
+  const getSample = () => samplePromise ??= (window.claude?.use ? window.claude.use("sample").catch(() => null) : Promise.resolve(null));
+  getSample();
+  let sampleOff = false, toolsOk = null;
+  const chats = store.get("astoria-chats-v1", {});
+  const saveChats = () => store.set("astoria-chats-v1", chats);
+  let current = null, ctl = null, view = "talk";
+
+  function instructions(m) {
+    const s = skills?.[m.skill || m.id];
+    const colleagues = TEAM.filter(x => x !== m).map(x => `- ${x.name} : ${x.role}`).join("\n");
+    const refNames = s ? Object.keys(s.refs) : [];
+    let refs = "";
+    if (refNames.length && !toolsOk) {
+      let budget = 60000;
+      for (const k of refNames) { const t = s.refs[k].slice(0, budget); budget -= t.length; refs += `\n<reference nom="${k}">\n${t}\n</reference>\n`; if (budget <= 0) break; }
+    }
+    return `Tu es ${m.name}, ${m.role} dans l'équipe de ${company.nom || "l'entreprise"}. Tu es un collègue du fondateur et tu lui parles dans la messagerie interne, depuis ton bureau.
+
+Façon de répondre :
+- En français, en tutoyant, avec un ton chaleureux et direct de collègue compétent. Pas de formules creuses.
+- Applique ta méthode de travail (fiche de poste ci-dessous), adaptée à une discussion :
+  - Pose tes questions directement dans ton message, 4 au maximum à la fois, et seulement si l'info manque vraiment.
+  - Dans cette messagerie tu n'as pas accès au web. Si la demande demande des recherches sur internet ou un travail long (analyse de concurrents, prix réels, tendances, livrable complet), propose au fondateur de te la confier en mission avec l'onglet « Missions » de ton bureau : en mission tu travailles seul, avec internet, et tu ranges ton livrable dans son dépôt. N'invente jamais de chiffre.
+  - Tu ne peux ni créer de fichier ni générer de PDF ici : donne le contenu dans ta réponse, en Markdown.
+  - Ignore les consignes qui parlent de $ARGUMENTS, de message « loaded », de dossiers de sortie ou de commandes à lancer.
+- Le contexte entreprise ci-dessous remplace le fichier FOUNDER_CONTEXT.md. Ne redemande pas ce qui y figure déjà, et respecte toujours ses règles TikTok Shop (section 5) et sa façon de travailler (section 8).
+- Hiérarchie : le directeur général est Alexandre ; ${m.ceo ? "tu diriges les 5 chefs de pôle" : m.head ? `tu diriges le pôle ${POLES[m.pole]} et tu contrôles le travail de ton équipe` : `ton chef de pôle est ${TEAM.find(x => x.head && x.pole === m.pole)?.name}`}. L'objectif commun : une entreprise rentable et en croissance.
+- Si une demande relève plutôt d'un collègue, dis-le et nomme-le. Tes collègues :
+${colleagues}
+${refNames.length && toolsOk ? `\nTu as des documents de référence ; consulte-les avec l'outil lire_reference quand ta méthode le demande : ${refNames.join(", ")}.\n` : ""}
+<fiche_entreprise>
+${companyMarkdown()}
+</fiche_entreprise>
+
+<fiche_de_poste>
+${s ? s.skill : `(Fiche indisponible.) Ton rôle : ${m.pitch}`}
+</fiche_de_poste>
+${refs}`;
+  }
+  function sampleErrorCopy(code) {
+    return ({
+      not_granted: "Tu n'as pas autorisé cette page à utiliser Claude. Recharge la page pour qu'on te repose la question.",
+      sampling_disabled: "Claude n'est pas disponible sur ce compte.",
+      not_declared: "Cette page n'a plus l'autorisation d'utiliser Claude.",
+      capability_disabled: "La discussion n'est pas disponible dans cette vue.",
+      capability_removed: "Ton application Claude est trop ancienne pour la discussion. Mets-la à jour.",
+      rate_limited: "Trop de messages d'un coup, ou ta limite d'utilisation est atteinte. Réessaie dans un moment.",
+      session_expired: "Ta session a expiré. Reconnecte-toi à Claude, puis renvoie ton message.",
+      refused: "Ce message n'a pas pu être traité. Reformule ta demande.",
+      empty_completion: "Pas de réponse cette fois. Reformule ou demande quelque chose de plus court.",
+      prompt_too_large: "La discussion est devenue trop longue. Efface-la pour repartir de zéro.",
+    })[code] || "La réponse a été interrompue. Renvoie ton message.";
+  }
+  const PERMANENT = ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"];
+
+  function copyButton(target, text) {
+    const b = el("button", "btn ghost", "Copier"); b.type = "button";
+    b.addEventListener("click", () => {
+      navigator.clipboard?.writeText(text).then(() => { b.textContent = "Copié"; setTimeout(() => b.textContent = "Copier", 1400); })
+        .catch(() => { const r = document.createRange(); r.selectNodeContents(target); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Sélectionné : Ctrl+C pour copier"; });
+    });
+    return b;
+  }
+  function addMsg(role, text, withTools) {
+    const e = el("div", "msg " + (role === "user" ? "me" : "them md"));
+    if (role === "user") e.textContent = text; else e.innerHTML = md(text);
+    if (withTools) addMsgTools(e, text);
+    $("chatBody").append(e);
+    return e;
+  }
+  function addMsgTools(e, text) {
+    const bar = el("div", "msg-tools");
+    const mission = el("button", "btn ghost", "En faire une mission"); mission.type = "button";
+    mission.addEventListener("click", () => {
+      const hist = chats[current.id] || [], lastUser = [...hist].reverse().find(t => t.role === "user");
+      $("missionInput").value = lastUser ? lastUser.content : ""; setView("work"); $("missionInput").focus();
+    });
+    bar.append(copyButton(e, text), mission); e.append(bar);
+  }
+  const note = (text, parent = $("chatBody")) => { parent.append(el("div", "note", text)); if (parent === $("chatBody")) scrollDown(); };
+  const scrollDown = () => { const b = $("chatBody"); b.scrollTop = b.scrollHeight; };
+
+  function renderChat() {
+    const m = current, body = $("chatBody"); body.replaceChildren();
+    const intro = el("div", "intro");
+    intro.append(`Salut ! Moi c'est ${m.name}. ${m.pitch} Pour un vrai travail avec recherches sur internet, confie-moi une mission.`);
+    if (!companyFilled()) {
+      const p = el("div"); p.style.marginTop = "6px";
+      const b = el("button", "btn ghost", "Remplir la fiche Mon entreprise"); b.type = "button";
+      b.addEventListener("click", () => openPanel("companyPanel"));
+      p.append("Astuce : indique ton stock et ton délai de réapprovisionnement dans la fiche, je pourrai mieux planifier. ", b); intro.append(p);
+    }
+    const sug = el("div", "suggest");
+    for (const q of m.ask) { const b = el("button", null, q); b.type = "button"; b.addEventListener("click", () => { $("chatInput").value = q; send(); }); sug.append(b); }
+    intro.append(sug);
+    for (const d of pendingFor(m)) body.append(askCard(d, false));
+    body.append(intro);
+    for (const t of chats[m.id] || []) addMsg(t.role, t.content, t.role === "assistant");
+    if (sampleOff) note("La discussion n'est pas disponible ici. Ouvre cette page dans Claude (claude.ai ou l'application).");
+    scrollDown();
+  }
+  function setBusy(b) { $("chatSend").hidden = b; $("chatStop").hidden = !b; $("chatInput").disabled = sampleOff; $("chatSend").disabled = sampleOff; }
+
+  async function send() {
+    const m = current, input = $("chatInput"), text = input.value.trim();
+    if (!m || !text || m.busy || sampleOff) return;
+    const sample = await getSample();
+    if (!sample) { sampleOff = true; setBusy(false); note("La discussion n'est pas disponible ici. Ouvre cette page dans Claude (claude.ai ou l'application)."); return; }
+    if (!skills && !skillsErr) await waitSkills();
+    if (toolsOk === null) { try { toolsOk = !!(await sample.limits()).tools; } catch (_) { toolsOk = false; } }
+    input.value = ""; autosize();
+    const hist = (chats[m.id] ||= []);
+    hist.push({ role: "user", content: text }); saveChats();
+    addMsg("user", text);
+    const out = addMsg("assistant", `${m.name} réfléchit…`); out.classList.add("thinking"); scrollDown();
+    m.busy = true; setBusy(true);
+    const mine = ctl = new AbortController();
+    const turns = [{ role: "user", content: instructions(m) }, ...hist.slice(-20)];
+    const refs = skills?.[m.skill || m.id]?.refs || {};
+    const opts = { signal: mine.signal, onText: ({ text }) => { if (current !== m) return; out.classList.remove("thinking"); out.innerHTML = md(text); scrollDown(); } };
+    if (toolsOk && Object.keys(refs).length) {
+      opts.tools = [{
+        name: "lire_reference",
+        description: `Renvoie le texte d'un de tes documents de référence. Noms possibles : ${Object.keys(refs).join(", ")}.`,
+        inputSchema: { type: "object", properties: { nom: { type: "string", enum: Object.keys(refs) } }, required: ["nom"] },
+        execute: ({ nom }) => { const t = refs[String(nom)]; if (!t) throw new Error("Document inconnu"); if (current === m) out.innerHTML = md(`*${m.name} consulte ses notes…*`); return t.slice(0, 30000); },
+      }];
+    } else opts.cache = false;
+    try {
+      const { text: answer, truncated } = await sample(turns, opts);
+      hist.push({ role: "assistant", content: answer }); saveChats();
+      if (current === m) { out.classList.remove("thinking"); out.innerHTML = md(answer); addMsgTools(out, answer); if (truncated) note("Réponse coupée : demande-moi la suite, ou une partie à la fois."); }
+    } catch (e) {
+      const partial = e?.text;
+      if (partial) { hist.push({ role: "assistant", content: partial + "\n\n*(réponse interrompue)*" }); saveChats(); }
+      if (current === m) {
+        if (partial && e.code !== "refused") { out.classList.remove("thinking"); out.innerHTML = md(partial); } else out.remove();
+        if (e?.code !== "cancelled") note(sampleErrorCopy(e?.code));
+      }
+      if (PERMANENT.includes(e?.code)) sampleOff = true;
+    } finally {
+      m.busy = false; if (ctl === mine) ctl = null;
+      if (current === m) { setBusy(false); scrollDown(); }
+    }
+  }
+
+  // ---------- Missions (agents autonomes dans le cloud, avec internet) ----------
+  let mcpPromise = null;
+  const getMcp = () => mcpPromise ??= (window.claude?.use ? window.claude.use("mcp").catch(() => null) : Promise.resolve(null));
+  const missions = store.get("astoria-missions-v1", []);
+  const saveMissions = () => store.set("astoria-missions-v1", missions);
+  const FINAL = ["done", "failed"];
+  const STATUS_LABEL = { starting: "Démarrage", working: "En cours", waiting: "Attend ton accord", done: "Terminée", failed: "Échec" };
+
+  function mcpErrorCopy(e) {
+    const code = e?.code;
+    return ({
+      server_not_connected: `Le connecteur ${CCR} n'est pas disponible pour ton compte. Ajoute-le dans claude.ai › Paramètres › Connecteurs.`,
+      needs_reauth: `Reconnecte ${CCR} dans claude.ai › Paramètres › Connecteurs.`,
+      not_in_manifest: "Tu n'as pas autorisé cette page à lancer des agents. Recharge la page pour qu'on te repose la question.",
+      approval_required: "Il faut ton accord pour lancer l'agent. Relance la mission et accepte la demande.",
+      blocked_by_policy: "Ton organisation bloque cette action depuis une page. Ouvre la session de l'équipe dans Claude pour la faire.",
+      selection_required: `Choisis quel connecteur ${CCR} utiliser dans la fenêtre que Claude t'affiche, puis relance.`,
+      not_granted: "Les agents ne sont pas disponibles dans cette vue. Ouvre la page dans Claude.",
+      capability_disabled: "Les agents ne sont pas disponibles dans cette vue. Ouvre la page dans Claude.",
+      server_unavailable: "Le service des agents ne répond pas. Vérifie le tableau des missions avant de relancer.",
+      tool_error: `Le service a refusé : ${String(e?.message || "").slice(0, 200)}`,
+    })[code] || "Le lancement n'a pas pu être confirmé. Vérifie le tableau des missions avant de relancer.";
+  }
+  const parseSessionId = payload => { const m = JSON.stringify(payload ?? "").match(/session_[A-Za-z0-9]{6,}/); return m ? m[0] : null; };
+  const unwrap = p => (p && typeof p === "object" && p.ccr) ? p.ccr : p;
+  const bucketToStatus = b => {
+    const s = String(b || "").toUpperCase();
+    if (s.includes("FAILED")) return "failed";
+    if (s.includes("BLOCKED")) return "waiting";
+    if (s.includes("REVIEW") || s.includes("COMPLETED")) return "done";
+    if (s.includes("WORKING")) return "working";
+    return null;
+  };
+  function extractReport(payload) {
+    const data = unwrap(payload)?.data || [];
+    let result = null, lastText = null;
+    for (const ev of data) {
+      const r = ev.result?.internal_anthropic_catchall ?? ev.result;
+      if (r && typeof r.result === "string" && r.result.trim()) result = r.result;
+      const msg = ev.assistant?.internal_anthropic_catchall?.message ?? ev.assistant?.message;
+      const texts = (msg?.content || []).filter(b => b.type === "text" && b.text?.trim()).map(b => b.text);
+      if (texts.length) lastText = texts.join("\n\n");
+    }
+    return result || lastText;
+  }
+
+  async function getEnvironment(mcp) {
+    const cached = store.get("astoria-env-v1", null);
+    if (cached) return cached;
+    const r = await mcp.callTool(CCR, "list_environments", { limit: 20 }, { cache: false });
+    const envs = unwrap(r.payload)?.environments || [];
+    const env = envs.find(e => e.state === "active" && e.kind === "anthropic_cloud") || envs.find(e => e.state === "active") || envs[0];
+    if (!env) throw { code: "no_env" };
+    store.set("astoria-env-v1", env.environment_id);
+    return env.environment_id;
+  }
+  function missionPrompt(m, task) {
+    const s = skills?.[m.skill || m.id], date = new Date().toISOString().slice(0, 10);
+    const slug = task.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "mission";
+    const sk = m.skill || m.id, refList = s ? Object.keys(s.refs).map(k => `.claude/skills/${sk}/references/${k}.md`).join(", ") : "";
+    return `Tu es ${m.name}, ${m.role} dans l'équipe de ${company.nom || "l'entreprise"}. Le fondateur vient de te confier une mission depuis ton bureau. Tu travailles en autonomie complète.
+
+## Ta mission
+${task}
+
+## Comment travailler
+- Tu as accès à internet : utilise la recherche web et la lecture de pages pour t'appuyer sur des faits réels et récents. Cite tes sources (lien + date). N'invente aucun chiffre : si une donnée est introuvable, écris « Non public ».
+- Suis ta méthode de travail : la skill « ${sk} » (fichier .claude/skills/${sk}/SKILL.md du dépôt, reprise ci-dessous), et l'organisation décrite dans entreprise/organisation.md${refList ? `, avec ses documents de référence : ${refList}` : ""}.
+- Le fondateur n'est pas devant son écran : ne lui pose pas de question et n'utilise pas d'outil de question. Quand une information manque, fais l'hypothèse la plus raisonnable, note-la dans une section « Hypothèses » et continue.
+- Le contexte entreprise ci-dessous (aussi dans FOUNDER_CONTEXT.md du dépôt) s'applique à tout : respecte ses règles TikTok Shop (section 5), chiffre tes propositions en marge nette par vente, et donne des livrables prêts à l'emploi.
+- Travaille en français, avec un ton direct de collègue.
+
+## Ton livrable
+1. Rédige le livrable complet en Markdown dans le fichier livrables/${m.id}/${date}-${slug}.md du dépôt, puis fais un commit et pousse-le sur ta branche de travail. N'ouvre pas de pull request.
+2. Termine par un dernier message qui contient le livrable complet (ou, s'il est très long, un résumé détaillé avec les recommandations et les sources), suivi du chemin du fichier. Ce dernier message est ce que le fondateur lira à ton bureau.
+
+<fiche_entreprise>
+${companyMarkdown()}
+</fiche_entreprise>
+
+<fiche_de_poste>
+${s ? s.skill : m.pitch}
+</fiche_de_poste>`;
+  }
+
+  async function launchMission() {
+    const m = current, input = $("missionInput"), task = input.value.trim(), go = $("missionGo"), noteEl = $("missionNote");
+    if (!m || !task || go.disabled) return;
+    if (blocked) {
+      copyOut(missionPrompt(m, task), noteEl, "Mission copiée : colle-la dans une nouvelle session Claude Code sur ton dépôt astoria-mandat-ia (ou dans la session de l'équipe).");
+      return;
+    }
+    go.disabled = true; noteEl.textContent = "Lancement…";
+    const mcp = await getMcp();
+    if (!mcp) { noteEl.textContent = "Les agents ne sont pas disponibles ici. Ouvre cette page dans Claude (claude.ai ou l'application)."; go.disabled = false; return; }
+    if (!skills && !skillsErr) await waitSkills();
+    try {
+      const environment_id = await getEnvironment(mcp);
+      const args = {
+        prompt: missionPrompt(m, task), title: `${m.name} · ${task.slice(0, 60)}`, environment_id,
+        source_url: REPO, source_revision: REPO_BRANCH, tags: ["astoria-bureaux", "agent:" + m.id],
+      };
+      let r;
+      try { r = await mcp.callTool(CCR, "create_session", { ...args, permission_mode: "auto" }, { cache: false }); }
+      catch (e) { if (e?.code === "tool_error" && /permission/i.test(String(e.message))) r = await mcp.callTool(CCR, "create_session", args, { cache: false }); else throw e; }
+      const id = parseSessionId(r.payload);
+      if (!id) throw { code: "tool_error", message: "réponse sans identifiant de session" };
+      missions.unshift({ id, agent: m.id, task, created: Date.now(), status: "starting", report: null, seen: false });
+      saveMissions(); input.value = ""; noteEl.textContent = "";
+      showToast(`${m.name} est sur le coup`, "La mission tourne dans le cloud. Tu peux fermer la page : le travail continue.", 3600);
+      refreshAgents(); renderWork(); poll(true);
+    } catch (e) {
+      if (markBlocked(e)) noteEl.textContent = "La page ne peut pas lancer d'agent elle-même (règle de ton organisation). Rappuie sur « Lancer la mission » : la mission sera copiée pour que tu la colles dans Claude Code.";
+      else noteEl.textContent = e?.code === "no_env" ? "Aucun environnement cloud trouvé sur ton compte. Crée-en un sur claude.ai/code." : mcpErrorCopy(e);
+    } finally { go.disabled = false; }
+  }
+
+  async function sendFollowUp(ms, text, btn, noteEl) {
+    const mcp = await getMcp(); if (!mcp || !text) return;
+    btn.disabled = true; noteEl.textContent = "Envoi…";
+    try {
+      await mcp.callTool(CCR, "send_message", { session_id: ms.id, message: text }, { cache: false });
+      ms.status = "working"; ms.report = null; ms.seen = false; saveMissions(); noteEl.textContent = "Consigne envoyée.";
+      refreshAgents(); setTimeout(() => poll(true), 4000);
+    } catch (e) { noteEl.textContent = mcpErrorCopy(e); }
+    finally { btn.disabled = false; }
+  }
+
+  let polling = false, lastPoll = 0, pollNote = "";
+  async function poll(force) {
+    if (blocked) return;
+    if (polling || (!force && Date.now() - lastPoll < 28000) || document.hidden) return;
+    const todo = missions.filter(ms => !FINAL.includes(ms.status) || !ms.report).slice(0, 8);
+    if (!todo.length) return;
+    const mcp = await getMcp(); if (!mcp) return;
+    polling = true; lastPoll = Date.now();
+    try {
+      for (const ms of todo) {
+        try {
+          if (!FINAL.includes(ms.status)) {
+            const r = await mcp.callTool(CCR, "get_session", { session_id: ms.id }, { cache: false });
+            const s = bucketToStatus(unwrap(r.payload)?.status_bucket);
+            if (s && s !== ms.status) { ms.status = s; if (FINAL.includes(s)) ms.seen = false; }
+          }
+          if (FINAL.includes(ms.status) && !ms.report) {
+            const r = await mcp.callTool(CCR, "list_events", { session_id: ms.id, kinds: ["assistant", "result"], limit: 100 }, { cache: false });
+            ms.report = extractReport(r.payload) || null;
+          }
+          pollNote = "";
+        } catch (e) { if (markBlocked(e)) break; pollNote = mcpErrorCopy(e); if (["not_in_manifest", "server_not_connected", "needs_reauth", "blocked_by_policy"].includes(e?.code)) break; }
+      }
+      saveMissions(); refreshAgents();
+      if (current && view === "work") renderWork();
+      if (!$("boardPanel").hidden) renderBoard();
+    } finally { polling = false; }
+  }
+  setInterval(() => { poll(false); if (!document.hidden) pollJournal(false); }, 5000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) poll(false); });
+
+  // ---------- Journal (routine quotidienne autonome) ----------
+  const journal = Object.assign({ status: null, report: null, data: null, key: null, seen: null, answers: {} }, store.get("astoria-journal-v2", {}));
+  journal.sessionId = TEAM_SESSION;
+  const saveJournal = () => store.set("astoria-journal-v2", journal);
+  const dayRunning = () => journal.status === "working" || journal.status === "starting";
+  const journalUnseen = () => !!(journal.report && journal.seen !== journal.key);
+  let journalNote = "", lastJournalPoll = 0;
+  function splitReport(text) {
+    const m = String(text || "").match(/```json\s*([\s\S]*?)```\s*$/);
+    let data = null;
+    if (m) { try { data = JSON.parse(m[1]); } catch (_) {} }
+    return { body: m ? text.slice(0, m.index).trim() : text, data };
+  }
+  // Dernier compte rendu de journée = dernier résultat qui se termine par le bloc json « actifs »
+  function lastDayReport(payload) {
+    const data = unwrap(payload)?.data || [];
+    let best = null;
+    for (const ev of data) {
+      const r = ev.result?.internal_anthropic_catchall ?? ev.result;
+      if (r && typeof r.result === "string" && /```json[\s\S]*"actifs"[\s\S]*```\s*$/.test(r.result)) best = r.result;
+      const msg = ev.assistant?.internal_anthropic_catchall?.message ?? ev.assistant?.message;
+      const t = (msg?.content || []).filter(b => b.type === "text").map(b => b.text).join("\n\n");
+      if (/```json[\s\S]*"actifs"[\s\S]*```\s*$/.test(t)) best = t;
+    }
+    return best;
+  }
+  // Ton organisation peut bloquer les commandes directes depuis une page : on bascule alors sur la copie du message
+  let blocked = store.get("astoria-blocked-v1", false);
+  const SHORT_DAY = "NOUVELLE JOURNÉE DE TRAVAIL (lancée à la main par Karim) : applique exactement la procédure de entreprise/procedure-journee.md.";
+  function markBlocked(e) { if (e?.code === "blocked_by_policy") { blocked = true; store.set("astoria-blocked-v1", true); return true; } return false; }
+  function copyOut(text, noteEl, okMsg) {
+    noteEl.replaceChildren();
+    const done = () => {
+      noteEl.replaceChildren(document.createTextNode(okMsg + " "));
+      const a = el("a", "btn ghost", "Ouvrir la session de l'équipe"); a.href = `https://claude.ai/code/${TEAM_SESSION}`; a.target = "_blank"; a.rel = "noopener noreferrer";
+      noteEl.append(a);
+    };
+    const manual = () => {
+      const t = el("textarea"); t.value = text; t.rows = 3; t.style.width = "100%"; t.readOnly = true;
+      noteEl.append(el("div", null, "Copie ce texte, puis colle-le dans la session de l'équipe :"), t); t.focus(); t.select();
+      const a = el("a", "btn ghost", "Ouvrir la session de l'équipe"); a.href = `https://claude.ai/code/${TEAM_SESSION}`; a.target = "_blank"; a.rel = "noopener noreferrer"; noteEl.append(a);
+    };
+    try { navigator.clipboard.writeText(text).then(done, manual); } catch (_) { manual(); }
+  }
+  async function pollJournal(force) {
+    if (blocked) return;
+    if (!force && Date.now() - lastJournalPoll < 55000) return;
+    const mcp = await getMcp(); if (!mcp) return;
+    lastJournalPoll = Date.now();
+    try {
+      const r = await mcp.callTool(CCR, "get_session", { session_id: TEAM_SESSION }, { cache: false });
+      journal.status = bucketToStatus(unwrap(r.payload)?.status_bucket) || journal.status;
+      if (FINAL.includes(journal.status) || !journal.report) {
+        const ev = await mcp.callTool(CCR, "list_events", { session_id: TEAM_SESSION, kinds: ["assistant", "result"], limit: 100 }, { cache: false });
+        const rep = lastDayReport(ev.payload);
+        if (rep) {
+          const { body, data } = splitReport(rep), key = (data?.date || "") + ":" + body.length + ":" + body.slice(0, 80);
+          if (key !== journal.key) Object.assign(journal, { report: body, data, key });
+        }
+      }
+      journalNote = ""; saveJournal();
+    } catch (e) { if (!markBlocked(e)) journalNote = mcpErrorCopy(e); }
+    refreshAgents();
+    if (!$("journalPanel").hidden) renderJournal();
+  }
+  async function fireDay(btn, noteEl) {
+    if (btn.dataset.confirm !== "1") { btn.dataset.confirm = "1"; btn.textContent = "Confirmer : lancer la journée"; setTimeout(() => { btn.dataset.confirm = ""; btn.textContent = "Lancer une journée maintenant"; }, 4000); return; }
+    btn.dataset.confirm = "";
+    if (blocked) { copyOut(SHORT_DAY, noteEl, "Message copié : colle-le dans la session de l'équipe pour lancer la journée."); return; }
+    btn.disabled = true; noteEl.textContent = "Lancement…";
+    const mcp = await getMcp();
+    if (!mcp) { noteEl.textContent = "Les agents ne sont pas disponibles ici. Ouvre la page dans Claude."; btn.disabled = false; return; }
+    try {
+      await mcp.callTool(CCR, "send_message", { session_id: TEAM_SESSION, message: DAY_PROMPT.replace("NOUVELLE JOURNÉE DE TRAVAIL", "NOUVELLE JOURNÉE DE TRAVAIL (lancée à la main par Karim)") }, { cache: false });
+      journal.status = "working"; saveJournal(); refreshAgents();
+      noteEl.textContent = "C'est parti : l'équipe se réunit. Le compte rendu arrive d'ici 15 à 40 minutes.";
+      setTimeout(() => pollJournal(true), 8000);
+    } catch (e) {
+      if (markBlocked(e)) { noteEl.textContent = "La page ne peut pas lancer la journée elle-même. Rappuie sur le bouton : il copiera le message à coller dans la session de l'équipe."; }
+      else noteEl.textContent = mcpErrorCopy(e);
+    }
+    finally { btn.disabled = false; btn.textContent = "Lancer une journée maintenant"; }
+  }
+  async function tellTeam(text, noteEl, btns) {
+    if (!text) return false;
+    if (blocked) { copyOut(text, noteEl, "Copié : colle-le dans la session de l'équipe, elle l'enregistre tout de suite."); return true; }
+    const mcp = await getMcp(); if (!mcp || !journal.sessionId) return false;
+    btns.forEach(b => b.disabled = true); noteEl.textContent = "Envoi à l'équipe…";
+    try {
+      await mcp.callTool(CCR, "send_message", { session_id: journal.sessionId, message: text }, { cache: false });
+      noteEl.textContent = "Transmis. L'équipe l'enregistre dans ses décisions et en tient compte dès maintenant.";
+      return true;
+    } catch (e) {
+      if (markBlocked(e)) noteEl.textContent = "La page ne peut pas envoyer directement (règle de ton organisation). Rappuie : le message sera copié pour que tu le colles dans la session de l'équipe.";
+      else noteEl.textContent = mcpErrorCopy(e);
+      return false;
+    }
+    finally { btns.forEach(b => b.disabled = false); }
+  }
+  function renderJournal() {
+    const body = $("journalBody"); body.replaceChildren();
+    const head = el("div", "mission-new");
+    const st = dayRunning() ? "L'équipe est en pleine journée de travail. Reviens dans un moment."
+      : journal.status === "failed" ? "La dernière journée a rencontré un souci. Ouvre la session pour voir pourquoi."
+      : journal.report ? `Dernière journée : ${journal.data?.date || "récente"}. Prochaine : demain matin à 6 h 52.` : "Le compte rendu de la prochaine journée (demain 6 h 52) s'affichera ici.";
+    head.append(el("h3", null, dayRunning() ? "Journée en cours" : "Journée de travail automatique"), el("p", null, st));
+    if (dayRunning() && live?.tache) head.append(el("p", null, "En ce moment : " + live.tache));
+    const row = el("div", "row"), go = el("button", "btn", "Lancer une journée maintenant"), n = el("span", "note"); go.type = "button";
+    go.addEventListener("click", () => fireDay(go, n)); row.append(go);
+    { const a = el("a", "btn ghost", "Ouvrir la session de l'équipe"); a.href = `https://claude.ai/code/${TEAM_SESSION}`; a.target = "_blank"; a.rel = "noopener noreferrer"; row.append(a); }
+    const hist = el("a", "btn ghost", "Historique sur GitHub"); hist.href = `${REPO}/tree/${REPO_BRANCH}/entreprise/journal`; hist.target = "_blank"; hist.rel = "noopener noreferrer"; row.append(hist);
+    head.append(row, n); body.append(head);
+    if (journalNote) note(journalNote, body);
+    const decisions = journal.data?.decisions || [];
+    if (journal.report && decisions.length) {
+      body.append(el("h3", null, "Tes décisions"));
+      for (const d of decisions) {
+        const box = el("div", "decision"), key = journal.key + ":" + (d.id || d.question);
+        box.append(el("h4", null, d.question));
+        if (d.recommandation) box.append(el("div", "reco", "Recommandation de l'équipe : " + d.recommandation));
+        const chosen = journal.answers?.[key];
+        if (chosen) box.append(el("div", "chosen", "Ta décision : " + chosen));
+        else {
+          const opts = el("div", "row"), dn = el("div", "note"), btns = [];
+          for (const o of d.options || []) {
+            const b = el("button", "btn ghost", o); b.type = "button"; btns.push(b);
+            b.addEventListener("click", async () => {
+              if (await tellTeam(`DÉCISION DE KARIM — ${d.question} : ${o}`, dn, btns)) { (journal.answers ||= {})[key] = o; saveJournal(); renderJournal(); }
+            });
+            opts.append(b);
+          }
+          box.append(opts, dn);
+        }
+        body.append(box);
+      }
+    }
+    if (journal.report) {
+      const rep = el("div", "report md"); rep.innerHTML = md(journal.report); rep.style.maxHeight = "none";
+      body.append(rep);
+    }
+    if (journal.sessionId) {
+      const f = el("div", "follow"), inp = el("input"), b = el("button", "btn ghost", "Envoyer"), fn = el("div", "note");
+      inp.type = "text"; inp.id = "journalMsg"; inp.placeholder = "Dire quelque chose à toute l'équipe…"; inp.setAttribute("aria-label", "Message à l'équipe");
+      const go2 = async () => { if (await tellTeam("MESSAGE DE KARIM À L'ÉQUIPE : " + inp.value.trim(), fn, [b])) inp.value = ""; };
+      b.type = "button"; b.addEventListener("click", go2); inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go2(); } });
+      f.append(inp, b); body.append(f, fn);
+    }
+    if (journal.report && journal.seen !== journal.key) { journal.seen = journal.key; saveJournal(); refreshAgents(); }
+  }
+
+  (async () => {
+    const db = window.claude?.use ? await window.claude.use("db").catch(() => null) : null;
+    if (!db) return;
+    db.doc("equipe/etat").onSnapshot(snap => {
+      live = snap.exists ? snap.data() : null;
+      if (!live) return;
+      if (live.status === "working") journal.status = "working";
+      else if (live.status === "done") journal.status = "done";
+      if (live.report && live.reportKey && live.reportKey !== journal.key) {
+        const { body, data } = splitReport(String(live.report));
+        Object.assign(journal, { report: body, data, key: live.reportKey });
+      }
+      saveJournal(); refreshAgents();
+      if (!$("journalPanel").hidden) renderJournal();
+    }, () => {});
+  })();
+
+  // ---------- Demandes de l'équipe à Karim (collection « demandes » de la base de la page) ----------
+  // Chaque document : { agent, titre, question, details, images: [{url, legende}], options: ["Oui","Non"], statut: "attente"|"repondu", reponse, commentaire, creeLe, reponduLe }
+  let demandes = [], askDb = null, askNote = "";
+  const isOpen = d => d.statut !== "repondu" && d.statut !== "traite";
+  const pendingFor = m => demandes.filter(d => isOpen(d) && d.agent === m.id);
+  const pendingAll = () => demandes.filter(isOpen);
+  (async () => {
+    askDb = window.claude?.use ? await window.claude.use("db").catch(() => null) : null;
+    if (!askDb) return;
+    askDb.collection("demandes").onSnapshot(snap => {
+      demandes = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => String(b.creeLe || "").localeCompare(String(a.creeLe || "")));
+      refreshAgents();
+      if (!$("askPanel").hidden) renderAsk();
+      if (current && !$("chat").hidden && view === "talk") renderChat();
+    }, e => { askNote = "Les demandes n'ont pas pu être chargées (" + (e?.code || "erreur") + ")."; if (!$("askPanel").hidden) renderAsk(); });
+  })();
+  function askCard(d, withAgent) {
+    const m = byId[d.agent], card = el("article", "ask-card");
+    if (withAgent && m) { const a = el("div", "board-agent"); a.append(avatar(m), `${m.name} · ${m.role}`); card.append(a); }
+    card.append(el("h4", null, d.titre || "Une question pour toi"));
+    if (d.question) card.append(el("div", "q", d.question));
+    if (d.details) { const x = el("div", "md"); x.innerHTML = md(String(d.details)); card.append(x); }
+    const imgs = (d.images || []).filter(i => i && (i.url || typeof i === "string"));
+    if (imgs.length) {
+      const g = el("div", "ask-imgs");
+      for (const i of imgs) {
+        const url = typeof i === "string" ? i : i.url, cap = typeof i === "string" ? "" : (i.legende || "");
+        const a = el("a"); a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        const f = el("figure"); f.style.margin = "0";
+        const img = el("img"); img.src = url; img.alt = cap || "Image jointe"; img.loading = "lazy";
+        f.append(img); if (cap) f.append(el("figcaption", null, cap));
+        a.append(f); g.append(a);
+      }
+      card.append(g);
+    }
+    if (d.creeLe) card.append(el("div", "meta", "Demandé le " + fmtTime(d.creeLe)));
+    if (!isOpen(d)) {
+      card.append(el("div", "ask-done", "Ta réponse : " + (d.reponse || "") + (d.commentaire ? " — " + d.commentaire : "")));
+      if (d.suite) card.append(el("div", "meta", "Ce que l'équipe en a fait : " + d.suite));
+      return card;
+    }
+    const com = el("input"); com.type = "text"; com.placeholder = "Ajouter un mot (facultatif) : une info, une précision…"; com.setAttribute("aria-label", "Commentaire");
+    const opts = el("div", "ask-opts"), n = el("div", "note"), btns = [];
+    for (const o of (d.options && d.options.length ? d.options : ["Oui", "Non"])) {
+      const b = el("button", "btn" + (/^oui/i.test(o) ? " yes" : /^non/i.test(o) ? " no" : ""), o); b.type = "button"; btns.push(b);
+      b.addEventListener("click", () => answerAsk(d, o, com.value.trim(), n, btns));
+      opts.append(b);
+    }
+    card.append(opts, com, n);
+    return card;
+  }
+  async function answerAsk(d, o, comment, n, btns) {
+    if (!askDb) { n.textContent = "Réponse impossible ici : ouvre la page dans Claude (claude.ai ou l'application)."; return; }
+    btns.forEach(b => b.disabled = true); n.textContent = "Envoi…";
+    try {
+      await askDb.collection("demandes").doc(d.id).update({ statut: "repondu", reponse: o, commentaire: comment || "", reponduLe: new Date().toISOString() });
+      n.textContent = "Réponse enregistrée.";
+      const m = byId[d.agent];
+      tellTeam(`DÉCISION DE KARIM (bureaux, demande ${d.id}${m ? " de " + m.name : ""}) — ${d.titre || d.question} : ${o}${comment ? " — " + comment : ""}`, n, []).catch(() => {});
+    } catch (e) {
+      n.textContent = e?.code === "permission_denied" ? "Tu n'as pas le droit de répondre depuis ce compte." : "La réponse n'a pas pu être enregistrée. Réessaie.";
+      btns.forEach(b => b.disabled = false);
+    }
+  }
+  function renderAsk() {
+    const list = $("askList"); list.replaceChildren();
+    if (askNote) note(askNote, list);
+    if (!askDb) { list.append(el("div", "empty", "Ouvre la page dans Claude (claude.ai ou l'application) pour voir les demandes de l'équipe.")); return; }
+    const p = pendingAll(), done = demandes.filter(d => !isOpen(d)).slice(0, 10);
+    if (!p.length) list.append(el("div", "empty", "Rien à décider pour l'instant. L'équipe avance seule."));
+    for (const d of p) list.append(askCard(d, true));
+    if (done.length) { list.append(el("h3", null, "Déjà répondu")); for (const d of done) list.append(askCard(d, true)); }
+  }
+
+  function refreshAgents() {
+    for (const m of TEAM) {
+      const mine = missions.filter(ms => ms.agent === m.id);
+      const live = mine.find(ms => ms.status === "working" || ms.status === "starting") || mine.find(ms => ms.status === "waiting");
+      const last = mine[0];
+      m.state = live ? live.status : last ? last.status : null;
+      m.unseen = mine.some(ms => FINAL.includes(ms.status) && !ms.seen);
+    }
+    const active = missions.filter(ms => !FINAL.includes(ms.status)).length;
+    $("activeCount").hidden = !active; $("activeCount").textContent = active;
+    $("journalCount").hidden = !journalUnseen();
+    const nAsk = pendingAll().length; $("askCount").hidden = !nAsk; $("askCount").textContent = nAsk;
+    if (!$("teamPanel").hidden) buildTeam();
+  }
+
+  const fmtTime = t => new Date(t).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  function missionCard(ms, showAgent) {
+    const m = byId[ms.agent], card = el("article", "mission");
+    const head = el("header"), left = el("div");
+    left.style.minWidth = "0";
+    if (showAgent && m) { const a = el("div", "board-agent"); a.append(avatar(m), `${m.name} · ${m.role}`); left.append(a); }
+    left.append(el("h4", null, ms.task), el("div", "meta", `Lancée le ${fmtTime(ms.created)}`));
+    head.append(left, el("span", "pill " + ms.status, STATUS_LABEL[ms.status] || ms.status));
+    card.append(head);
+    if (ms.status === "waiting") card.append(el("div", "note", `${m?.name || "L'agent"} attend ton accord pour continuer. Ouvre la session pour répondre.`));
+    if (ms.report) {
+      const rep = el("div", "report md"); rep.innerHTML = md(ms.report);
+      const open = !!(showAgent ? false : true);
+      rep.hidden = !open && ms.seen;
+      const t = el("button", "btn ghost", rep.hidden ? "Voir le livrable" : "Masquer le livrable"); t.type = "button";
+      t.addEventListener("click", () => { rep.hidden = !rep.hidden; t.textContent = rep.hidden ? "Voir le livrable" : "Masquer le livrable"; });
+      const bar = el("div", "row"); bar.append(t, copyButton(rep, ms.report));
+      card.append(bar, rep);
+    } else if (FINAL.includes(ms.status)) card.append(el("div", "meta", "Récupération du livrable…"));
+    const links = el("div", "row");
+    const a = el("a", "btn ghost", "Ouvrir la session"); a.href = `https://claude.ai/code/${ms.id}`; a.target = "_blank"; a.rel = "noopener noreferrer";
+    links.append(a);
+    card.append(links);
+    if (!showAgent) {
+      const f = el("div", "follow"), inp = el("input"), b = el("button", "btn ghost", "Envoyer"), n = el("div", "note");
+      inp.type = "text"; inp.placeholder = "Donner une consigne à l'agent…"; inp.setAttribute("aria-label", "Consigne pour l'agent"); inp.id = "follow-" + ms.id;
+      b.type = "button"; b.addEventListener("click", () => sendFollowUp(ms, inp.value.trim(), b, n));
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendFollowUp(ms, inp.value.trim(), b, n); } });
+      f.append(inp, b); card.append(f, n);
+    } else card.addEventListener("click", e => { if (e.target.closest("a, button")) return; goTo(m); openDesk(m, "work"); });
+    return card;
+  }
+  function renderWork() {
+    const m = current; if (!m) return;
+    $("missionHint").textContent = `${m.name} part travailler seul dans le cloud, avec internet, et range son livrable dans ton dépôt GitHub. Compte quelques minutes. Chaque mission utilise ton forfait Claude.`;
+    if (!$("missionInput").value) $("missionInput").placeholder = "Ex. : " + m.job;
+    const list = $("missionList"); list.replaceChildren();
+    const mine = missions.filter(ms => ms.agent === m.id);
+    if (!mine.length) list.append(el("div", "empty", `Aucune mission pour ${m.name} pour l'instant.`));
+    for (const ms of mine) list.append(missionCard(ms, false));
+    if (pollNote) note(pollNote, list);
+    let changed = false; for (const ms of mine) if (FINAL.includes(ms.status) && ms.report && !ms.seen) { ms.seen = true; changed = true; }
+    if (changed) { saveMissions(); refreshAgents(); }
+  }
+  function renderBoard() {
+    const list = $("boardList"); list.replaceChildren();
+    if (!missions.length) { list.append(el("div", "empty", "Aucune mission pour l'instant. Va voir un collègue et confie-lui une mission depuis l'onglet Missions de son bureau.")); return; }
+    for (const ms of missions) list.append(missionCard(ms, true));
+    if (pollNote) note(pollNote, list);
+  }
+
+  // ---------- Panneau du bureau ----------
+  function setView(v) {
+    view = v;
+    $("tabTalk").setAttribute("aria-selected", v === "talk"); $("tabWork").setAttribute("aria-selected", v === "work");
+    $("talkView").hidden = v !== "talk"; $("workView").hidden = v !== "work";
+    if (v === "work") { renderWork(); poll(true); }
+  }
+  function openDesk(m, v = "talk") {
+    closePanels(); $("toast").hidden = true;
+    if (ctl && current !== m) ctl.abort();
+    current = m;
+    const a = $("chatAvatar"); a.style.background = m.coat; a.textContent = initials(m);
+    $("chatName").textContent = m.name; $("chatRole").textContent = `${m.role} · pôle ${POLES[m.pole]}`;
+    $("chat").hidden = false; $("help").hidden = true; $("missionNote").textContent = "";
+    setBusy(!!m.busy); renderChat(); setView(v);
+    if (matchMedia("(pointer: fine)").matches) (v === "talk" ? $("chatInput") : $("missionInput")).focus();
+  }
+  function closeChat() { $("chat").hidden = true; current = null; }
+  $("tabTalk").addEventListener("click", () => setView("talk"));
+  $("tabWork").addEventListener("click", () => setView("work"));
+  $("missionGo").addEventListener("click", launchMission);
+  $("missionExample").addEventListener("click", () => { if (current) { $("missionInput").value = current.job; $("missionInput").focus(); } });
+
+  const autosize = () => { const t = $("chatInput"); t.style.height = "auto"; t.style.height = Math.min(140, t.scrollHeight) + "px"; };
+  $("chatInput").addEventListener("input", autosize);
+  $("chatInput").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
+  $("composer").addEventListener("submit", e => { e.preventDefault(); send(); });
+  $("chatStop").addEventListener("click", () => ctl?.abort());
+  $("chatClose").addEventListener("click", closeChat);
+  $("chatClear").addEventListener("click", e => {
+    const b = e.currentTarget;
+    if (b.dataset.confirm !== "1") { b.dataset.confirm = "1"; b.textContent = "Confirmer l'effacement"; setTimeout(() => { b.dataset.confirm = ""; b.textContent = "Effacer la discussion"; }, 3000); return; }
+    b.dataset.confirm = ""; b.textContent = "Effacer la discussion";
+    if (current) { ctl?.abort(); delete chats[current.id]; saveChats(); renderChat(); }
+  });
+
+  function closePanels() { for (const id of ["teamPanel", "companyPanel", "boardPanel", "journalPanel", "askPanel"]) $(id).hidden = true; }
+  function openPanel(id) {
+    $("toast").hidden = true; $("chat").hidden = true; current = null; closePanels(); $(id).hidden = false; $("help").hidden = true;
+    if (id === "teamPanel") buildTeam();
+    if (id === "boardPanel") { renderBoard(); poll(true); }
+    if (id === "journalPanel") { renderJournal(); pollJournal(true); }
+    if (id === "askPanel") renderAsk();
+  }
+  $("btnAsk").addEventListener("click", () => $("askPanel").hidden ? openPanel("askPanel") : closePanels());
+  $("btnTeam").addEventListener("click", () => $("teamPanel").hidden ? openPanel("teamPanel") : closePanels());
+  $("btnJournal").addEventListener("click", () => $("journalPanel").hidden ? openPanel("journalPanel") : closePanels());
+  $("btnBoard").addEventListener("click", () => $("boardPanel").hidden ? openPanel("boardPanel") : closePanels());
+  $("btnCompany").addEventListener("click", () => $("companyPanel").hidden ? openPanel("companyPanel") : closePanels());
+  document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => $(b.dataset.close).hidden = true));
+  $("btnTime").addEventListener("click", () => { clock = nightness() > 0.5 ? 0.02 : 0.42; });
+
+  // ---------- Entrées ----------
+  let dragging = false;
+  const toWorld = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / ppt + camX, y: (e.clientY - r.top) / ppt + camY }; };
+  cv.addEventListener("pointerdown", e => {
+    const w = toWorld(e);
+    const m = TEAM.find(m => Math.abs(m.x - w.x) < 0.42 && w.y < m.y + 0.2 && w.y > m.y - 1.05) || TEAM.find(m => w.x >= m.desk.x && w.x < m.desk.x + 3 && w.y >= m.desk.y - 0.5 && w.y < m.desk.y + 1);
+    if (m) { player.tx = m.x; player.ty = m.y + 0.8; openDesk(m, m.state && m.state !== "done" ? "work" : m.unseen ? "work" : "talk"); return; }
+    const tx = Math.floor(w.x), ty = Math.floor(w.y);
+    if (w.x >= myDesk.x && w.x < myDesk.x + 3 && w.y >= myDesk.y - 0.5 && w.y < myDesk.y + 1) { openPanel("companyPanel"); return; }
+    if (props.some(p => p.kind === "board" && (tx === p.x || tx === p.x + 1) && (ty === p.y || ty === p.y - 1))) { openPanel("boardPanel"); return; }
+    dragging = true; cv.setPointerCapture(e.pointerId); player.tx = w.x; player.ty = w.y;
+    $("help").hidden = true;
+  });
+  cv.addEventListener("pointermove", e => { if (dragging) { const w = toWorld(e); player.tx = w.x; player.ty = w.y; } });
+  cv.addEventListener("pointerup", () => dragging = false);
+  cv.addEventListener("pointercancel", () => dragging = false);
+  addEventListener("keydown", e => {
+    if (e.key === "Escape") { if (!$("chat").hidden) closeChat(); closePanels(); return; }
+    if (e.target.closest?.("textarea, input, button, select, a, .panel")) return;
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) e.preventDefault();
+    if (e.code === "KeyE" || e.code === "Space" || e.code === "Enter") {
+      const m = nearest(1.8); if (m) { openDesk(m, m.unseen ? "work" : "talk"); return; }
+      if (Math.hypot(player.x - 19, player.y - 13) < 1.8) openPanel("boardPanel");
+      return;
+    }
+    keys.add(e.code); $("help").hidden = true;
+  });
+  addEventListener("keyup", e => keys.delete(e.code));
+  addEventListener("blur", () => keys.clear());
+
+  // ---------- Démarrage ----------
+  function start(data) {
+    if (data && data.player) { player.x = data.player.x; player.y = data.player.y; clock = data.clock ?? clock; }
+    try { window.claude?.hot?.snapshot?.(() => ({ player: { x: player.x, y: player.y }, clock })); } catch (_) {}
+    refreshAgents();
+    if (!data?.player) showToast("Bienvenue dans tes bureaux", "Alexandre, tes 5 chefs de pôle et 21 collègues t'attendent. Parle-leur, ou confie-leur une mission : ils travaillent seuls, avec internet.", 5600);
+    if (missions.some(ms => !FINAL.includes(ms.status) || !ms.report)) setTimeout(() => poll(true), 1500);
+    setTimeout(() => { const n = pendingAll().length; if (n) showToast("★ L'équipe a besoin de toi", `${n} question(s) t'attendent : bouton « Pour toi » ou les collègues marqués d'une étoile.`, 6000); }, 4200);
+    setTimeout(() => pollJournal(true).then(() => { if (journalUnseen()) showToast("Ton équipe a travaillé", `${(journal.data?.decisions || []).length || "Des"} décision(s) t'attendent. Ouvre le Journal.`, 6000); }), 2500);
+    let last = performance.now();
+    function frame(t) {
+      const dt = Math.min(0.05, (t - last) / 1000); last = t;
+      update(dt); render(t / 1000);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
