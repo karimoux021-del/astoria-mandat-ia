@@ -3,6 +3,7 @@
 Les décisions du fondateur, de la plus récente à la plus ancienne. Elles s'imposent à toute l'équipe.
 
 - 2026-11-03 (matin) — Karim : **« Stop pour l'activation automatique »**. Les deux tâches programmées sont désactivées : journée de travail (6 h 52) et cycle continu (toutes les 2 h). L'équipe ne travaille plus que sur demande de Karim. Les déclenchements en attente ne sont pas rejoués.
+- 2026-11-03 (matin, suite) — Karim : **plus aucune actualisation automatique tant qu'il n'a pas autorisé**, et **aucun message envoyé à Claude dans Chrome** (session navigateur) sans son accord. On n'agit que sur ses messages directs.
 - 2026-10-27 (20 h, bureaux) — Karim : **colis déposé : oui** ; **photo n° 4 : Non, on la garde** (2ᵉ refus, on ne la supprime pas ; variante « même photo sans le texte Watch Ultra » proposée) ; **vente flash : on la laisse finir** jusqu'au 29/10 20:19. Toujours en attente : livraison gratuite dès 2 articles, plan B montre ronde.
 - 2026-10-27 (soir) — Karim (relais Chrome) : **2 colis déposés** (commandes du 24/10 et du 27/10), reçus gardés. Fiche T900 active après correction. Décisions encore attendues : livraison gratuite dès 2 articles (l'équipe recommande de la supprimer), photo n° 4, connexion à AliExpress, publication de la vidéo vente flash avant le 29/10 20:19.
 - 2026-10-27 — Règle interne (Margaux, Stratégie) : pour tout nouveau produit, nom et adresse du fabricant + déclaration UE de conformité **avant l'achat** (critère éliminatoire). Aucun logo CE apposé par nous. *(règle d'équipe, Karim peut la lever)*
